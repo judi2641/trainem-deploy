@@ -1,6 +1,8 @@
 ### SETUP
 
 ```bash
+# im root verzeichnis: 
+
 # installiert alle node_modules aus frontend und backend
 npm run install:all 
 
