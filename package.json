@@ -1,0 +1,12 @@
+{
+  "name": "trainem",
+  "scripts": {
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "npm --prefix backend start",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "install:all": "npm --prefix frontend install && npm --prefix backend install && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
