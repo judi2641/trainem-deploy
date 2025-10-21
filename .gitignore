@@ -1,6 +1,7 @@
 # Allgemin
 .DS_Store
 node_modules
+dist
 
 # Frontend
 
@@ -12,3 +13,4 @@ frontend/.DS_Store
 
 backend/node_modules
 backend/.DS_Store
+backend/dist

@@ -1,0 +1,27 @@
+stages:
+  - build
+  - test
+
+backend_build:
+  stage: build
+  image: node:20
+  script:
+    - cd backend
+    - npm ci
+    - npm run build
+
+backend_test:
+  stage: test
+  iamge: node:20
+  script:
+    -cd backend
+    - npm ci
+    - npm test
+
+frontend_build:
+  stage: build
+  image: node:20
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
