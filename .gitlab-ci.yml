@@ -12,7 +12,7 @@ backend_build:
 
 backend_test:
   stage: test
-  iamge: node:20
+  image: node:20
   script:
     -cd backend
     - npm ci
