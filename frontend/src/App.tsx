@@ -1,5 +1,6 @@
-import { useState } from 'react'
+/*import { useState } from 'react'
 import './App.css'
+import LandingPage from "./LandingPage";
 
 function App() {
 
@@ -37,3 +38,12 @@ function App() {
 }
 
 export default App
+*/
+
+import LandingPage from "./LandingPage";
+
+function App() {
+  return <LandingPage />;
+}
+
+export default App;
