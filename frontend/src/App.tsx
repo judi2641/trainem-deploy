@@ -1,39 +1,21 @@
-import { useState } from 'react'
-import './App.css'
+// src/App.tsx
+import Dashboard from './pages/Dashboard'; // Importiere deine neue Dashboard-Seite
 
 function App() {
+  /*
+    HINWEIS:
+    Hier lag vorher der Backend-Test-Code.
+    Den brauchen wir für die UI-Vorschau nicht.
+    
+    Später kommt hier der "Router" hin, der entscheidet:
+    Zeige <Login /> ODER zeige <Dashboard />
 
-  const [error, setError] = useState("");
-  const [responseText, setResponseText] = useState("");
+    Fürs Erste laden wir einfach *immer* dein Dashboard.
+  */
   
-  const sendTestRequestToAPI = async () =>  {
-    try{
-
-      const res = await fetch("http://localhost:3000");
-      
-      if(res.ok){
-        const text = await res.text();
-        setResponseText(text);
-      }
-      
-      else{
-        setError("error")
-      }
-    }
-    catch(error){
-      setError("error, backend running?");
-      console.error(error);
-    }
-  }
-
   return (
-    <>
-      <button onClick={sendTestRequestToAPI}>send request to backend</button>
-      <text>        
-        {error} {responseText}
-      </text>
-    </>
-  )
+    <Dashboard />
+  );
 }
 
-export default App
+export default App;
