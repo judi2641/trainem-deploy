@@ -8,7 +8,7 @@ import {
   HiOutlineCog,
   HiOutlineQuestionMarkCircle,
   HiOutlineLogout
-} from 'react-icons/hi'; // Importiere die Icons
+} from 'react-icons/hi'; 
 
 export default function Sidebar() {
   return (
@@ -50,7 +50,7 @@ export default function Sidebar() {
           <li>
             <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
               <HiOutlineCalendar className="w-5 h-5" />
-              <span className="ml-3">Calendar</span>
+              <span className="ml-3">Trainingsplan</span>
             </a>
           </li>
           <li>

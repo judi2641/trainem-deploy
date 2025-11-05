@@ -1,7 +1,7 @@
-// src/pages/Dashboard.tsx
+
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header'; 
-//import DashboardArea from '../components/DashboardArea'; // (Wird noch erstellt)
+import DashboardArea from '../components/DashboardArea'; 
 
 export default function Dashboard() {
   return (
@@ -10,8 +10,8 @@ export default function Dashboard() {
 
       <div className="flex-1 flex flex-col">
          <Header /> 
-        <main className="flex-1 p-8">
-          {/* <DashboardArea /> */}
+        <main className="flex-1 pt-0 pl-0 p-5">
+        <DashboardArea /> 
           
         </main>
       </div>
