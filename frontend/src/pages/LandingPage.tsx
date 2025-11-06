@@ -1,10 +1,13 @@
 import { useState } from "react";
-import "./App.css";
+import "../App.css";
+import "./Dashboard.tsx"
+import { useNavigate } from "react-router-dom";
 
-function LandingPage() {
+export default function LandingPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +96,7 @@ function LandingPage() {
             cursor: "pointer",
             fontWeight: "bold",
           }}
+          onClick={() => navigate("/dashboard") }
         >
           Hier kannst du dich anmelden
         </button>
@@ -102,5 +106,3 @@ function LandingPage() {
     </div>
   );
 }
-
-export default LandingPage;
