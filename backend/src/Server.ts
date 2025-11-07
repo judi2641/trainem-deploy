@@ -3,14 +3,17 @@ import type { Request, Response } from "express";
 import { logger } from "./utils/logger";
 import cors from "cors";
 import { initDB } from "./database/db";
+import TaskRoute from "./endpoints/tasks/TaskRoute";
 
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
     res.status(200).json("Hi");
 });
+app.use("/api/tasks", TaskRoute);
 
 async function startServer() {
     try{
