@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../App.css";
 
 import { useNavigate } from "react-router-dom";
+import LoginButton from "../components/LoginButton.tsx";
 
 export default function LandingPage() {
   const [username, setUsername] = useState("");
@@ -100,6 +101,7 @@ export default function LandingPage() {
         >
           Hier kannst du dich anmelden
         </button>
+        <LoginButton/>
       </form>
 
       {message && <p style={{ marginTop: "1rem" }}>{message}</p>}
