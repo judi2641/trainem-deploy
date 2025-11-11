@@ -1,3 +1,13 @@
 ###
 
 GET http://localhost:3000
+
+###
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+    "user_id": "juliusdittrich",
+    "day": "Monday",
+    "name": "Kniebeugen"
+}
