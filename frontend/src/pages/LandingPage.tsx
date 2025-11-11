@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../App.css";
-import "./Dashboard.tsx"
+
 import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {

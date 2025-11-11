@@ -1,4 +1,4 @@
-
+import { NavLink } from 'react-router-dom';
 import {
   HiOutlineViewGrid,
   HiOutlineCheckCircle,
@@ -11,6 +11,8 @@ import {
 } from 'react-icons/hi'; 
 
 export default function Sidebar() {
+  const activeVisuals: string = "flex items-center p-2 rounded-lg bg-primary/15 text-primary font-semibold";
+  const nonActiveVisuals: string = "flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100";
   return (
     // Der Haupt-Container der Sidebar
     // flex flex-col: Stellt die Kinder (Logo, Nav, Download-Box) untereinander
@@ -24,7 +26,7 @@ export default function Sidebar() {
        
       <div className="flex items-center mb-8">
         {/*<img src="/vite.svg" alt="Trainem Logo" className="h-8 w-8" /> */}
-        <span className="text-2xl font-bold text-gray-800 ml-2">Trainem</span>
+        <NavLink to= "/"className="text-2xl font-bold text-gray-800 ml-2">Trainem</NavLink>
       </div>
         
       {/* 2. Navigations-Menü */}
@@ -32,38 +34,58 @@ export default function Sidebar() {
         {/* MENÜ-Sektion */}
         <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2">Menu</h3>
         <ul className="space-y-2">
-          {/* Aktiver Link (Dashboard) */}
+          {/* Aktiver NavLink (Dashboard) */}
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg bg-primary/15 text-primary font-semibold">
+            <NavLink to="/dashboard" className={({isActive}) => (
+                isActive
+                ? activeVisuals
+                : nonActiveVisuals
+              )}>
               <HiOutlineViewGrid className="w-5 h-5" />
               <span className="ml-3">Dashboard</span>
-            </a>
+            </NavLink>
           </li>
-          {/* Inaktiver Link (Tasks) */}
+          {/* Inaktiver NavLink (Tasks) */}
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="/tasks" className={({isActive}) => (
+                isActive
+                ? activeVisuals
+                : nonActiveVisuals
+              )}>
               <HiOutlineCheckCircle className="w-5 h-5" />
               <span className="ml-3">Tasks</span>
-              <span className="ml-auto bg-gray-700 text-white text-xs font-bold px-2 py-0.5 rounded-full">+12</span>
-            </a>
+              
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="/trainingsplan" className={({isActive}) => (
+                isActive
+                ? activeVisuals
+                : nonActiveVisuals
+              )}>
               <HiOutlineCalendar className="w-5 h-5" />
               <span className="ml-3">Trainingsplan</span>
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="/statistiken" className={({isActive}) => (
+                isActive
+                ? activeVisuals
+                : nonActiveVisuals
+              )}>
               <HiOutlineChartBar className="w-5 h-5" />
-              <span className="ml-3">Analytics</span>
-            </a>
+              <span className="ml-3">Statistiken</span>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="/gruppe" className={({isActive}) => (
+                isActive
+                ? activeVisuals
+                : nonActiveVisuals
+              )}>
               <HiOutlineUserGroup className="w-5 h-5" />
               <span className="ml-3">Gruppe</span>
-            </a>
+            </NavLink>
           </li>
         </ul>
 
@@ -71,22 +93,22 @@ export default function Sidebar() {
         <h3 className="text-xs font-semibold text-gray-400 uppercase mt-8 mb-2">General</h3>
         <ul className="space-y-2">
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
               <HiOutlineCog className="w-5 h-5" />
               <span className="ml-3">Settings</span>
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
               <HiOutlineQuestionMarkCircle className="w-5 h-5" />
               <span className="ml-3">Help</span>
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a href="#" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink to="" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
               <HiOutlineLogout className="w-5 h-5" />
               <span className="ml-3">Logout</span>
-            </a>
+            </NavLink>
           </li>
         </ul>
       </nav>
