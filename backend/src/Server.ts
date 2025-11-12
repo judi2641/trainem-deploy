@@ -4,6 +4,7 @@ import { logger } from "./utils/logger";
 import cors from "cors";
 import { initDB } from "./database/db";
 import TaskRoute from "./endpoints/tasks/TaskRoute";
+import UserRoute from "./endpoints/users/UserRoute";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.get("/", (req: Request, res: Response) => {
     res.status(200).json("Hi");
 });
 app.use("/api/tasks", TaskRoute);
+app.use("/api/users", UserRoute);
 
 async function startServer() {
     try{

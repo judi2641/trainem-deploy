@@ -9,8 +9,17 @@ Content-Type: application/json
 {
     "user_id": "juliusdittrich",
     "day": "Monday",
-    "name": "Kniebeugen",
+    "name": "Kniebeugen"
 }
 
 ###
-GET http://localhost:3000/api/tasks/:juliusdittrich
+GET http://localhost:3000/api/tasks/juliusdittrich
+
+###
+
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "email": "juliusdittrich22@gmail.com"
+}
