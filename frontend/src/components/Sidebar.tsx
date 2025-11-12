@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   HiOutlineViewGrid,
   HiOutlineCheckCircle,
@@ -10,7 +11,9 @@ import {
   HiOutlineLogout
 } from 'react-icons/hi'; 
 
+
 export default function Sidebar() {
+  const {logout} = useAuth0();
   const activeVisuals: string = "flex items-center p-2 rounded-lg bg-primary/15 text-primary font-semibold";
   const nonActiveVisuals: string = "flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100";
   return (
@@ -105,10 +108,10 @@ export default function Sidebar() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <button onClick={() => logout()} className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
               <HiOutlineLogout className="w-5 h-5" />
               <span className="ml-3">Logout</span>
-            </NavLink>
+            </button>
           </li>
         </ul>
       </nav>

@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent} from 'react'; // Wichtig: useState importieren
+import { useState, type ChangeEvent} from 'react'; 
 import {type TaskToCreate} from '../../../shared/types/Task'
 const WEEKDAY_OPTIONS = [
     { value: "Monday",    label: "Montag" },
@@ -11,17 +11,17 @@ const WEEKDAY_OPTIONS = [
 ];
 type Weekday = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
 export default function TasksArea(){
-    // State, um zu steuern, ob das Modal (Popup) sichtbar ist
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // State, um die Daten aus dem Formular zu speichern
+    
     const [user_id, setUserID] = useState("");
     const [day, setDay] = useState<Weekday | "">("");
     const [name, setName] = useState("");
     
     
 
-    // Funktion, die beim Klick auf "Speichern" aufgerufen wird
+    // speicher funktion
     const handleSaveTask = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const task: Partial<TaskToCreate> = {
@@ -38,12 +38,12 @@ export default function TasksArea(){
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(task), // Die Formulardaten als JSON senden
+                body: JSON.stringify(task), 
             });
 
             if (response.ok) {
                 console.log('Task erfolgreich erstellt!');
-                setIsModalOpen(false); // Modal schließen
+                setIsModalOpen(false); 
                 setUserID("");
                 setName("");
                 setDay("");
@@ -58,9 +58,12 @@ export default function TasksArea(){
     };
     return (
         <div className="h-full w-full bg-white shadow-md p-6 rounded-xl flex ">
+            <div id='tasksAnzeige'>
+
+            </div>
             <div id='createTask'>
                 <button
-                onClick={() => setIsModalOpen(true)} // Klick öffnet das Modal
+                onClick={() => setIsModalOpen(true)} 
                 className="rounded-xl h-15 w-30 bg-primary hover:bg-primary/50">
                 + create Task
             </button>
@@ -89,10 +92,10 @@ export default function TasksArea(){
                                 <label htmlFor="day-select" className="block mb-2 font-medium">Tag:</label>
                                 <select
                                     id="day-select"
-                                    value={day} // Gesteuert durch den 'day' State
+                                    value={day} 
                                     onChange={(e: ChangeEvent<HTMLSelectElement>) => setDay(e.target.value as Weekday | "")}
                                     className="border p-2 rounded w-full"
-                                    required // Stellt sicher, dass ein Tag ausgewählt wird
+                                    required 
                                 >
                                     <option value="" disabled>Bitte einen Tag auswählen...</option>
                                     {WEEKDAY_OPTIONS.map(dayOption => (
@@ -104,7 +107,7 @@ export default function TasksArea(){
                             </div>
                             <input
                                 type="text"
-                                name="name" // Wichtig: 'name' muss mit dem State-Key übereinstimmen
+                                name="name" 
                                 placeholder="Name der Task"
                                 onChange={(e) => setName(e.target.value.trim())}
                                 
@@ -117,13 +120,13 @@ export default function TasksArea(){
                         <div className="mt-6 flex justify-end gap-4">
                             <button
                                 type="button"
-                                onClick={() => setIsModalOpen(false)} // Schließt das Modal
+                                onClick={() => setIsModalOpen(false)} 
                                 className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                             >
                                 Abbrechen
                             </button>
                             <button
-                                type="submit" // Ruft die Speicher-Funktion auf
+                                type="submit" 
                                 className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/50"
                             >
                                 Speichern
@@ -135,7 +138,6 @@ export default function TasksArea(){
             )}
 
             </div>
-            
         </div>
     );
 }

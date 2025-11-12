@@ -1,6 +1,7 @@
 import { HiOutlineUser, HiOutlineSearch, HiOutlineMail } from "react-icons/hi";
-
+import { useAuth0 } from "@auth0/auth0-react";
 export default function Header(){
+    const {user} = useAuth0();
     return (
         
         <div className="h-25 bg-white shadow-md p-6 rounded-xl m-5 ml-0 flex items-center justify-between">
@@ -20,8 +21,8 @@ export default function Header(){
                 </a>
                 {/* User Info */}
                 <div className= "flex flex-col"> 
-                <span className="text-base font-bold text-textDark">Max Musterman</span>
-                <span className="text-sm text-textDark/40">max.mustermann@gmail.com</span></div>
+                <span className="text-base font-bold text-textDark">{user?.name}</span>
+                <span className="text-sm text-textDark/40">{user?.email}</span></div>
                 </div>
 
         </div>
