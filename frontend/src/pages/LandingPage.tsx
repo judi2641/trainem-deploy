@@ -4,6 +4,9 @@ import "../App.css";
 import { useNavigate } from "react-router-dom";
 import LoginButton from "../components/LoginButton.tsx";
 
+// Bild aus src/assets importieren
+import LandingPageBild from "../assets/LandingPageBild.png";
+
 export default function LandingPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,13 +41,30 @@ export default function LandingPage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #a5b4fc, #93c5fd)",
+        // Hintergrundbild statt Farbverlauf
+        backgroundImage: `url(${LandingPageBild})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         color: "#333",
         fontFamily: "sans-serif",
       }}
     >
-      <h1 style={{ fontSize: "3rem", fontWeight: "bold" }}>TrainEm</h1>
-      <p style={{ marginBottom: "2rem", fontSize: "1.2rem", textAlign: "center", maxWidth: 400 }}>
+      <h1 style={{ fontSize: "3rem", fontWeight: "bold", textShadow: "0 2px 4px rgba(0,0,0,0.4)", color: "white" }}>
+        TrainEm
+      </h1>
+
+      <p
+        style={{
+          marginBottom: "2rem",
+          fontSize: "1.2rem",
+          textAlign: "center",
+          maxWidth: 400,
+          backgroundColor: "rgba(255, 255, 255, 0.85)",
+          padding: "1rem",
+          borderRadius: "0.8rem",
+        }}
+      >
         Willkommen bei <strong>TrainEm</strong> — deiner Plattform für Motivation,
         Spaß und Fortschritt beim Training!
       </p>
@@ -52,10 +72,10 @@ export default function LandingPage() {
       <form
         onSubmit={handleLogin}
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
           padding: "2rem",
           borderRadius: "1rem",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+          boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
           width: "300px",
           display: "flex",
           flexDirection: "column",
@@ -97,14 +117,25 @@ export default function LandingPage() {
             cursor: "pointer",
             fontWeight: "bold",
           }}
-          onClick={() => navigate("/dashboard") }
+          onClick={() => navigate("/dashboard")}
         >
           Hier kannst du dich anmelden
         </button>
-        <LoginButton/>
+        <LoginButton />
       </form>
 
-      {message && <p style={{ marginTop: "1rem" }}>{message}</p>}
+      {message && (
+        <p
+          style={{
+            marginTop: "1rem",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            padding: "0.5rem 1rem",
+            borderRadius: "0.5rem",
+          }}
+        >
+          {message}
+        </p>
+      )}
     </div>
   );
 }
