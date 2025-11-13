@@ -4,7 +4,7 @@ export default function Header(){
     const {user} = useAuth0();
     return (
         
-        <div className="h-25 bg-white shadow-md p-6 rounded-xl m-5 ml-0 flex items-center justify-between">
+        <div className="sticky h-25 bg-white shadow-md p-6 rounded-xl m-5 ml-0 flex items-center justify-between">
             {/* Suchleiste */}
             <div className="h-13 bg-gray-100 rounded-full ml-10 w-100 flex items-center p-5"> 
                 <HiOutlineSearch className="w-5 h-5 "></HiOutlineSearch> 
