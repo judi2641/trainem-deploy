@@ -1,5 +1,7 @@
 import { useState, type ChangeEvent} from 'react'; 
 import {type TaskToCreate} from '../../../shared/types/Task'
+import { useAuth0 } from '@auth0/auth0-react';
+
 const WEEKDAY_OPTIONS = [
     { value: "Monday",    label: "Montag" },
     { value: "Tuesday",   label: "Dienstag" },
@@ -19,6 +21,7 @@ export default function TasksArea(){
     const [day, setDay] = useState<Weekday | "">("");
     const [name, setName] = useState("");
     
+    const { getAccessTokenSilently } = useAuth0();
     
 
     // speicher funktion
@@ -32,11 +35,13 @@ export default function TasksArea(){
 
         try {
             
+            const token = await getAccessTokenSilently();
 
             const response = await fetch('http://localhost:3000/api/tasks', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(task), 
             });

@@ -1,0 +1,42 @@
+/*
+-----------------------------------------------------
+    Domain Types / Models: IUser
+-----------------------------------------------------
+*/
+
+import { ObjectId } from "mongoose";
+
+/**
+ * Base Interface for all the Users.
+ * Contains all the Information, each User contains.
+ */
+export interface IUser {
+	_id?: ObjectId; 
+	email: string;
+	userType?: UserType;
+
+	firstName?: string;
+	lastName?: string;
+	birthDate?: Date;
+	gender?: GenderType;
+
+	avatar?: string;
+	img?: string;
+}
+
+// gender
+export const GENDERS = {
+	m: 'm',
+	f: 'f',
+	d: 'd',
+} as const;
+export type GenderType = (typeof GENDERS)[keyof typeof GENDERS];
+
+// Usertype
+export const USERS = {
+	trainer: 'trainer',
+	client: 'client',
+	
+} as const;
+export type UserType = (typeof USERS)[keyof typeof USERS];
+

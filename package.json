@@ -6,10 +6,10 @@
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "install:all": "npm --prefix frontend install && npm --prefix backend install && npm install",
     "lint": "eslint \"frontend/src/**/*.{ts,tsx}\" \"backend/src/**/*.ts\" \"shared/**/*.ts\"",
-
     "format": "prettier --write '{src,tests}/**/*.{ts,json,md}'"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.96",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "concurrently": "^9.2.1",
