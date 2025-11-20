@@ -1,30 +1,3 @@
-<<<<<<< HEAD
-import { useState, type ChangeEvent} from 'react'; 
-import {type TaskToCreate} from '../../../shared/types/Task'
-import { useAuth0 } from '@auth0/auth0-react';
-
-const WEEKDAY_OPTIONS = [
-    { value: "Monday",    label: "Montag" },
-    { value: "Tuesday",   label: "Dienstag" },
-    { value: "Wednesday", label: "Mittwoch" },
-    { value: "Thursday",  label: "Donnerstag" },
-    { value: "Friday",    label: "Freitag" },
-    { value: "Saturday",  label: "Samstag" },
-    { value: "Sunday",    label: "Sonntag" }
-];
-type Weekday = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
-export default function TasksArea(){
-    
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    
-    const [user_id, setUserID] = useState("");
-    const [day, setDay] = useState<Weekday | "">("");
-    const [name, setName] = useState("");
-    
-    const { getAccessTokenSilently } = useAuth0();
-    
-=======
 import { useEffect, useState } from 'react'
 import { format, startOfToday, addDays, startOfWeek, endOfWeek } from 'date-fns'
 import { de } from 'date-fns/locale'
@@ -32,39 +5,28 @@ import { TaskCalendar } from '@/components/TaskCalendar'
 import { Card } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, CheckCircle2, Circle} from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type {  ITrainingsplan,ICompletedTask } from "../../../shared/types/Training"
+import type { ITrainingsPlan } from "../../../shared/types/database/traininsplan/TrainingPlan";
+import type { ICompletedTask } from "../../../shared/types/database/CompletedTask";
 
->>>>>>> origin/frontend
 
 
-<<<<<<< HEAD
-        try {
-            
-            const token = await getAccessTokenSilently();
-
-            const response = await fetch('http://localhost:3000/api/tasks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(task), 
-            });
-=======
 
 export default function TasksArea() {
-  const [trainingsplan, setTrainingsplan] = useState<ITrainingsplan | null>(null);
+  const [trainingsplan, setTrainingsplan] = useState<ITrainingsPlan[] | null>(null);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [currentDate, setCurrentDate] = useState(startOfToday());
->>>>>>> origin/frontend
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
 
   useEffect(() => {
     async function loadTrainingsplan() {
-      const res = await fetch("endpoint trainingsplan");
-      setTrainingsplan(await res.json());
+      const res = await fetch("http://localhost:3000/api/trainingsplan/juliusdittrich22@gmail.com");
+      const trainingsplan = await res.json();
+      setTrainingsplan(trainingsplan);
+      console.log(trainingsplan);
+      
+
     }
     async function loadCompletedTasks() {
       const res = await fetch("endpoint completed tasks");
@@ -76,18 +38,19 @@ export default function TasksArea() {
       setCompletedTasks(completedTasksThisWeek);
     }
     loadTrainingsplan();
-    loadCompletedTasks();
-  }, [weekEnd, weekStart]);
+    //loadCompletedTasks();
+  }, []);
 
-  const tasks = trainingsplan
+  /**const tasks = trainingsplan
     ? trainingsplan.tasks.map(task => ({
         ...task,
-        completed: completedTasks.some(ct => ct.taskID.toString() === task._id.toString())
+        completed: true   completedTasks.some(ct => ct.taskID.toString() === task._id?.toString())
       }))
-    : [];
-  const completedStat: number = tasks.filter(task => task.completed === true).length;
-  const totalStat: number = tasks.length;
-  const pending: number = totalStat - completedStat;
+    : [];*/
+  //   const tasks = trainingsplan?.tasks;
+  // const completedStat: number = tasks.filter(task => task.completed === true).length;
+  // const totalStat: number = tasks.length;
+  // const pending: number = totalStat - completedStat;
 
   
 
@@ -106,7 +69,7 @@ export default function TasksArea() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Tasks</p>
-                <p className="text-3xl font-bold text-foreground mt-2">{totalStat}</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{0}</p>
               </div>
               <Circle className="h-10 w-10 text-primary/70 shrink-0" />
             </div>
@@ -115,7 +78,7 @@ export default function TasksArea() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Completed</p>
-                <p className="text-3xl font-bold text-foreground mt-2">{completedStat}</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{0}</p>
               </div>
               <CheckCircle2 className="h-10 w-10 text-green-300/70 shrink-0" />
             </div>
@@ -124,7 +87,7 @@ export default function TasksArea() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
-                <p className="text-3xl font-bold text-foreground mt-2">{pending}</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{0}</p>
               </div>
               <Circle className="h-10 w-10 text-orange-300/70 shrink-0" />
             </div>
@@ -150,7 +113,7 @@ export default function TasksArea() {
           </div>
         </div>
         <div className='p-6'>
-          <TaskCalendar weekStart={weekStart} tasks={tasks}  />
+          <TaskCalendar weekStart={weekStart} tasks={trainingsplan?.at(0)?.tasks}  />
         </div>
         
       </div>

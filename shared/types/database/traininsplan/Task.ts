@@ -3,6 +3,7 @@ import { TrainingDays } from '../../other/TrainingDays';
 
 
 export interface ITask {
+    _id?: ObjectId;
     title: string;
     description: string;
     difficulty: difficultyType;

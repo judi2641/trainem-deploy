@@ -1,5 +1,5 @@
-import { ObjectId } from "mongoose";
-import { ITask } from "./traininsplan/Task";
+import type { ObjectId } from "mongoose";
+import type { ITask } from "./traininsplan/Task";
 
 // completedTask is stored in database
 

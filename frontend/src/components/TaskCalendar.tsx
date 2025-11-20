@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import type { ITask } from "../../../shared/types/database/traininsplan/Task";
 
 interface TaskCalendarProps {
   weekStart: Date;
-  tasks: any[]; // besser ein genauerer Typ, z.B. ITask[] oder dein kombinierter Typ
+  tasks: ITask[] | undefined; // besser ein genauerer Typ, z.B. ITask[] oder dein kombinierter Typ
 }
 
 export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
@@ -31,9 +32,9 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
       <div className="space-y-6">
         {days.map((day) => {
           
-          const dayTasks = tasks.filter((task) => {
+          const dayTasks = tasks?.filter((task) => {
             
-            const dayShort = format(day, "eee", { locale: de });
+            const dayShort = format(day, "eee");
 
             
             return (
@@ -79,24 +80,23 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
                 </Button>
               </div>
 
-              {dayTasks.length === 0 ? (
+              {dayTasks?.length === 0 ? (
                 <p className="text-xs text-muted-foreground italic py-2">
                   No tasks
                 </p>
               ) : (
                 <ul className="space-y-2">
-                  {dayTasks.map((task) => (
+                  {dayTasks?.map((task) => (
                     <li
-                      key={task._id}
+                      
                       className={cn(
-                        "flex items-start gap-3 p-3 rounded-lg border transition-all",
-                        task.completed
-                          ? "bg-green-300/30 border-border shadow-sm"
-                          : "bg-primary/30 border-border shadow-sm"
+                        "flex items-start gap-3 p-3 rounded-lg border transition-all bg-primary/30 border-border shadow-sm",
+                        
+                        
                       )}
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <Checkbox checked={!!task.completed} />
+                        <Checkbox  />
                         <div
                           className={cn(
                             "h-2 w-2 rounded-full shrink-0 mt-1.5",
@@ -108,16 +108,16 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
                             <span
                               className={cn(
                                 "text-sm font-medium",
-                                task.completed &&
-                                  "line-through text-muted-foreground"
+                                
+                                  
                               )}
                             >
                               {task.title}
                             </span>
                           </div>
-                          {task.discription && (
+                          {task.description && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              {task.discription}
+                              {task.description}
                             </p>
                           )}
                         </div>
