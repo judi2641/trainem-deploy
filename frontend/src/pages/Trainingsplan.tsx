@@ -1,9 +1,9 @@
 
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header'; 
-import TasksArea from '../components/TasksArea';
+import TrainingsplanArea from '../components/TrainingsplanArea';
 
-export default function Tasks() {
+export default function Trainingsplan() {
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar /> 
@@ -11,7 +11,7 @@ export default function Tasks() {
       <div className="flex-1 flex flex-col">
          <Header /> 
         <main className="flex-1 pt-0 pl-0 p-5 min-h-0 overflow-y-auto">
-        <TasksArea /> 
+        <TrainingsplanArea /> 
           
         </main>
       </div>

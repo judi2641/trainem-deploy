@@ -108,7 +108,7 @@ export default function Sidebar() {
             </NavLink>
           </li>
           <li>
-            <button onClick={() => logout()} className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <button onClick={() => logout()} className="cursor-pointer flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 pr-29">
               <HiOutlineLogout className="w-5 h-5" />
               <span className="ml-3">Logout</span>
             </button>

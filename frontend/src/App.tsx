@@ -20,22 +20,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard/>
-            </ProtectedRoute>
-          }
-        />
-        <Route 
-          path="/tasks" 
-          element={
-            <ProtectedRoute>
-              <Tasks/>
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/tasks" element={<Tasks />} />        
       </Routes>
     </Router>
   );

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, type ChangeEvent} from 'react'; 
 import {type TaskToCreate} from '../../../shared/types/Task'
 import { useAuth0 } from '@auth0/auth0-react';
@@ -23,16 +24,20 @@ export default function TasksArea(){
     
     const { getAccessTokenSilently } = useAuth0();
     
+=======
+import { useEffect, useState } from 'react'
+import { format, startOfToday, addDays, startOfWeek, endOfWeek } from 'date-fns'
+import { de } from 'date-fns/locale'
+import { TaskCalendar } from '@/components/TaskCalendar'
+import { Card } from '@/components/ui/card'
+import { ChevronLeft, ChevronRight, CheckCircle2, Circle} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import type {  ITrainingsplan,ICompletedTask } from "../../../shared/types/Training"
 
-    // speicher funktion
-    const handleSaveTask = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const task: Partial<TaskToCreate> = {
-            user_id: user_id,
-            day: day === "" ? undefined : day,
-            name: name
-        }
+>>>>>>> origin/frontend
 
+
+<<<<<<< HEAD
         try {
             
             const token = await getAccessTokenSilently();
@@ -45,104 +50,111 @@ export default function TasksArea(){
                 },
                 body: JSON.stringify(task), 
             });
+=======
 
-            if (response.ok) {
-                console.log('Task erfolgreich erstellt!');
-                setIsModalOpen(false); 
-                setUserID("");
-                setName("");
-                setDay("");
-                
-                
-            } else {
-                console.error('Fehler beim Erstellen der Task');
-            }
-        } catch (error) {
-            console.error('Netzwerkfehler:', error);
-        }
-    };
-    return (
-        <div className="h-full w-full bg-white shadow-md p-6 rounded-xl flex ">
-            <div id='tasksAnzeige'>
+export default function TasksArea() {
+  const [trainingsplan, setTrainingsplan] = useState<ITrainingsplan | null>(null);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [currentDate, setCurrentDate] = useState(startOfToday());
+>>>>>>> origin/frontend
 
+  const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+  const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+
+  useEffect(() => {
+    async function loadTrainingsplan() {
+      const res = await fetch("endpoint trainingsplan");
+      setTrainingsplan(await res.json());
+    }
+    async function loadCompletedTasks() {
+      const res = await fetch("endpoint completed tasks");
+      const data = await res.json()
+      const completedTasksThisWeek = data.filter((task: ICompletedTask) => {
+        const doneDate = new Date(task.doneAt);
+        return doneDate >= weekStart && doneDate <= weekEnd;
+});
+      setCompletedTasks(completedTasksThisWeek);
+    }
+    loadTrainingsplan();
+    loadCompletedTasks();
+  }, [weekEnd, weekStart]);
+
+  const tasks = trainingsplan
+    ? trainingsplan.tasks.map(task => ({
+        ...task,
+        completed: completedTasks.some(ct => ct.taskID.toString() === task._id.toString())
+      }))
+    : [];
+  const completedStat: number = tasks.filter(task => task.completed === true).length;
+  const totalStat: number = tasks.length;
+  const pending: number = totalStat - completedStat;
+
+  
+
+  
+  
+  const handlePrevWeek = () => setCurrentDate((prev) => addDays(prev, -7))
+  const handleNextWeek = () => setCurrentDate((prev) => addDays(prev, 7))
+  const handleToday = () => setCurrentDate(startOfToday())
+
+  return(
+    <div className="h-full w-full bg-white shadow-md rounded-xl min-h-0 overflow-y-auto ">
+ 
+        <div className="top-0 grid grid-cols-3 p-6 z-20 rounded-xl pl-5 gap-4 sticky inset-0 bg-white backdrop-blur-3xl">
+          
+          <Card className="p-5 border border-border bg-card shadow-sm ">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Tasks</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{totalStat}</p>
+              </div>
+              <Circle className="h-10 w-10 text-primary/70 shrink-0" />
             </div>
-            <div id='createTask'>
-                <button
-                onClick={() => setIsModalOpen(true)} 
-                className="rounded-xl h-15 w-30 bg-primary hover:bg-primary/50">
-                + create Task
-            </button>
-
-            {/* --- Das Modal (Popup) --- */}
-            {/* Es wird nur angezeigt, wenn isModalOpen true ist */}
-            {isModalOpen && (
-                <div className="fixed top-0 left-0 w-full h-screen 
-                        bg-black/50 
-                        flex justify-center items-center z-1000">
-                    <div className="bg-white p-6 rounded-xl shadow-lg 
-                            w-[90%] max-w-lg z-1001"> 
-                        <h2 className="text-xl font-bold mb-4">Neue Task erstellen</h2>
-
-                        {/* Formular-Felder */}
-                        <form className="flex flex-col gap-4" onSubmit={handleSaveTask}>
-                            <input
-                                type="text"
-                                name="user_id" 
-                                placeholder="user_id"
-                                onChange={(e) => setUserID(e.target.value.trim())}
-                                
-                                className="border p-2 rounded"
-                            />
-                            <div>
-                                <label htmlFor="day-select" className="block mb-2 font-medium">Tag:</label>
-                                <select
-                                    id="day-select"
-                                    value={day} 
-                                    onChange={(e: ChangeEvent<HTMLSelectElement>) => setDay(e.target.value as Weekday | "")}
-                                    className="border p-2 rounded w-full"
-                                    required 
-                                >
-                                    <option value="" disabled>Bitte einen Tag auswählen...</option>
-                                    {WEEKDAY_OPTIONS.map(dayOption => (
-                                        <option key={dayOption.value} value={dayOption.value}>
-                                            {dayOption.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <input
-                                type="text"
-                                name="name" 
-                                placeholder="Name der Task"
-                                onChange={(e) => setName(e.target.value.trim())}
-                                
-                                className="border p-2 rounded"
-                            />
-
-                        
-
-                        {/* Buttons im Modal */}
-                        <div className="mt-6 flex justify-end gap-4">
-                            <button
-                                type="button"
-                                onClick={() => setIsModalOpen(false)} 
-                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                            >
-                                Abbrechen
-                            </button>
-                            <button
-                                type="submit" 
-                                className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/50"
-                            >
-                                Speichern
-                            </button>
-                        </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
+          </Card>
+          <Card className="p-5 border border-border bg-card shadow-sm ">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Completed</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{completedStat}</p>
+              </div>
+              <CheckCircle2 className="h-10 w-10 text-green-300/70 shrink-0" />
             </div>
+          </Card>
+          <Card className="p-5 border border-border bg-card shadow-sm ">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{pending}</p>
+              </div>
+              <Circle className="h-10 w-10 text-orange-300/70 shrink-0" />
+            </div>
+          </Card>
         </div>
-    );
+
+        <div className="p-6 pt-0 pb-0 ">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-foreground">
+              {format(currentDate, "MMMM yyyy", { locale: de })}
+            </h2>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handlePrevWeek}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleToday}>
+                Today
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleNextWeek}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className='p-6'>
+          <TaskCalendar weekStart={weekStart} tasks={tasks}  />
+        </div>
+        
+      </div>
+    
+    
+  );
 }
