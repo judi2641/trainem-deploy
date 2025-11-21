@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { createUser } from "./UserService";
 import { HttpError } from "../../errors/HttpError";
+import { checkAuth0Token } from "../../utils/checkAuth0Token";
 
 const router = express();
 

@@ -4,6 +4,7 @@ import { HttpError } from "../../errors/HttpError";
 import { getUserByEmail } from "../user/UserService";
 import { Types } from "mongoose";
 import { logger } from "../../utils/logger";
+import { checkAuth0Token } from "../../utils/checkAuth0Token";
 
 const router = express();
 
