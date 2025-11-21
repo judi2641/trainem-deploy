@@ -12,6 +12,7 @@ import Schedule from './pages/OnboardingSteps/Schedule';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import Tasks from './pages/Tasks';
+import Callback from './pages/Callback';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -30,6 +31,8 @@ function App() {
 			<Routes>
 				{/* Öffentlich */}
 				<Route path="/" element={<LandingPage />} />
+
+				<Route path="/callback" element={<Callback />} />
 
 				{/* Geschützt */}
 				<Route
