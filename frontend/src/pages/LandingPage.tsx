@@ -1,141 +1,92 @@
-import { useState } from "react";
-import "../App.css";
-
-import { useNavigate } from "react-router-dom";
-import LoginButton from "../components/LoginButton.tsx";
-
-// Bild aus src/assets importieren
-import LandingPageBild from "../assets/LandingPageBild.png";
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function LandingPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+	const { loginWithRedirect, logout, isLoading } = useAuth0();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      // Anfrage ans Backend schicken (Port 3000)
-      const res = await fetch("http://localhost:3000", {
-        method: "GET",
-      });
+	// LOGIN → go to Dashboard
+	const handleLogin = () => {
+		loginWithRedirect({
+			appState: { returnTo: '/dashboard' },
+		});
+	};
 
-      if (res.ok) {
-        const text = await res.text();
-        setMessage(`Backend antwortet: ${text}`);
-      } else {
-        setMessage("Fehler: Server hat nicht richtig geantwortet ");
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage("Fehler beim Verbinden mit dem Backend ");
-    }
-  };
+	// REGISTER → go to Onboarding
+	const handleRegister = () => {
+		logout({ logoutParams: { returnTo: window.location.origin } });
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        // Hintergrundbild statt Farbverlauf
-        backgroundImage: `url(${LandingPageBild})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        color: "#333",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <h1 style={{ fontSize: "3rem", fontWeight: "bold", textShadow: "0 2px 4px rgba(0,0,0,0.4)", color: "white" }}>
-        TrainEm
-      </h1>
+		setTimeout(() => {
+			loginWithRedirect({
+				authorizationParams: {
+					screen_hint: 'signup',
+				},
+				appState: { returnTo: '/onboarding' },
+			});
+		}, 200);
+	};
 
-      <p
-        style={{
-          marginBottom: "2rem",
-          fontSize: "1.2rem",
-          textAlign: "center",
-          maxWidth: 400,
-          backgroundColor: "rgba(255, 255, 255, 0.85)",
-          padding: "1rem",
-          borderRadius: "0.8rem",
-        }}
-      >
-        Willkommen bei <strong>TrainEm</strong> — deiner Plattform für Motivation,
-        Spaß und Fortschritt beim Training!
-      </p>
+	// Prevent rendering until Auth0 is ready
+	if (isLoading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center">
+				<div className="text-xl">Loading...</div>
+			</div>
+		);
+	}
 
-      <form
-        onSubmit={handleLogin}
-        style={{
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          padding: "2rem",
-          borderRadius: "1rem",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-          width: "300px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{
-            padding: "0.6rem",
-            border: "1px solid #ccc",
-            borderRadius: "0.5rem",
-          }}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Passwort"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            padding: "0.6rem",
-            border: "1px solid #ccc",
-            borderRadius: "0.5rem",
-          }}
-          required
-        />
-        <button
-          type="submit"
-          style={{
-            padding: "0.8rem",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            borderRadius: "0.5rem",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-          onClick={() => navigate("/dashboard")}
-        >
-          Hier kannst du dich anmelden
-        </button>
-        <LoginButton />
-      </form>
+	return (
+		<div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
+			{/* Navbar */}
+			<nav className="p-6 flex justify-between items-center">
+				<div className="text-white text-2xl font-bold">💪 Trainem</div>
+				<div className="flex gap-4">
+					<button
+						onClick={handleLogin}
+						className="px-6 py-2 text-white border-2 border-white rounded-lg 
+						hover:bg-white hover:text-indigo-600 transition"
+					>
+						Login
+					</button>
 
-      {message && (
-        <p
-          style={{
-            marginTop: "1rem",
-            backgroundColor: "rgba(255,255,255,0.9)",
-            padding: "0.5rem 1rem",
-            borderRadius: "0.5rem",
-          }}
-        >
-          {message}
-        </p>
-      )}
-    </div>
-  );
+					<button
+						onClick={handleRegister}
+						className="px-6 py-2 bg-white text-indigo-600 rounded-lg font-semibold 
+						hover:bg-gray-100 transition"
+					>
+						Register
+					</button>
+				</div>
+			</nav>
+
+			{/* Hero Section */}
+			<div className="max-w-6xl mx-auto px-6 py-20 text-center">
+				<h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+					Your personal
+					<br />
+					<span className="text-yellow-300">Training Plan</span>
+				</h1>
+
+				<p className="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto">
+					Achieve your fitness goals with a personalized training plan designed just for you.
+				</p>
+
+				<div className="flex flex-col sm:flex-row gap-4 justify-center">
+					<button
+						onClick={handleRegister}
+						className="px-8 py-4 bg-yellow-400 text-gray-900 rounded-lg text-lg font-bold 
+						hover:bg-yellow-300 transition transform hover:scale-105 shadow-xl"
+					>
+						Start now — it’s free! 🚀
+					</button>
+
+					<button
+						onClick={handleLogin}
+						className="px-8 py-4 bg-white/20 text-white border-2 border-white rounded-lg 
+						text-lg font-semibold hover:bg-white/30 transition backdrop-blur-sm"
+					>
+						Already a member? Login
+					</button>
+				</div>
+			</div>
+		</div>
+	);
 }

@@ -34,28 +34,87 @@ export async function getUserByEmail(email: String){
     }
 }
 
-export async function updateUser(email: String, data: Partial<IUser>){
-    try{
-        const existing_user = await UserModel.findOne({ email });
+export async function getUserByID(userID: string) {
+    const user = await UserModel.findOne({ userID });
 
-        if(!existing_user) {
-            logger.error("user not found");
-            throw new HttpError(400, "user not found");
-        }
-
-        const updated_user = await UserModel.findByIdAndUpdate(
-            existing_user._id,
-            data,
-            { new: true }
-        );
-
-        logger.info("user updated");
-        return updated_user;
+    if (!user) {
+        throw new HttpError(404, 'User not found');
     }
-    catch(error){
-        logger.error("failed to update user");
-        throw new HttpError(400, "failed to udpate user");
-    }
+
+    return user;
 }
 
+export async function getAllUsers() {
+    return UserModel.find();
+}
 
+export async function updateUser(userID: string, updateData: Partial<IUser>) {
+    const updated = await UserModel.findOneAndUpdate({ userID }, { $set: updateData }, { new: true });
+
+    if (!updated) {
+        throw new HttpError(404, 'User not found');
+    }
+
+    return updated;
+}
+
+export async function deleteUser(userID: string) {
+    const deleted = await UserModel.findOneAndDelete({ userID });
+
+    if (!deleted) {
+        throw new HttpError(404, 'User not found');
+    }
+
+    return true;
+}
+
+export async function userExistsAndOnboardingStatus(auth0ID: string) {
+    const user = await UserModel.findOne({ userID: auth0ID });
+
+    if (!user) {
+        return { exists: false, onboardingCompleted: false };
+    }
+
+    return {
+        exists: true,
+        onboardingCompleted: user.onboardingCompleted,
+    };
+}
+
+/**
+ * NEW: Finish onboarding
+ */
+export async function finishOnboarding(auth0ID: string) {
+    const user = await UserModel.findOneAndUpdate(
+        { userID: auth0ID },
+        { onboardingCompleted: true },
+        { new: true },
+    );
+
+    if (!user) {
+        throw new HttpError(404, 'User not found');
+    }
+
+    return user;
+}
+/**
+ *Finish Basic Info
+ */
+export async function saveBasicUserInfo(auth0ID: string, basicData: any) {
+    const updated = await UserModel.findOneAndUpdate(
+        { userID: auth0ID },
+        {
+            firstName: basicData.firstname,
+            lastName: basicData.lastname,
+            birthDate: basicData.birthDate,
+            gender: basicData.gender,
+        },
+        { new: true, upsert: true },
+    );
+
+    if (!updated) {
+        throw new HttpError(404, 'User not found');
+    }
+
+    return updated;
+}

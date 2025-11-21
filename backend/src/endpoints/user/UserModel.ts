@@ -14,6 +14,7 @@ const UserSchema = new Schema(
 
     avatar: { type: String },
     img: { type: String },
+    onboardingCompleted: { type: Boolean, default: false}
   },
   {
     timestamps: true,

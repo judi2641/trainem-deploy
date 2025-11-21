@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 POST http://localhost:3000/api/user/juliusdittrich2@gmail.com
 
@@ -21,3 +22,30 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/api/trainingsplan/juliusdittrich22@gmail.com
+=======
+###
+
+GET http://localhost:3000
+
+###
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+    "user_id": "juliusdittrich",
+    "day": "Monday",
+    "name": "Kniebeugen"
+}
+
+###
+GET http://localhost:3000/api/tasks/juliusdittrich
+
+###
+
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "email": "juliusdittrich22@gmail.com"
+}
+>>>>>>> onboardingfinish

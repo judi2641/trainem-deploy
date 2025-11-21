@@ -1,9 +1,9 @@
-import { ObjectId } from 'mongoose';
-import { TrainingDays } from '../../other/TrainingDays';
+import { Types } from 'mongoose';
+import type { TrainingDays } from '../../other/TrainingDays';
 
 
 export interface ITask {
-    _id?: ObjectId;
+    _id?: Types.ObjectId;
     title: string;
     description: string;
     difficulty: difficultyType;

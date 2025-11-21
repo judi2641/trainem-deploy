@@ -4,4 +4,4 @@ export const GOALS = {
 	goal2: 'Muskelaufbau: Gewicht halten',
 	goal3: 'Muskelaufbau: Gewicht erhöhen',
 } as const;
-export type GoalType = (typeof GOALS)[keyof typeof GOALS];
+export type TrainingsGoals = (typeof GOALS)[keyof typeof GOALS];

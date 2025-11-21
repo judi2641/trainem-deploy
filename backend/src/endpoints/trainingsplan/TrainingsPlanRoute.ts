@@ -4,7 +4,7 @@ import { HttpError } from "../../errors/HttpError";
 import { getUserByEmail } from "../user/UserService";
 import { Types } from "mongoose";
 import { logger } from "../../utils/logger";
-import { checkAuth0Token } from "../../utils/checkAuth0Token";
+import { createDefaultTrainingsplanFromOnboarding, getTrainingsplansByUserID } from "./TrainingsPlanService";
 
 const router = express();
 
@@ -47,6 +47,34 @@ router.post("/:email", async (req: Request, res: Response) => {
         else{
             logger.error(error);
             res.status(500).json("unkown error");
+        }
+    }
+});
+
+router.post('/:userID', async (req: Request, res: Response) => {
+    try {
+        const plan = await createDefaultTrainingsplanFromOnboarding(
+            req.params.userID,
+            req.body.onboarding,
+        );
+        return res.status(201).json(plan);
+    } catch (error) {
+        console.error('Trainingplan error:', error);
+        return res.status(500).json({ error });
+    }
+});
+
+router.get('/:userID', async (req: Request, res: Response) => {
+    try {
+        const plans = await getTrainingsplansByUserID(req.params.userID);
+        res.status(200).json(plans);
+    } catch (error) {
+        if(error instanceof HttpError){
+            logger.error(error);
+            res.status(error.status).json({error: error.message});
+        }
+        else{
+            res.status(500).json({error: "unkown error"});
         }
     }
 });
