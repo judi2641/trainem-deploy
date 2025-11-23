@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { ExperienceType } from '../../../../shared/types/User';
+import type { TrainingsExperience } from '../../../../shared/types/other/TrainingsExperience';
 
 export default function Experience() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData, submitUserData } = useOnboarding();
 
 	// Vorbefüllung falls Nutzer zurückkehrt
-	const [selectedExperience, setSelectedExperience] = useState<ExperienceType | null>(
+	const [selectedExperience, setSelectedExperience] = useState<TrainingsExperience | null>(
 		planData.experience ?? null,
 	);
 
@@ -68,7 +68,7 @@ export default function Experience() {
 				{levels.map((lvl) => (
 					<button
 						key={lvl.key}
-						onClick={() => setSelectedExperience(lvl.key as ExperienceType)}
+						onClick={() => setSelectedExperience(lvl.key as TrainingsExperience)}
 						className={`px-4 py-2 border rounded transition ${
 							selectedExperience === lvl.key
 								? 'bg-indigo-600 text-white border-indigo-600'

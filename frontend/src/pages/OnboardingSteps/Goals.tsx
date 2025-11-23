@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { GoalType } from '../../../../shared/types/User';
+import type { TrainingsGoals } from '../../../../shared/types/other/TrainingsGoal';
 
 export default function Goals() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData } = useOnboarding();
 
-	const [selected, setSelected] = useState<GoalType | null>(planData.goal || null);
+	const [selected, setSelected] = useState<TrainingsGoals | null>(planData.goal || null);
 
 	// Valid GoalType keys from your shared User.ts
-	const options: { key: GoalType; label: string; desc: string }[] = [
+	const options: { key: TrainingsGoals; label: string; desc: string }[] = [
 		{
 			key: 'Muskelaufbau: Gewicht senken',
 			label: 'Lose Weight',

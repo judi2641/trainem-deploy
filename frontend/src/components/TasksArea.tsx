@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
-import { format, startOfToday, addDays, startOfWeek, endOfWeek } from 'date-fns'
+import { format, startOfToday, addDays, startOfWeek } from 'date-fns'
 import { de } from 'date-fns/locale'
 import { TaskCalendar } from '@/components/TaskCalendar'
 import { Card } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, CheckCircle2, Circle} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ITrainingsPlan } from "../../../shared/types/database/traininsplan/TrainingPlan";
-import type { ICompletedTask } from "../../../shared/types/database/CompletedTask";
+// import type { ICompletedTask } from "../../../shared/types/database/CompletedTask";
 
 
 
 
 export default function TasksArea() {
   const [trainingsplan, setTrainingsplan] = useState<ITrainingsPlan[] | null>(null);
-  const [completedTasks, setCompletedTasks] = useState([]);
+  // const [completedTasks, setCompletedTasks] = useState([]);
   const [currentDate, setCurrentDate] = useState(startOfToday());
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+  // const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
 
   useEffect(() => {
     async function loadTrainingsplan() {
@@ -28,15 +28,15 @@ export default function TasksArea() {
       
 
     }
-    async function loadCompletedTasks() {
-      const res = await fetch("endpoint completed tasks");
-      const data = await res.json()
-      const completedTasksThisWeek = data.filter((task: ICompletedTask) => {
-        const doneDate = new Date(task.doneAt);
-        return doneDate >= weekStart && doneDate <= weekEnd;
-});
-      setCompletedTasks(completedTasksThisWeek);
-    }
+    // async function loadCompletedTasks() {
+    //   const res = await fetch("endpoint completed tasks");
+    //   const data = await res.json()
+    //   const completedTasksThisWeek = data.filter((task: ICompletedTask) => {
+    //     const doneDate = new Date(task.doneAt);
+    //     return doneDate >= weekStart && doneDate <= weekEnd;
+    //   });
+    //   setCompletedTasks(completedTasksThisWeek);
+    // }
     loadTrainingsplan();
     //loadCompletedTasks();
   }, []);

@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { ITask } from './Task';
+import type { ITask } from './Task';
 
 
 export interface ITrainingsPlan {

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { trainingDayType } from '../../../../shared/types/User';
+import type { TrainingDays } from '../../../../shared/types/other/TrainingDays';
 
-const daysOfWeek: { key: trainingDayType; label: string }[] = [
+const daysOfWeek: { key: TrainingDays; label: string }[] = [
 	{ key: 'Mon', label: 'Mon' },
 	{ key: 'Tue', label: 'Tue' },
 	{ key: 'Wed', label: 'Wed' },
@@ -17,10 +17,10 @@ export default function Schedule() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData, submitPlanData } = useOnboarding();
 
-	const [selected, setSelected] = useState<trainingDayType[]>(planData.trainingDays || []);
+	const [selected, setSelected] = useState<TrainingDays[]>(planData.trainingDays || []);
 
-	const toggleDay = (day: trainingDayType) => {
-		let updatedDays: trainingDayType[];
+	const toggleDay = (day: TrainingDays) => {
+		let updatedDays: TrainingDays[];
 
 		if (selected.includes(day)) {
 			updatedDays = selected.filter((d) => d !== day);
