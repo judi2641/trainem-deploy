@@ -1,6 +1,5 @@
 import { useState, useEffect} from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import type { ITask } from "../../../shared/types/database/traininsplan/Task";
 
 
 import { cn } from "@/lib/utils";
@@ -17,7 +16,7 @@ const WEEKDAY_OPTIONS = [
 
 export default function TrainigsplanArea() {
   const {user} = useAuth0();
-  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [activeTab, setActiveTab] = useState("Monday");
   const email = user?.email;
   //trainigsplan aus datenbank holen
@@ -32,7 +31,7 @@ export default function TrainigsplanArea() {
   useEffect(() => {
     fetchTrainingsPlan();
   }, []);
-  const visible = tasks.filter(t => t.day === activeTab);  
+  const visible = tasks.filter(t => t.weekday === activeTab);  
 
   return (
     <div className="h-full w-full bg-white shadow-md p-6 rounded-xl  ">
@@ -64,7 +63,7 @@ export default function TrainigsplanArea() {
                 className={cn(activeTab === day.value ? "block" : "hidden")}>
                 <h2 className="text-2xl font-semibold mb-4">{day.label}</h2>
                 {visible.map((task) => (
-                  <div key={task.day}
+                  <div key={task.weekday}
                   className="bg-primary/50 w-full h-15 rounded-xl flex items-center justify-between p-6">
                      <span>{task.description}</span>
                   </div>

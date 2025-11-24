@@ -1,5 +1,6 @@
 import { HiOutlineUser, HiOutlineSearch, HiOutlineMail } from "react-icons/hi";
 import { useAuth0 } from "@auth0/auth0-react";
+import { NavLink } from "react-router-dom";
 export default function Header(){
     const {user} = useAuth0();
     return (
@@ -12,13 +13,13 @@ export default function Header(){
             </div>
             {/* User Icon */}
             <div className="flex items-center">
-                <a href="#" className="bg-gray-100 h-7 w-7 rounded-full flex items-center justify-center mr-4 hover:bg-gray-200">
+                <NavLink to="#" className="bg-gray-100 h-7 w-7 rounded-full flex items-center justify-center mr-4 hover:bg-gray-200">
                     <HiOutlineUser className="w-5 h-5 "></HiOutlineUser>
-                </a>
+                </NavLink>
                 {/* Notification icon */}
-                <a href="#" className="bg-gray-100 h-7 w-7 rounded-full flex items-center justify-center mr-4 hover:bg-gray-200">
+                <NavLink to="#" className="bg-gray-100 h-7 w-7 rounded-full flex items-center justify-center mr-4 hover:bg-gray-200">
                     <HiOutlineMail className="w-5 h-5 "></HiOutlineMail>
-                </a>
+                </NavLink>
                 {/* User Info */}
                 <div className= "flex flex-col"> 
                 <span className="text-base font-bold text-textDark">{user?.name}</span>
