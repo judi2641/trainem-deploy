@@ -6,15 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import type { ITask } from '../../../shared/types/database/traininsplan/Task';
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import {
@@ -26,7 +18,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { DIFFICULTY, type TaskDifficulty } from '../../../shared/types/other/TaskDifficulty';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import type { ITrainingsPlan } from '../../../shared/types/database/traininsplan/TrainingPlan';
 import { useAuth0 } from '@auth0/auth0-react';
 interface TaskCalendarProps {
@@ -57,6 +49,17 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 
 		loadTrainingsplan();
 	}, []);
+	const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+		event.preventDefault();
+		const task: Partial<ITask> = {
+			_id: user?.sub,
+			tile: taskName,
+			description: taskDescription,
+			day: day,
+			difficulty: difficulty,
+		};
+	};
+
 	return (
 		<div className="space-y-4">
 			<div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -92,26 +95,25 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 									</span>
 									{isToday && <Badge className="bg-primary text-primary-foreground">Today</Badge>}
 								</div>
-								<Dialog>
-									<form>
-										<DialogTrigger asChild>
-											<Button
-												size="sm"
-												variant="ghost"
-												className="text-primary hover:bg-primary/10"
-											>
-												<Plus className="h-4 w-4 mr-1" />
-												Add
-											</Button>
-										</DialogTrigger>
-										<DialogContent className="sm:max-w-[425px]">
-											<DialogHeader>
-												<DialogTitle>Add new task</DialogTitle>
-											</DialogHeader>
+								<Popover>
+									<PopoverTrigger asChild>
+										<Button size="sm" variant="ghost" className="text-primary hover:bg-primary/10">
+											<Plus className="h-4 w-4 mr-1" />
+											Add
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent
+										className="w-96"
+										side="bottom"
+										align="start"
+										sideOffset={8}
+										alignOffset={0}
+									>
+										<form onSubmit={handleSubmit}>
 											<div className="grid gap-4">
 												<div className="grid gap-3">
 													<Label>Task name</Label>
-													<Input id="taskName" name="task name" defaultValue="" />
+													<Input id="taskName" name="taskName" defaultValue="" />
 												</div>
 												<div className="grid gap-3">
 													<Label>Task Description</Label>
@@ -119,7 +121,7 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 												</div>
 												<div className="grid gap-3">
 													<Label>Trainingsplan</Label>
-													<Select>
+													<Select name="trainingsplanName">
 														<SelectTrigger>
 															<SelectValue placeholder="Select a trainingsplan" />
 														</SelectTrigger>
@@ -141,7 +143,7 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 
 												<div className="grid gap-3">
 													<Label>Difficulty</Label>
-													<Select>
+													<Select name="difficulty">
 														<SelectTrigger>
 															<SelectValue placeholder="Select a difficulty" />
 														</SelectTrigger>
@@ -161,15 +163,14 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 													</Select>
 												</div>
 											</div>
-											<DialogFooter>
-												<DialogClose asChild>
-													<Button variant="outline">Cancel</Button>
-												</DialogClose>
-												<Button type="submit">Save changes</Button>
-											</DialogFooter>
-										</DialogContent>
-									</form>
-								</Dialog>
+											<div className="flex justify-end gap-2 mt-3">
+												<Button type="submit" size="sm">
+													Save task
+												</Button>
+											</div>
+										</form>
+									</PopoverContent>
+								</Popover>
 							</div>
 
 							{dayTasks.length === 0 ? (
