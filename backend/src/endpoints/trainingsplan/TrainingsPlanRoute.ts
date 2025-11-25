@@ -1,16 +1,33 @@
 import express, { Request, Response } from "express" ;
-import { createTrainingsPlan, getAllTrainingsPlansByEmail } from "./TrainingsPlanService";
-import { HttpError } from "../../errors/HttpError";
-import { getUserByEmail } from "../user/UserService";
-import { Types } from "mongoose";
 import { logger } from "../../utils/logger";
-import { createDefaultTrainingsplanFromOnboarding, getTrainingsplansByUserID } from "./TrainingsPlanService";
+import { createDefaultTrainingsplanFromOnboarding, getTrainingsPlanByAuth0ID } from "./TrainingsPlanService";
+import { HttpError } from "../../errors/HttpError";
+import { getUserByAuth0id } from "../user/UserService";
 
 const router = express();
 
-router.get("/:email", async (req: Request, res: Response) => {
+router.post('/:auth0ID', async (req: Request, res: Response) => {
+    try {
+        const user = await getUserByAuth0id(req.params.auth0ID);
+        const plan = await createDefaultTrainingsplanFromOnboarding(
+            user._id.toString(),
+            req.body.onboarding,
+        );
+        res.status(201).json(plan);
+    } catch (error) {
+        logger.error(error);
+        if(error instanceof HttpError){
+            res.status(error.status).json({error: error.message});
+        }
+        else{
+            res.status(500).json({error: "unkown error"});
+        }
+    }
+});
+
+router.get('/:auth0ID', async (req: Request, res: Response) => {
     try{
-        const trainingsplans = await getAllTrainingsPlansByEmail(req.params.email);
+        const trainingsplans = await getTrainingsPlanByAuth0ID(req.params.auth0ID);
         res.status(200).json(trainingsplans);
     }
     catch(error){
@@ -18,65 +35,9 @@ router.get("/:email", async (req: Request, res: Response) => {
             res.status(error.status).json({error: error.message});
         }
         else{
-            logger.error(error);
             res.status(500).json({error: "unkown error"});
         }
     }
-});
-
-router.post("/:email", async (req: Request, res: Response) => {
-    try{
-
-        //throws error if user does not exist
-        const user = await getUserByEmail(req.params.email);
-
-        const trainingsplan_data = {
-            userID: user._id as Types.ObjectId,
-            name: req.body.name,
-            tasks: req.body.tasks
-        };
-
-        const created_plan = await createTrainingsPlan(trainingsplan_data);
-
-        res.status(201).json(created_plan);
-    }
-    catch(error){
-        if(error instanceof HttpError){
-            res.status(error.status).json( { error: error.message });
-        }
-        else{
-            logger.error(error);
-            res.status(500).json("unkown error");
-        }
-    }
-});
-
-router.post('/:userID', async (req: Request, res: Response) => {
-    try {
-        const plan = await createDefaultTrainingsplanFromOnboarding(
-            req.params.userID,
-            req.body.onboarding,
-        );
-        return res.status(201).json(plan);
-    } catch (error) {
-        console.error('Trainingplan error:', error);
-        return res.status(500).json({ error });
-    }
-});
-
-router.get('/:userID', async (req: Request, res: Response) => {
-    try {
-        const plans = await getTrainingsplansByUserID(req.params.userID);
-        res.status(200).json(plans);
-    } catch (error) {
-        if(error instanceof HttpError){
-            logger.error(error);
-            res.status(error.status).json({error: error.message});
-        }
-        else{
-            res.status(500).json({error: "unkown error"});
-        }
-    }
-});
+})
 
 export default router;

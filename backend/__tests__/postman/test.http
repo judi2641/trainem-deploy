@@ -3,21 +3,27 @@ POST http://localhost:3000/api/users/marlow.dion@gmail.com
 
 ### 
 
+POST http://localhost:3000/api/trainingsplan/auth0%7C691343d8c21036492a17e01e
 POST http://localhost:3000/api/trainingsplan/marlow.dion@gmail.com
 Content-Type: application/json
 
 {
     "name": "mein trainingsplan",
-    "tasks": [
-        {
-            "title": "erste task",
-            "description": "nur zum testen",
-            "difficulty": "easy",
-            "day": "Mon"
-        }
-    ]
+    "onboarding": {
+
+    }
 }
 
 ###
 
-GET http://localhost:3000/api/trainingsplan/juliusdittrich22@gmail.com
+POST http://localhost:3000/api/user/123512/basic
+Content-Type: application/json
+
+{
+    "firstname": "test_vorname",
+    "lastname": "test_nachname"
+}
+
+###
+
+GET http://localhost:3000/api/trainingsplan/auth0%7C691343d8c21036492a17e01e
