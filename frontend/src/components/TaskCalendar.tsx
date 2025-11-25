@@ -21,6 +21,7 @@ import { DIFFICULTY, type TaskDifficulty } from '../../../shared/types/other/Tas
 import { useEffect, useState, type FormEvent } from 'react';
 import type { ITrainingsPlan } from '../../../shared/types/database/traininsplan/TrainingPlan';
 import { useAuth0 } from '@auth0/auth0-react';
+import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
 interface TaskCalendarProps {
 	weekStart: Date;
 	tasks: (ITask & { completed: boolean })[];
@@ -28,6 +29,11 @@ interface TaskCalendarProps {
 export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 	const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
 	const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
+	const [taskDay, setTaskDay] = useState<TrainingDays>();
+	const [taskTitle, setTaskTitle] = useState('');
+	const [taskDesc, setTaskDesc] = useState('');
+	const [taskDiff, setTaskDiff] = useState('');
+	const [taskTrainingsplanID, setTaskTrainingsplanID] = useState('');
 	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsPlan[] | null>(null);
 
 	const difficultyColors: Record<TaskDifficulty, string> = {
@@ -37,7 +43,6 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 	};
 	const { user } = useAuth0();
 	useEffect(() => {
-		//hier werden alle trainingspläne geladen und daraus die tasks gezogen und in eine liste zusammengeführt
 		async function loadTrainingsplan() {
 			try {
 				if (user?.sub) {
@@ -57,12 +62,39 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
 		const task: Partial<ITask> = {
-			_id: user?.sub,
-			tile: taskName,
-			description: taskDescription,
-			day: day,
-			difficulty: difficulty,
+			title: taskTitle,
+			description: taskDesc,
+			day: taskDay,
+			difficulty: taskDiff,
 		};
+
+		if (user?.sub) {
+			try {
+				const response = await fetch(
+					`http://localhost:3000/api/trainingsplan/tasks/${encodeURIComponent(user.sub)}/${encodeURIComponent(taskTrainingsplanID)}`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(task),
+					},
+				);
+
+				if (response.ok) {
+					console.log('Task erfolgreich erstellt!');
+					setTaskDesc('');
+					setTaskTitle('');
+					setTaskDiff('');
+
+					setTaskTrainingsplanID('');
+				} else {
+					console.error('Fehler beim Erstellen der Task');
+				}
+			} catch (error) {
+				console.error('Netzwerkfehler:', error);
+			}
+		}
 	};
 
 	return (
@@ -102,7 +134,12 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 								</div>
 								<Popover>
 									<PopoverTrigger asChild>
-										<Button size="sm" variant="ghost" className="text-primary hover:bg-primary/10">
+										<Button
+											size="sm"
+											variant="ghost"
+											className="text-primary hover:bg-primary/10"
+											onClick={() => setTaskDay(format(new Date(day), 'EEE') as TrainingDays)}
+										>
 											<Plus className="h-4 w-4 mr-1" />
 											Add
 										</Button>
@@ -118,15 +155,27 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 											<div className="grid gap-4">
 												<div className="grid gap-3">
 													<Label>Task name</Label>
-													<Input id="taskName" name="taskName" defaultValue="" />
+													<Input
+														id="taskName"
+														name="taskName"
+														onChange={(e) => setTaskTitle(e.target.value)}
+													/>
 												</div>
 												<div className="grid gap-3">
 													<Label>Task Description</Label>
-													<Input id="taskDescription" name="taskDescription" defaultValue="" />
+													<Input
+														id="taskDescription"
+														name="taskDescription"
+														onChange={(e) => setTaskDesc(e.target.value)}
+													/>
 												</div>
 												<div className="grid gap-3">
 													<Label>Trainingsplan</Label>
-													<Select name="trainingsplanName">
+													<Select
+														name="trainingsplanName"
+														value={taskTrainingsplanID}
+														onValueChange={setTaskTrainingsplanID}
+													>
 														<SelectTrigger>
 															<SelectValue placeholder="Select a trainingsplan" />
 														</SelectTrigger>
@@ -135,8 +184,8 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 																{trainingsplaene?.map((trainingsplan) => (
 																	<SelectItem
 																		className={cn('mb-0.5')}
-																		key={trainingsplan.name}
-																		value={trainingsplan.name}
+																		key={trainingsplan._id?.toString()}
+																		value={trainingsplan._id?.toString() || ''}
 																	>
 																		{trainingsplan.name}
 																	</SelectItem>
@@ -148,7 +197,7 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 
 												<div className="grid gap-3">
 													<Label>Difficulty</Label>
-													<Select name="difficulty">
+													<Select name="difficulty" value={taskDiff} onValueChange={setTaskDiff}>
 														<SelectTrigger>
 															<SelectValue placeholder="Select a difficulty" />
 														</SelectTrigger>
@@ -212,6 +261,30 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 													{task.description && (
 														<p className="text-xs text-muted-foreground mt-1">{task.description}</p>
 													)}
+												</div>
+
+												<div>
+													<Select name="difficulty">
+														<SelectTrigger>
+															<SelectValue
+																defaultValue={task.difficulty}
+																placeholder={task.difficulty}
+															/>
+														</SelectTrigger>
+														<SelectContent>
+															<SelectGroup>
+																{Object.values(DIFFICULTY).map((difficulty) => (
+																	<SelectItem
+																		className={cn('mb-0.5', difficultyColors[difficulty])}
+																		key={difficulty}
+																		value={difficulty}
+																	>
+																		{difficulty}
+																	</SelectItem>
+																))}
+															</SelectGroup>
+														</SelectContent>
+													</Select>
 												</div>
 											</div>
 										</li>

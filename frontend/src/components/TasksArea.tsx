@@ -14,6 +14,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 export default function TasksArea() {
 	//taskList sind die gesammten tasks aller trainingspläne eines users
 	const [taskList, setTaskList] = useState<ITask[] | null>(null);
+
 	//completedTasks bestehen aus den abgeschlossenen tasks die zu dieser woche passen
 	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[] | null>(null);
 	//state um alles neu zu berechnen wenn man die wochenanzeige wechselt
@@ -57,6 +58,7 @@ export default function TasksArea() {
 				completed: !!completedTasks?.some((ct) => ct.taskID.toString() === task._id!.toString()),
 			}))
 		: [];
+
 	//hier werden die statistiken für die aktuelle Woche berechnet
 	const completedStat: number = tasks.filter((task) => task.completed === true).length;
 	const totalStat: number = tasks.length;
