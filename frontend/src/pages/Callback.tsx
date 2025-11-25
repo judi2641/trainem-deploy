@@ -11,14 +11,38 @@ export default function Callback() {
 
     async function getExistingTrainingsplan(){
         if (!isLoading && user) {
-            const res = await fetch(`http://localhost:3000/api/trainingsplan/${user.email}`);
-            console.log(res);
-            if(!res.ok) {
-                navigate("/onboarding");
+          if(user.sub){
+
+            const res_user = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`);
+            if(!res_user.ok){
+              
+              const res_newuser = await fetch(`http://localhost:3000/api/user`, {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "auth0id": user.sub, "email": user.email })
+              });
+              
+              if(!res_newuser.ok){
+                console.log("fehler beim erstellen");
+                navigate("/");
+                return;
+              }                  
+            }
+            
+            const res_trainingsplan = await fetch(`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`);
+            if(!res_trainingsplan.ok) {
+              navigate("/onboarding");
             }
             else{
-                navigate("/dashboard");
+              navigate("/dashboard");
             }
+          }
+          else{
+            console.log("keine user.sub");
+            navigate("/");
+          }
         }
     }
     getExistingTrainingsplan();

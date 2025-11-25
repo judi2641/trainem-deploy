@@ -11,7 +11,7 @@ import { ObjectId } from "mongoose";
  * Contains all the Information, each User contains.
  */
 export interface IUser {
-	_id?: ObjectId; 
+	auth0ID: string; 
 	email: string;
 	userType?: UserType;
 

@@ -1,5 +1,4 @@
 import { TrainingsPlanModel } from "./TrainingsPlanModel";
-import { ITrainingsPlan } from "../../../../shared/types/database/traininsplan/TrainingPlan";
 import mongoose, { Types } from "mongoose";
 import { ITask } from "../../../../shared/types/database/traininsplan/Task";
 import { HttpError } from "../../errors/HttpError";
@@ -8,76 +7,8 @@ import { TrainingsExperience } from "../../../../shared/types/other/TrainingsEx
 import { TrainingsGoals } from "../../../../shared/types/other/TrainingsGoal";
 import { OnboardingClientData } from "../../../../shared/types/other/OnboardingClientData";
 import { TrainingDays } from "../../../../shared/types/other/TrainingDays";
-import { getUserByEmail } from "../user/UserService";
+import { getUserByAuth0id } from "../user/UserService";
 
-export async function createTrainingsPlan(data: ITrainingsPlan){
-    try{
-        const trainingplan = new TrainingsPlanModel(data);
-        return trainingplan.save();
-    }
-    catch(error){
-        logger.error("failed to create a trainingsplan",error);
-        throw new HttpError(400, "failed to create a trainingsplan");
-    }
-}
-
-export async function getAllTrainingsPlansByEmail(email: String){
-
-    const user = await getUserByEmail(email);
-
-    const trainingplan = await TrainingsPlanModel.find({ userID: user._id });
-    logger.info(trainingplan);
-    if(!trainingplan){
-        logger.error("no trainingsplan was found");
-        throw new HttpError(400, "no trainingsplan was found");
-    }
-    return trainingplan;
-}
-
-export async function addTask(plan_id: Types.ObjectId, task: ITask) {
-    try{    
-        const updatedPlan = await TrainingsPlanModel.findByIdAndUpdate(
-            plan_id,
-            { $push: { tasks: task } },
-            { new: true }
-        );
-        logger.info("added task");
-        return updatedPlan;
-    }
-    catch(error){
-        throw new HttpError(400, "Failed to add a Task");
-    }
-}
-
-export async function removeTask(plan_id: Types.ObjectId, task_id: Types.ObjectId){
-    try{
-        const plan = await TrainingsPlanModel.findOne({
-            _id: plan_id,
-            "tasks._id": task_id,
-        });
-
-        if(!plan){
-            logger.error("task does not exist");
-            throw new HttpError(400, "Task does not exist");
-        }
-
-        logger.info("task exists");
-
-        const new_trainingsplan = await TrainingsPlanModel.findByIdAndUpdate(
-            plan_id,
-            { $pull: { tasks: { _id: task_id } } },
-            {new : true}
-        )
-
-        logger.info("deleted task");
-        return new_trainingsplan;
-
-    }
-    catch(error){
-        logger.error("failed to remove a task");
-        throw new HttpError(400, "failed to remove a task");
-    }
-}
 const SESSION_TYPES = [
     'push',
     'pull',
@@ -291,15 +222,18 @@ export async function createDefaultTrainingsplanFromOnboarding(
     return planDoc;
 }
 
-export async function getTrainingsplansByUserID(userID: string) {
-    try {
-        if (!mongoose.Types.ObjectId.isValid(userID)) {
-            throw new HttpError(400, 'Invalid userID');
+export async function getTrainingsPlanByAuth0ID(auth0ID: string){
+    try{
+        const user = await getUserByAuth0id(auth0ID);
+        return await TrainingsPlanModel.find({ userID: user._id });
+    }
+    catch(error){
+        logger.error("failed to get trainingsplans bei auth0ID",error)
+        if(error instanceof HttpError){
+            throw error;
         }
-        return TrainingsPlanModel.find({ userID });
-    } catch (error) {
-        logger.error(`error searching tasks to user_id: ${userID}`);
-        throw new HttpError(500, 'failed to search onboarding');
+        else{
+            throw new HttpError(400, "failed to get trainingsplan by auth0ID");
+        }
     }
 }
-

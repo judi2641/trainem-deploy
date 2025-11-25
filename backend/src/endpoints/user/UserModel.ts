@@ -5,6 +5,7 @@ import { GENDERS, USERS } from "../../../../shared/types/database/user/User";
 const UserSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
+    auth0ID: {type: String, required: true, unique: true},
     userType: { type: String, enum: Object.values(USERS) },
 
     firstName: { type: String },

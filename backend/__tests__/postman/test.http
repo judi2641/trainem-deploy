@@ -1,51 +1,28 @@
-<<<<<<< HEAD
 
 POST http://localhost:3000/api/user/juliusdittrich2@gmail.com
 
 ### 
 
-POST http://localhost:3000/api/trainingsplan/juliusdittrich22@gmail.com
+POST http://localhost:3000/api/trainingsplan/auth0%7C691343d8c21036492a17e01e
 Content-Type: application/json
 
 {
     "name": "mein trainingsplan",
-    "tasks": [
-        {
-            "title": "erste task",
-            "description": "nur zum testen",
-            "difficulty": "easy",
-            "day": "Mon"
-        }
-    ]
+    "onboarding": {
+
+    }
 }
 
 ###
 
-GET http://localhost:3000/api/trainingsplan/juliusdittrich22@gmail.com
-=======
-###
-
-GET http://localhost:3000
-
-###
-POST http://localhost:3000/api/tasks
+POST http://localhost:3000/api/user/123512/basic
 Content-Type: application/json
 
 {
-    "user_id": "juliusdittrich",
-    "day": "Monday",
-    "name": "Kniebeugen"
+    "firstname": "test_vorname",
+    "lastname": "test_nachname"
 }
 
 ###
-GET http://localhost:3000/api/tasks/juliusdittrich
 
-###
-
-POST http://localhost:3000/api/users
-Content-Type: application/json
-
-{
-    "email": "juliusdittrich22@gmail.com"
-}
->>>>>>> onboardingfinish
+GET http://localhost:3000/api/trainingsplan/auth0%7C691343d8c21036492a17e01e
