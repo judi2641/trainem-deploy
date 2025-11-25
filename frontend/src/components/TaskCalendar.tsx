@@ -29,6 +29,7 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 	const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
 	const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsPlan[] | null>(null);
+
 	const difficultyColors: Record<TaskDifficulty, string> = {
 		easy: 'bg-green-200',
 		middle: 'bg-orange-200',
@@ -39,9 +40,13 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 		//hier werden alle trainingspläne geladen und daraus die tasks gezogen und in eine liste zusammengeführt
 		async function loadTrainingsplan() {
 			try {
-				const res = await fetch(`http://localhost:3000/api/trainingsplan/${user?.email}`);
-				const trainingsplanResponse = await res.json();
-				setTrainingsplaene(trainingsplanResponse);
+				if (user?.sub) {
+					const res = await fetch(
+						`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
+					);
+					const trainingsplanResponse = await res.json();
+					setTrainingsplaene(trainingsplanResponse);
+				}
 			} catch (error) {
 				console.log(error);
 			}

@@ -26,9 +26,13 @@ export default function TasksArea() {
 		//hier werden alle trainingspläne geladen und daraus die tasks gezogen und in eine liste zusammengeführt
 		async function loadTrainingsplan() {
 			try {
-				const res = await fetch(`http://localhost:3000/api/trainingsplan/${user?.email}`);
-				const trainingsplanResponse = await res.json();
-				setTaskList(trainingsplanResponse.flatMap((tp: ITrainingsPlan) => tp.tasks));
+				if (user?.sub) {
+					const res = await fetch(
+						`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
+					);
+					const trainingsplanResponse = await res.json();
+					setTaskList(trainingsplanResponse.flatMap((tp: ITrainingsPlan) => tp.tasks));
+				}
 			} catch (error) {
 				console.log(error);
 			}

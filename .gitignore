@@ -14,3 +14,5 @@ frontend/.DS_Store
 backend/node_modules
 backend/.DS_Store
 backend/dist
+
+backend/__tests__/postman/test.http

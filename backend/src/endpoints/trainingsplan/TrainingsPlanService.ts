@@ -1,13 +1,13 @@
-import { TrainingsPlanModel } from "./TrainingsPlanModel";
-import mongoose, { Types } from "mongoose";
-import { ITask } from "../../../../shared/types/database/traininsplan/Task";
-import { HttpError } from "../../errors/HttpError";
-import { logger } from "../../utils/logger";
-import { TrainingsExperience } from "../../../../shared/types/other/TrainingsExperience";
-import { TrainingsGoals } from "../../../../shared/types/other/TrainingsGoal";
-import { OnboardingClientData } from "../../../../shared/types/other/OnboardingClientData";
-import { TrainingDays } from "../../../../shared/types/other/TrainingDays";
-import { getUserByAuth0id } from "../user/UserService";
+import { TrainingsPlanModel } from './TrainingsPlanModel';
+import mongoose, { Types } from 'mongoose';
+import { ITask } from '../../../../shared/types/database/traininsplan/Task';
+import { HttpError } from '../../errors/HttpError';
+import { logger } from '../../utils/logger';
+import { TrainingsExperience } from '../../../../shared/types/other/TrainingsExperience';
+import { TrainingsGoals } from '../../../../shared/types/other/TrainingsGoal';
+import { OnboardingClientData } from '../../../../shared/types/other/OnboardingClientData';
+import { TrainingDays } from '../../../../shared/types/other/TrainingDays';
+import { getUserByAuth0id } from '../user/UserService';
 
 const SESSION_TYPES = [
 	'push',
@@ -226,18 +226,16 @@ export async function createDefaultTrainingsplanFromOnboarding(
 	return planDoc;
 }
 
-export async function getTrainingsPlanByAuth0ID(auth0ID: string){
-    try{
-        const user = await getUserByAuth0id(auth0ID);
-        return await TrainingsPlanModel.find({ userID: user._id });
-    }
-    catch(error){
-        logger.error("failed to get trainingsplans bei auth0ID",error)
-        if(error instanceof HttpError){
-            throw error;
-        }
-        else{
-            throw new HttpError(400, "failed to get trainingsplan by auth0ID");
-        }
-    }
+export async function getTrainingsPlanByAuth0ID(auth0ID: string) {
+	try {
+		const user = await getUserByAuth0id(auth0ID);
+		return await TrainingsPlanModel.find({ userID: user._id });
+	} catch (error) {
+		logger.error('failed to get trainingsplans bei auth0ID', error);
+		if (error instanceof HttpError) {
+			throw error;
+		} else {
+			throw new HttpError(400, 'failed to get trainingsplan by auth0ID');
+		}
+	}
 }
