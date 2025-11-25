@@ -229,7 +229,10 @@ export async function createDefaultTrainingsplanFromOnboarding(
 export async function getTrainingsPlanByAuth0ID(auth0ID: string) {
 	try {
 		const user = await getUserByAuth0id(auth0ID);
-		return await TrainingsPlanModel.find({ userID: user._id });
+		const trainingsplans = await TrainingsPlanModel.find({ userID: user._id });
+		if (trainingsplans.length == 0) {
+			throw new HttpError(400, 'no trainingsplan');
+		}
 	} catch (error) {
 		logger.error('failed to get trainingsplans bei auth0ID', error);
 		if (error instanceof HttpError) {

@@ -1,13 +1,12 @@
 import { Types } from 'mongoose';
 import type { TrainingDays } from '../../other/TrainingDays';
 
-
 export interface ITask {
-    _id?: Types.ObjectId;
-    title: string;
-    description: string;
-    difficulty: difficultyType;
-    day: TrainingDays;
+	_id?: string;
+	title: string;
+	description: string;
+	difficulty: difficultyType;
+	day: TrainingDays;
 }
 
 export const DIFFICULTY = {

@@ -19,6 +19,7 @@ router.post('/:auth0ID/basic', async (req: Request, res: Response) => {
 	}
 });
 
+//after registration
 router.post('/', async (req: Request, res: Response) => {
 	try {
 		const { auth0id, email } = req.body;
