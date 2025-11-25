@@ -69,6 +69,35 @@ export default function LandingPage() {
 					Achieve your fitness goals with a personalized training plan designed just for you.
 				</p>
 
+
+			{/* Background Avatars */}
+<div className="pointer-events-none absolute inset-0 flex justify-between px-10 opacity-30">
+	
+	{/* Linke Seite – dick → dünn */}
+	<div className="flex flex-col justify-start gap-4 mt-20">
+		<img src="/public/assets/avatar/abnahme/blauLevel1Abnahme.png" className="h-20" />
+			<img src="/public/assets/avatar/abnahme/blauLevel2Abnahme.png" className="h-20" />
+				<img src="/public/assets/avatar/abnahme/blauLevel3Abnahme.png" className="h-20" />
+					<img src="/public/assets/avatar/abnahme/blauLevel4Abnahme.png" className="h-20" />
+						<img src="/public/assets/avatar/abnahme/blauLevel5Abnahmepng.png" className="h-20" />
+							<img src="/public/assets/avatar/abnahme/blauLevel6Abnahme.png" className="h-20" />
+								<img src="/assets/avatar/abnahme/blauLevel7Abnahme.png" className="h-20" />
+	</div>
+
+	{/* Rechte Seite – dünn → fit */}
+	<div className="flex flex-col justify-start gap-4 mt-20">
+		<img src="/assets/avatar/muskelaufbau/blauLevel1Aufbau.png" className="h-20" />
+		<img src="/assets/avatar/muskelaufbau/blauLevel2Aufbau.png" className="h-20" />
+		<img src="/assets/avatar/muskelaufbau/blauLevel3Aufbau.png" className="h-20" />
+		<img src="/assets/avatar/muskelaufbau/blauLevel4Aufbau.png" className="h-20" />
+		<img src="/assets/avatar/muskelaufbau/blauLevel5Aufbau.png" className="h-20" />
+		<img src="/assets/avatar/muskelaufbau/blauLevel6Aufbau.png" className="h-20" />
+		<img src="/assets/avatar/muskelaufbau/blauLevel7Aufbau.png" className="h-20" />
+		
+	</div>
+
+</div>
+
 				<div className="flex flex-col sm:flex-row gap-4 justify-center">
 					<button
 						onClick={handleRegister}
