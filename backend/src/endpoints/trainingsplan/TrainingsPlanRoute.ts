@@ -2,10 +2,12 @@ import express, { Request, Response } from 'express';
 import { logger } from '../../utils/logger';
 import {
 	createDefaultTrainingsplanFromOnboarding,
+	createTaskForTrainingsplan,
 	getTrainingsPlanByAuth0ID,
 } from './TrainingsPlanService';
 import { HttpError } from '../../errors/HttpError';
 import { getUserByAuth0id } from '../user/UserService';
+import { Types } from 'mongoose';
 
 const router = express();
 
@@ -35,6 +37,23 @@ router.get('/:auth0ID', async (req: Request, res: Response) => {
 		if (error instanceof HttpError) {
 			res.status(error.status).json({ error: error.message });
 		} else {
+			res.status(500).json({ error: 'unkown error' });
+		}
+	}
+});
+
+router.post('/tasks/:auth0ID/:trainingsplanID', async (req: Request, res: Response) => {
+	try {
+		const new_trainingsplans = await createTaskForTrainingsplan(
+			new Types.ObjectId(req.params.trainingsplanID),
+			req.body,
+		);
+		res.status(201).json(new_trainingsplans);
+	} catch (error) {
+		if (error instanceof HttpError) {
+			res.status(error.status).json({ error: error.message });
+		} else {
+			logger.error(error);
 			res.status(500).json({ error: 'unkown error' });
 		}
 	}

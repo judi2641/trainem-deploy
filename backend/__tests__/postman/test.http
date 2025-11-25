@@ -26,3 +26,15 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/api/trainingsplan/auth0%7C691343d8c21036492a17e01e
+
+###
+
+POST http://localhost:3000/api/trainingsplan/task/auth0%7C691343d8c21036492a17e01e/6925ac6adff8d67e1647de0f
+Content-Type: application/json
+
+{
+    "title": "test task",
+    "description": "nur nur zum testen hier",
+    "difficulty": "easy",
+    "day": "Mon"
+}

@@ -239,3 +239,28 @@ export async function getTrainingsPlanByAuth0ID(auth0ID: string) {
 		}
 	}
 }
+
+/**
+ * creates new task to trainingsplan with trainingsplanID
+ * @param trainingsplanID
+ * @param newTask
+ * @returns updated trainingsplan
+ */
+export async function createTaskForTrainingsplan(trainingsplanID: Types.ObjectId, newTask: ITask) {
+	try {
+		const trainingsplan = await TrainingsPlanModel.findById(trainingsplanID);
+		if (!trainingsplan) {
+			logger.error('trainingsplan nicht gefunden');
+			throw new HttpError(400, 'trainingsplan nicht gefunden');
+		}
+		trainingsplan.tasks.push(newTask);
+		return await trainingsplan.save();
+	} catch (error) {
+		if (error instanceof HttpError) {
+			throw error;
+		} else {
+			logger.error('failed to create new task');
+			throw new HttpError(400, 'failed to create new task');
+		}
+	}
+}
