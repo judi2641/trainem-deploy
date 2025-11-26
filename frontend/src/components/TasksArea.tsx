@@ -12,6 +12,7 @@ import type { ITrainingsPlan } from '../../../shared/types/database/traininsplan
 import { useAuth0 } from '@auth0/auth0-react';
 
 export default function TasksArea() {
+	const [reloadTasksFlag, setReloadTasksFlag] = useState(false);
 	//taskList sind die gesammten tasks aller trainingspläne eines users
 	const [taskList, setTaskList] = useState<ITask[] | null>(null);
 
@@ -50,7 +51,8 @@ export default function TasksArea() {
 		}
 		loadTrainingsplan();
 		loadCompletedTasks();
-	}, []);
+	}, [reloadTasksFlag]);
+	const triggerReload = () => setReloadTasksFlag((f) => !f);
 	//hier werden completedTasks und taskList zusammengeführ es einsteht eine lsite an Itasks mit einem neuen feld completed
 	const tasks: (ITask & { completed: boolean })[] = taskList
 		? taskList.map((task) => ({
@@ -126,7 +128,7 @@ export default function TasksArea() {
 				</div>
 			</div>
 			<div className="p-6">
-				<TaskCalendar weekStart={weekStart} tasks={tasks} />
+				<TaskCalendar weekStart={weekStart} tasks={tasks} onTaskCreated={triggerReload} />
 			</div>
 		</div>
 	);

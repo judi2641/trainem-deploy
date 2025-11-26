@@ -22,11 +22,13 @@ import { useEffect, useState, type FormEvent } from 'react';
 import type { ITrainingsPlan } from '../../../shared/types/database/traininsplan/TrainingPlan';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
+import { toast } from 'sonner';
 interface TaskCalendarProps {
 	weekStart: Date;
 	tasks: (ITask & { completed: boolean })[];
+	onTaskCreated: () => void;
 }
-export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
+export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarProps) {
 	const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
 	const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 	const [taskDay, setTaskDay] = useState<TrainingDays>();
@@ -88,8 +90,10 @@ export function TaskCalendar({ weekStart, tasks }: TaskCalendarProps) {
 					setTaskDiff('');
 
 					setTaskTrainingsplanID('');
+					if (typeof onTaskCreated === 'function') onTaskCreated();
+					toast.success('Task has been created');
 				} else {
-					console.error('Fehler beim Erstellen der Task');
+					toast.error('Task has not been created');
 				}
 			} catch (error) {
 				console.error('Netzwerkfehler:', error);

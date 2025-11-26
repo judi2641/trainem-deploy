@@ -13,6 +13,7 @@ import Schedule from './pages/OnboardingSteps/Schedule';
 import { useAuth0 } from '@auth0/auth0-react';
 import Tasks from './pages/Tasks';
 import Callback from './pages/Callback';
+import Trainingsplan from './pages/Trainingsplan';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -48,6 +49,14 @@ function App() {
 					element={
 						<ProtectedRoute>
 							<Tasks />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/trainingsplan"
+					element={
+						<ProtectedRoute>
+							<Trainingsplan />
 						</ProtectedRoute>
 					}
 				/>
