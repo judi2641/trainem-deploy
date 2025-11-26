@@ -231,14 +231,15 @@ export async function getTrainingsPlanByAuth0ID(auth0ID: string) {
 		const user = await getUserByAuth0id(auth0ID);
 		const trainingsplans = await TrainingsPlanModel.find({ userID: user._id });
 		if (trainingsplans.length == 0) {
-			throw new HttpError(400, 'no trainingsplan');
+			throw new HttpError(404, 'no trainingsplan');
 		}
+		return trainingsplans;
 	} catch (error) {
 		logger.error('failed to get trainingsplans bei auth0ID', error);
 		if (error instanceof HttpError) {
 			throw error;
 		} else {
-			throw new HttpError(400, 'failed to get trainingsplan by auth0ID');
+			throw new HttpError(500, 'failed to get trainingsplan by auth0ID');
 		}
 	}
 }
