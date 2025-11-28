@@ -8,7 +8,7 @@ import { HttpError } from '../../errors/HttpError';
  */
 export async function saveBasicUserInfo(auth0ID: string, basicData: any) {
 	const updated = await UserModel.findOneAndUpdate(
-		{ userID: auth0ID },
+		{ auth0ID: auth0ID },
 		{
 			firstName: basicData.firstname,
 			lastName: basicData.lastname,

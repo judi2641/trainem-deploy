@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import type { TrainingsGoals} from "../../../shared/types/other/TrainingsGoal";
-import type { TrainingsExperience } from "../../../shared/types/other/TrainingsExperience";
+import type { TrainingsGoals } from '../../../shared/types/other/TrainingsGoal';
+import type { TrainingsExperience } from '../../../shared/types/other/TrainingsExperience';
 import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
 
 // ------------------------------------------------------
@@ -83,7 +83,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/users/${user.sub}/basic`, {
+			const res = await fetch(`http://localhost:3000/api/user/${user.sub}/basic`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

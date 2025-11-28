@@ -5,7 +5,7 @@ import type { TrainingsExperience } from '../../../../shared/types/other/Trainin
 
 export default function Experience() {
 	const navigate = useNavigate();
-	const { planData, updatePlanData, submitUserData } = useOnboarding();
+	const { planData, updatePlanData } = useOnboarding();
 
 	// Vorbefüllung falls Nutzer zurückkehrt
 	const [selectedExperience, setSelectedExperience] = useState<TrainingsExperience | null>(
@@ -27,7 +27,7 @@ export default function Experience() {
 			weight: weight ? Number(weight) : undefined,
 			height: height ? Number(height) : undefined,
 		});
-		submitUserData();
+
 		navigate('/onboarding/goals');
 	};
 

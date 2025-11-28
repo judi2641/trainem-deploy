@@ -14,6 +14,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Tasks from './pages/Tasks';
 import Callback from './pages/Callback';
 import Trainingsplan from './pages/Trainingsplan';
+import { OnboardingProvider } from './context/OnboardingContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -65,7 +66,9 @@ function App() {
 					path="/onboarding"
 					element={
 						<ProtectedRoute>
-							<Onboarding />
+							<OnboardingProvider>
+								<Onboarding />
+							</OnboardingProvider>
 						</ProtectedRoute>
 					}
 				>

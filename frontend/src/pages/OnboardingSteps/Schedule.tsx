@@ -15,7 +15,7 @@ const daysOfWeek: { key: TrainingDays; label: string }[] = [
 
 export default function Schedule() {
 	const navigate = useNavigate();
-	const { planData, updatePlanData, submitPlanData } = useOnboarding();
+	const { planData, updatePlanData, submitPlanData, submitUserData } = useOnboarding();
 
 	const [selected, setSelected] = useState<TrainingDays[]>(planData.trainingDays || []);
 
@@ -38,7 +38,7 @@ export default function Schedule() {
 			userData: planData,
 			planData,
 		});
-
+		await submitUserData();
 		await submitPlanData();
 		navigate('/dashboard');
 	};
