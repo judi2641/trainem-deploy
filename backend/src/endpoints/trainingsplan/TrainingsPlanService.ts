@@ -268,3 +268,15 @@ export async function createTaskForTrainingsplan(trainingsplanID: Types.ObjectId
 		}
 	}
 }
+
+export async function createEmptyTrainingsplan(name: string, auth0: string, category: string) {
+	const trainingsplan = new TrainingsPlanModel({ name, auth0, category });
+	try {
+		const created_trainingsplan = await trainingsplan.save();
+		logger.info('empty trainingsplan created');
+		return created_trainingsplan;
+	} catch (error) {
+		logger.error('failed to create empty trainingsplan');
+		throw new HttpError(400, 'failed to create empy trainingsplan');
+	}
+}

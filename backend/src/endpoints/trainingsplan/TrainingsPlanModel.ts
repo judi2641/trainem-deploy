@@ -14,6 +14,7 @@ const TrainingsplanSchema = new Schema(
 		userID: { type: Types.ObjectId, ref: 'User', required: true },
 		name: { type: String, required: true },
 		tasks: { type: [TaskSchema], default: [] },
+		category: { type: String, required: false },
 	},
 	{
 		timestamps: true,
