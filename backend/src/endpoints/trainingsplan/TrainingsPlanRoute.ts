@@ -4,12 +4,18 @@ import {
 	createDefaultTrainingsplanFromOnboarding,
 	createEmptyTrainingsplan,
 	createTaskForTrainingsplan,
+	deleteTP,
+	getAll,
 	getTrainingsPlanByAuth0ID,
+	post,
+	put,
 } from './TrainingsPlanService';
 import { HttpError } from '../../errors/HttpError';
 import { getUserByAuth0id } from '../user/UserService';
 import { Types } from 'mongoose';
 import { isInt8Array } from 'util/types';
+import { ITrainingsplanDokument, TrainingsPlanModel } from './TrainingsPlanModel';
+import { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
 
 const router = express();
 
@@ -75,6 +81,73 @@ router.post('/createempty/:auth0ID/', async (req: Request, res: Response) => {
 		} else {
 			logger.error(error);
 			res.status(500).json({ error: 'unkown error' });
+		}
+	}
+});
+
+/*
+------------------------------------------------------------------------------
+	CRUD for Traingsplan
+	- There is no validation of the data atm. 
+	// TODO: ADD validationMiddleware
+------------------------------------------------------------------------------
+*/
+
+router.get('/trainingsplan/:auth0ID', async (req: Request, res: Response) => {
+	try {
+		const auth0ID = req.params.auth0ID;
+		const plans: ITrainingsplanDokument[] = await getAll(auth0ID);
+		res.status(200).json(plans);
+	} catch (error) {
+		logger.error(error);
+		if (error instanceof HttpError) {
+			res.status(error.status).json({ error: error.message });
+		} else {
+			res.status(500).json({ error: 'Internal Server Error' });
+		}
+	}
+});
+
+router.post('/trainingsplan', async (req: Request, res: Response) => {
+	try {
+		const data: ITrainingsplan = req.body;
+		const tp: ITrainingsplanDokument = await post(data);
+		logger.info('Trainingsplan created');
+		res.status(201).json(tp);
+	} catch (error) {
+		logger.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.put('/trainingsplan/:_id', async (req: Request, res: Response) => {
+	try {
+		const { name, tasks, categorie } = req.body;
+		const updates: Partial<Omit<ITrainingsplan, 'userID'>> = { name, tasks, categorie };
+		const updated: ITrainingsplanDokument = await put(req.params._id, updates);
+		logger.info('Trainingsplan updated');
+		res.status(200).json(updated);
+	} catch (error) {
+		if (error instanceof HttpError) {
+			logger.error(error);
+			res.status(error.status).json({ error: error.message });
+		} else {
+			res.status(500).json({ error: 'Internal Server Error' });
+		}
+	}
+});
+
+router.delete('/trainingsplan/:_id', async (req: Request, res: Response) => {
+	try {
+		await deleteTP(req.params._id);
+		logger.info('Trainingsplan deleted');
+		res.status(204).end();
+	} catch (error) {
+		if (error instanceof HttpError) {
+			logger.error(error);
+			res.status(error.status).json({ error: error.message });
+		} else {
+			res.status(500).json({ error: 'Internal Server Error' });
 		}
 	}
 });

@@ -2,7 +2,6 @@ import { Types } from 'mongoose';
 import type { TrainingDays } from '../../other/TrainingDays';
 
 export interface ITask {
-	_id?: string;
 	title: string;
 	description: string;
 	difficulty: difficultyType;

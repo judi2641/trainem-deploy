@@ -1,4 +1,4 @@
-import { TrainingsPlanModel } from './TrainingsPlanModel';
+import { ITaskDocument, ITrainingsplanDokument, TrainingsPlanModel } from './TrainingsPlanModel';
 import mongoose, { Types } from 'mongoose';
 import { ITask } from '../../../../shared/types/database/traininsplan/Task';
 import { HttpError } from '../../errors/HttpError';
@@ -8,6 +8,7 @@ import { TrainingsGoals } from '../../../../shared/types/other/TrainingsGoal';
 import { OnboardingClientData } from '../../../../shared/types/other/OnboardingClientData';
 import { TrainingDays } from '../../../../shared/types/other/TrainingDays';
 import { getUserByAuth0id } from '../user/UserService';
+import { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
 
 const SESSION_TYPES = [
 	'push',
@@ -279,4 +280,143 @@ export async function createEmptyTrainingsplan(name: string, auth0: string, cate
 		logger.error('failed to create empty trainingsplan');
 		throw new HttpError(400, 'failed to create empy trainingsplan');
 	}
+}
+
+/*
+------------------------------------------------------------------------------
+	CRUD for Traingsplan
+	- There is no validation of the data atm. 
+	// TODO: ADD validationMiddleware
+------------------------------------------------------------------------------
+*/
+
+/**
+ * Gets all Trainingsplans related to a user
+ *
+ * @remark {@link getTrainingsPlanByAuth0ID} already exists, but throws Error if not existing.
+ * This Method returns `[]`, which will be better to handle in the frontend.
+ * Make `auth0ID` optional to return from all users.
+ *
+ * @param auth0ID from User
+ * @returns array of all Traingsplans from the user
+ */
+export async function getAll(auth0ID: string): Promise<ITrainingsplanDokument[]> {
+	const userID = await getUserByAuth0id(auth0ID);
+	const plans: ITrainingsplanDokument[] = await TrainingsPlanModel.find({ userID });
+	return plans;
+}
+
+/**
+ * creates new Trainingssplan
+ *
+ * @param data Traingsplan data
+ * @returns MongooseDocument
+ */
+export async function post(data: ITrainingsplan): Promise<ITrainingsplanDokument> {
+	const tp: ITrainingsplanDokument = await TrainingsPlanModel.create(data);
+	return tp;
+}
+
+/**
+ *
+ * updates existing Trainingsplan
+ *
+ * Rules:
+ * - userID can't be changed
+ *
+ * @param planID UID (MongoDB)
+ * @param updates optional data, omitted userID
+ * @returns updated Trainingsplan
+ *
+ * @throws {HttpError} 404 if no existing traingsplan
+ */
+export async function put(
+	planID: string,
+	updates: Partial<Omit<ITrainingsplan, 'userID'>>,
+): Promise<ITrainingsplanDokument> {
+	const existing: ITrainingsplanDokument | null = await TrainingsPlanModel.findByIdAndUpdate(
+		planID,
+		updates,
+		{ runValidators: true, new: true },
+	);
+	if (!existing) {
+		throw new HttpError(404, 'There is no Traingsplan with id: ' + planID);
+	}
+	return existing;
+}
+
+/**
+ * deletes existing trainingsplan
+ *
+ * @param planID UID (MongoDB)
+ *
+ * @throws {HttpError} 404 if no existing trainingsplan
+ */
+export async function deleteTP(planID: string): Promise<void> {
+	const existing: ITrainingsplanDokument | null =
+		await TrainingsPlanModel.findByIdAndDelete(planID);
+	if (!existing) {
+		throw new HttpError(400, 'There is no Trainingsplan with id: ' + planID);
+	}
+}
+
+/**
+ * Moves Tasks between Traingsplans
+ *
+ * @remark //TODO Implement:
+ * - Remove Dublicates
+ * - delete moved tasks
+ *
+ *
+ * @param currentID UID (MongoDB) of source plan
+ * @param targetID	UID (MongoDB) of target plan
+ * @param tasks	the tasks which should be moved
+ * @param deleteCurrentTaks: boolean = false,
+ * @param createNew defines if a new plan should be created of to plan with targetID, default = false
+ * @param name the name of the new plan, default = "new Plan"
+ * @param categorie optional categorie for the new plan
+ * @returns the target (or created) Trainingsplan
+ *
+ * @throws {HttpError} 404 if no trainingsplan with currentID
+ * @throws {HttpError} 404 if no trainingsplan with targetID and createNew is false
+ *
+ */
+export async function moveTasks(
+	currentID: string,
+	targetID: string,
+	tasks: ITask[],
+	deleteCurrentTaks: boolean = false,
+	name: string = 'New Plan',
+	createNew: boolean = false,
+	categorie?: string,
+): Promise<ITrainingsplanDokument> {
+	const current: ITrainingsplanDokument | null = await TrainingsPlanModel.findById(currentID);
+	if (!current) {
+		throw new HttpError(404, 'There is no Trainingsplan with id: ' + currentID);
+	}
+
+	const moved = await TrainingsPlanModel.findByIdAndUpdate(
+		targetID,
+
+		{ $push: { tasks: { $each: tasks } } }, // TODO: filter for dublicates,
+		{
+			runValidators: true,
+			new: true,
+		},
+	);
+
+	let plan: ITrainingsplan;
+	if (!moved) {
+		if (!createNew) {
+			throw new HttpError(404, 'There is no Trainingsplan with id: ' + targetID);
+		}
+
+		const userID = current.userID;
+		plan = { userID, name, tasks, categorie };
+	}
+
+	if (deleteCurrentTaks) {
+		// TODO: implement behavior
+	}
+	return moved ? moved : await TrainingsPlanModel.create(plan!);
 }
