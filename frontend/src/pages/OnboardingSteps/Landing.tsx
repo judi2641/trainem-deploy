@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
-import avatar from "/assets/avatar/muskelaufbau/blauLevel4Aufbau.png";
+import avatar from "/assets/avatar/onboarding/AvatarLandingpageOnboardingpng.png";
+
+
 
 
 export default function Landing() {
@@ -34,7 +36,7 @@ export default function Landing() {
       <img
         src={avatar}
         alt="Avatar"
-        className="absolute bottom-8 right-9 w-30 opacity-100"
+        className="absolute bottom-45 right-95 w-35 opacity-100"
       />
     </div>
   );
