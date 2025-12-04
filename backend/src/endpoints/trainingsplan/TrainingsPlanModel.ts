@@ -1,14 +1,15 @@
 import { Schema, model } from 'mongoose';
-import type { Document } from 'mongoose';
 import { TRAINING_DAYS } from '../../../../shared/types/other/TrainingDays';
 import { DIFFICULTY } from '../../../../shared/types/other/TaskDifficulty';
-
-import type { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
 import { ITask } from '../../../../shared/types/database/traininsplan/Task';
+import { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
+import { Document, Types } from 'mongoose';
 
-export interface ITaskDocument extends ITask, Document {}
+export interface ITaskDocument extends Omit<ITask, '_id'>, Document {
+	_id: Types.ObjectId;
+}
 
-const TaskSchema = new Schema<ITaskDocument>({
+const TaskSchema = new Schema({
 	title: { type: String, required: true },
 	description: { type: String, required: true },
 	difficulty: { type: String, enum: Object.values(DIFFICULTY), required: true },
@@ -21,16 +22,20 @@ const TaskSchema = new Schema<ITaskDocument>({
  * - userID 	required UID from MongoDB
  * - name 		required string
  * - tasks		{@link ITaskDocument}, default []
- * - categorie 	string
+ * - category 	string
  */
-export interface ITrainingsplanDokument extends ITrainingsplan, Document {}
 
-const TrainingsplanSchema = new Schema<ITrainingsplanDokument>(
+export interface ITrainingsplanDokument extends Omit<ITrainingsplan, '_id'>, Document {
+	_id: Types.ObjectId;
+	tasks: Types.DocumentArray<ITask>;
+}
+
+const TrainingsplanSchema = new Schema(
 	{
 		userID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		name: { type: String, required: true },
 		tasks: { type: [TaskSchema], default: [] },
-		categorie: { type: String, required: false },
+		category: { type: String, required: false },
 	},
 	{
 		timestamps: true,

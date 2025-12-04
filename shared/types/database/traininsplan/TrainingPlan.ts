@@ -8,11 +8,12 @@ import type { ITask } from './Task';
  * - userID 	required UID (MongoDB)
  * - name 		required string
  * - tasks		{@link ITask}
- * - categorie 	optional string
+ * - category 	optional string
  */
 export interface ITrainingsplan {
+	_id?: string;
 	userID: Types.ObjectId;
 	name: string;
 	tasks: ITask[];
-	categorie?: string;
+	category?: string;
 }

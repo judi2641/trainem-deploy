@@ -7,14 +7,14 @@ import { ChevronLeft, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { ITask } from '../../../shared/types/database/traininsplan/Task';
 import type { ICompletedTask } from '../../../shared/types/database/CompletedTask';
-import type { ITrainingsPlan } from '../../../shared/types/database/traininsplan/TrainingPlan';
+import type { ITrainingsplan } from '../../../shared/types/database/traininsplan/TrainingPlan';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
 export default function TasksArea() {
 	const [reloadTasksFlag, setReloadTasksFlag] = useState(false);
 	//taskList sind die gesammten tasks aller trainingspläne eines users
-	const [taskList, setTaskList] = useState<ITask[] | null>(null);
+	const [taskList, setTaskList] = useState<(ITask & { planName: string })[] | null>(null);
 
 	//completedTasks bestehen aus den abgeschlossenen tasks die zu dieser woche passen
 	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[] | null>(null);
@@ -33,7 +33,14 @@ export default function TasksArea() {
 						`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
 					);
 					const trainingsplanResponse = await res.json();
-					setTaskList(trainingsplanResponse.flatMap((tp: ITrainingsPlan) => tp.tasks));
+					setTaskList(
+						trainingsplanResponse.flatMap((tp: ITrainingsplan) =>
+							tp.tasks.map((task) => ({
+								...task,
+								planName: tp.name,
+							})),
+						),
+					);
 				}
 			} catch (error) {
 				console.log(error);
@@ -54,7 +61,7 @@ export default function TasksArea() {
 	}, [reloadTasksFlag]);
 	const triggerReload = () => setReloadTasksFlag((f) => !f);
 	//hier werden completedTasks und taskList zusammengeführ es einsteht eine lsite an Itasks mit einem neuen feld completed
-	const tasks: (ITask & { completed: boolean })[] = taskList
+	const tasks: (ITask & { planName: string } & { completed: boolean })[] = taskList
 		? taskList.map((task) => ({
 				...task,
 				completed: !!completedTasks?.some((ct) => ct.taskID.toString() === task._id!.toString()),
@@ -73,7 +80,7 @@ export default function TasksArea() {
 
 	return (
 		<div className="h-full w-full bg-white shadow-md rounded-xl min-h-0 overflow-y-auto ">
-			<div className="top-0 grid grid-cols-3 p-6 z-20 rounded-xl pl-5 gap-4 sticky inset-0 bg-white backdrop-blur-3xl">
+			<div className="top-0 grid grid-cols-3 p-6 z-20 rounded-xl pl-5 gap-4 sticky shadow-md bg-white backdrop-blur-3xl">
 				<Card className="p-5 border border-border bg-card shadow-sm ">
 					<div className="flex items-start justify-between">
 						<div>
@@ -109,7 +116,7 @@ export default function TasksArea() {
 				</Card>
 			</div>
 
-			<div className="p-6 pt-0 pb-0 ">
+			<div className="p-6 pt-3 pb-0 ">
 				<div className="flex items-center justify-between">
 					<h2 className="text-lg font-semibold text-foreground">
 						{format(currentDate, 'MMMM yyyy', { locale: de })}
