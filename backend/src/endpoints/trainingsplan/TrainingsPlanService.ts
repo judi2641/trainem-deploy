@@ -312,10 +312,10 @@ export async function getAll(auth0ID: string): Promise<ITrainingsplanDokument[]>
  * @param data Traingsplan data
  * @returns MongooseDocument
  */
-export async function post(data: ITrainingsplan): Promise<ITrainingsplanDokument> {
-	const tp: ITrainingsplanDokument = await TrainingsPlanModel.create(data);
-	return tp;
-}
+// export async function post(data: ITrainingsplan): Promise<ITrainingsplanDokument> {
+// 	const tp: ITrainingsplanDokument = await TrainingsPlanModel.create(data);
+// 	return tp;
+// }
 
 /**
  *
@@ -381,42 +381,42 @@ export async function deleteTP(planID: string): Promise<void> {
  * @throws {HttpError} 404 if no trainingsplan with targetID and createNew is false
  *
  */
-export async function moveTasks(
-	currentID: string,
-	targetID: string,
-	tasks: ITask[],
-	deleteCurrentTaks: boolean = false,
-	name: string = 'New Plan',
-	createNew: boolean = false,
-	categorie?: string,
-): Promise<ITrainingsplanDokument> {
-	const current: ITrainingsplanDokument | null = await TrainingsPlanModel.findById(currentID);
-	if (!current) {
-		throw new HttpError(404, 'There is no Trainingsplan with id: ' + currentID);
-	}
+// export async function moveTasks(
+// 	currentID: string,
+// 	targetID: string,
+// 	tasks: ITask[],
+// 	deleteCurrentTaks: boolean = false,
+// 	name: string = 'New Plan',
+// 	createNew: boolean = false,
+// 	categorie?: string,
+// ): Promise<ITrainingsplanDokument> {
+// 	const current: ITrainingsplanDokument | null = await TrainingsPlanModel.findById(currentID);
+// 	if (!current) {
+// 		throw new HttpError(404, 'There is no Trainingsplan with id: ' + currentID);
+// 	}
 
-	const moved = await TrainingsPlanModel.findByIdAndUpdate(
-		targetID,
+// 	const moved = await TrainingsPlanModel.findByIdAndUpdate(
+// 		targetID,
 
-		{ $push: { tasks: { $each: tasks } } }, // TODO: filter for dublicates,
-		{
-			runValidators: true,
-			new: true,
-		},
-	);
+// 		{ $push: { tasks: { $each: tasks } } }, // TODO: filter for dublicates,
+// 		{
+// 			runValidators: true,
+// 			new: true,
+// 		},
+// 	);
 
-	let plan: ITrainingsplan;
-	if (!moved) {
-		if (!createNew) {
-			throw new HttpError(404, 'There is no Trainingsplan with id: ' + targetID);
-		}
+// 	let plan: ITrainingsplan;
+// 	if (!moved) {
+// 		if (!createNew) {
+// 			throw new HttpError(404, 'There is no Trainingsplan with id: ' + targetID);
+// 		}
 
-		const userID = current.userID;
-		plan = { userID, name, tasks, categorie };
-	}
+// 		const userID = current.userID;
+// 		plan = { userID, name, tasks, categorie };
+// 	}
 
-	if (deleteCurrentTaks) {
-		// TODO: implement behavior
-	}
-	return moved ? moved : await TrainingsPlanModel.create(plan!);
-}
+// 	if (deleteCurrentTaks) {
+// 		// TODO: implement behavior
+// 	}
+// 	return moved ? moved : await TrainingsPlanModel.create(plan!);
+// }

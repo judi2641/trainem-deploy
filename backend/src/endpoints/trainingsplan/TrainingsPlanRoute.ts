@@ -7,7 +7,7 @@ import {
 	deleteTP,
 	getAll,
 	getTrainingsPlanByAuth0ID,
-	post,
+	//post,
 	put,
 } from './TrainingsPlanService';
 import { HttpError } from '../../errors/HttpError';
@@ -108,17 +108,17 @@ router.get('/trainingsplan/:auth0ID', async (req: Request, res: Response) => {
 	}
 });
 
-router.post('/trainingsplan', async (req: Request, res: Response) => {
-	try {
-		const data: ITrainingsplan = req.body;
-		const tp: ITrainingsplanDokument = await post(data);
-		logger.info('Trainingsplan created');
-		res.status(201).json(tp);
-	} catch (error) {
-		logger.error(error);
-		res.status(500).json({ error: 'Internal Server Error' });
-	}
-});
+// router.post('/trainingsplan', async (req: Request, res: Response) => {
+// 	try {
+// 		const data: ITrainingsplan = req.body;
+// 		const tp: ITrainingsplanDokument = await post(data);
+// 		logger.info('Trainingsplan created');
+// 		res.status(201).json(tp);
+// 	} catch (error) {
+// 		logger.error(error);
+// 		res.status(500).json({ error: 'Internal Server Error' });
+// 	}
+// });
 
 router.put('/trainingsplan/:_id', async (req: Request, res: Response) => {
 	try {
