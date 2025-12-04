@@ -3,12 +3,7 @@ import type { Document } from 'mongoose';
 import { TRAINING_DAYS } from '../../../../shared/types/other/TrainingDays';
 import { DIFFICULTY } from '../../../../shared/types/other/TaskDifficulty';
 
-import type { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
-import { ITask } from '../../../../shared/types/database/traininsplan/Task';
-
-export interface ITaskDocument extends ITask, Document {}
-
-const TaskSchema = new Schema<ITaskDocument>({
+const TaskSchema = new Schema({
 	title: { type: String, required: true },
 	description: { type: String, required: true },
 	difficulty: { type: String, enum: Object.values(DIFFICULTY), required: true },
@@ -23,9 +18,8 @@ const TaskSchema = new Schema<ITaskDocument>({
  * - tasks		{@link ITaskDocument}, default []
  * - categorie 	string
  */
-export interface ITrainingsplanDokument extends ITrainingsplan, Document {}
 
-const TrainingsplanSchema = new Schema<ITrainingsplanDokument>(
+const TrainingsplanSchema = new Schema(
 	{
 		userID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		name: { type: String, required: true },

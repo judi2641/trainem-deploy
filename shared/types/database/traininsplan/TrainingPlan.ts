@@ -11,6 +11,7 @@ import type { ITask } from './Task';
  * - categorie 	optional string
  */
 export interface ITrainingsplan {
+	_id?: string;
 	userID: Types.ObjectId;
 	name: string;
 	tasks: ITask[];

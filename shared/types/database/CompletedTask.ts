@@ -6,4 +6,5 @@ export interface ICompletedTask extends ITask {
 	_id?: string;
 	taskID: string; // the task id by creation
 	doneAt: Date; // from Mongoose createdAt...
+	planName: string;
 }
