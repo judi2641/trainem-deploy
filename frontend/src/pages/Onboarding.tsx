@@ -16,7 +16,7 @@ export default function Onboarding() {
   const current = idx !== -1 ? idx + 1 : 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-200 via-green-300 to-green-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
 
 
 

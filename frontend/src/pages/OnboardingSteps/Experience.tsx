@@ -110,7 +110,7 @@ export default function Experience() {
       <img
         src={AvatarExperience}
         alt="Avatar"
-        className="w-20 h-auto select-none"
+        className="w-18 h-auto select-none"
       />
     </div>
 
