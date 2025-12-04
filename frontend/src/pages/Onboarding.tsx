@@ -21,7 +21,7 @@ export default function Onboarding() {
 
 
    
-      <Card className="w-full max-w-3xl shadow-xl p-6">
+      <Card className="w-full max-w-3xl shadow-xl p-5">
 
         <CardHeader>
           <ProgressBar current={current} total={5} />

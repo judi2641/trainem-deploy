@@ -8,6 +8,8 @@ import{Calendar}from "@/components/ui/calendar";
 import{format}from "date-fns";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { ArrowLeft,ArrowRight } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import avatar from "/assets/avatar/onboarding/AvatarBasicInfoOnboarding.png";
 
 
 
@@ -44,9 +46,21 @@ export default function BasicInfo() {
 
 
 return (
-  <div>
+  <div className="relative">
+    
+    {/* Avatar rechts oben */}
+    <div className="absolute right-4 top-0 w-25 opacity-95 pointer-events-none">
+      <img
+        src="/assets/avatar/onboarding/AvatarBasicInfoOnboarding.png"
+        alt="Onboarding Avatar"
+        className="w-full h-auto"
+      />
+    </div>
+
     <h2 className="text-xl font-bold mb-4">Basic Information</h2>
-    <p className="text-gray-600 mb-6">Please enter some personal information about yourself.</p>
+    <p className="text-gray-600 mb-6">
+      Please enter some personal information about yourself.
+    </p>
 
     {/* Firstname */}
     <p className="mb-2 font-medium">Firstname</p>
@@ -71,68 +85,67 @@ return (
       <p className="mb-2 font-medium">Birthdate</p>
 
       <Popover>
-    <PopoverTrigger asChild>
-     <Button
-  variant="outline"
-  className={`w-full justify-start font-normal ${!birthDate ? "text-muted-foreground" : "text-foreground"}`}
->
-  {birthDate ? format(new Date(birthDate), "dd.MM.yyyy") : "Select date"}
-</Button>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={`w-full justify-start font-normal ${
+              !birthDate ? "text-muted-foreground" : "text-foreground"
+            }`}
+          >
+            {birthDate ? format(new Date(birthDate), "dd.MM.yyyy") : "Select date"}
+          </Button>
+        </PopoverTrigger>
 
-    </PopoverTrigger>
-
- <PopoverContent className="p-0 w-[350px] min-h-[380px]">
-
-  <Calendar
-    mode="single"
-    captionLayout="dropdown"
-    className="w-full  "
-    selected={birthDate ? new Date(birthDate) : undefined}
-    onSelect={(value) =>
-      value && setBirthDate(value.toISOString().split("T")[0])
-    }
-  />
-</PopoverContent>
-
-  </Popover>
+        <PopoverContent className="p-0 w-[350px] min-h-[380px]">
+          <Calendar
+            mode="single"
+            captionLayout="dropdown"
+            className="w-full"
+            selected={birthDate ? new Date(birthDate) : undefined}
+            onSelect={(value) =>
+              value && setBirthDate(value.toISOString().split("T")[0])
+            }
+          />
+        </PopoverContent>
+      </Popover>
     </div>
 
-    {/* Gender (machen wir gleich schön) */}
+    {/* Gender */}
     <div className="mb-4">
       <p className="mb-2 font-medium">Gender</p>
-
-      <div className="flex gap-2">
-        {['Male', 'Female', 'Diverse'].map((g) => (
-          <button
+      <div className="flex gap-4 justify-center mt-4">
+        {["Male", "Female", "Diverse"].map((g) => (
+          <Button
             key={g}
+            variant={gender === g ? "default" : "outline"}
             onClick={() => setGender(g)}
             className={`
-              px-4 py-2 rounded border transition
-              ${gender === g ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300 hover:bg-gray-100'}
+              px-8 py-3 text-lg rounded-lg transition
+              ${gender === g ? "bg-indigo-600 text-white border-indigo-600" : "border-gray-300"}
             `}
           >
             {g}
-          </button>
+          </Button>
         ))}
       </div>
     </div>
 
+    {/* Navigation */}
     <div className="flex justify-between mt-6">
-     <Button
-  onClick={() => navigate("/onboarding")}
-  variant="outline"
-  className="h-11 w-11 p-0 flex items-center justify-center"
->
-  <ArrowLeft className="h-5 w-5" />
-</Button>
+      <Button
+        onClick={() => navigate("/onboarding")}
+        variant="outline"
+        className="h-11 w-11 p-0 flex items-center justify-center"
+      >
+        <ArrowLeft className="h-5 w-5" />
+      </Button>
 
-<Button
-  onClick={handleNext}
-  className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
->
-  <ArrowRight className="h-5 w-5" />
-</Button>
-
+      <Button
+        onClick={handleNext}
+        className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+      >
+        <ArrowRight className="h-5 w-5" />
+      </Button>
     </div>
   </div>
 )};

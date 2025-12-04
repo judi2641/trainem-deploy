@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button"
-import avatar from "/assets/avatar/onboarding/AvatarLandingpageOnboardingpng.png";
+import avatar from "/assets/avatar/onboarding/AvatarLandingpageOnboarding.png";
 
 
 
