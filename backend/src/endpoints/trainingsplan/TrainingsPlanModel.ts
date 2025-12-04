@@ -22,7 +22,7 @@ const TaskSchema = new Schema({
  * - userID 	required UID from MongoDB
  * - name 		required string
  * - tasks		{@link ITaskDocument}, default []
- * - categorie 	string
+ * - category 	string
  */
 
 export interface ITrainingsplanDokument extends Omit<ITrainingsplan, '_id'>, Document {
@@ -35,7 +35,7 @@ const TrainingsplanSchema = new Schema(
 		userID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		name: { type: String, required: true },
 		tasks: { type: [TaskSchema], default: [] },
-		categorie: { type: String, required: false },
+		category: { type: String, required: false },
 	},
 	{
 		timestamps: true,

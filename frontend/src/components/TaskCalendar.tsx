@@ -19,13 +19,14 @@ import {
 } from '@/components/ui/select';
 import { DIFFICULTY, type TaskDifficulty } from '../../../shared/types/other/TaskDifficulty';
 import { useEffect, useState, type FormEvent } from 'react';
-import type { ITrainingsPlan } from '../../../shared/types/database/traininsplan/TrainingPlan';
+import type { ITrainingsplan } from '../../../shared/types/database/traininsplan/TrainingPlan';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
 import { toast } from 'sonner';
+import { stringToBorder } from '@/util/stringToColor';
 interface TaskCalendarProps {
 	weekStart: Date;
-	tasks: (ITask & { completed: boolean })[];
+	tasks: (ITask & { planName: string } & { completed: boolean })[];
 	onTaskCreated: () => void;
 }
 export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarProps) {
@@ -36,14 +37,37 @@ export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarPr
 	const [taskDesc, setTaskDesc] = useState('');
 	const [taskDiff, setTaskDiff] = useState('');
 	const [taskTrainingsplanID, setTaskTrainingsplanID] = useState('');
-	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsPlan[] | null>(null);
-
+	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsplan[] | null>(null);
 	const difficultyColors: Record<TaskDifficulty, string> = {
-		easy: 'bg-green-200',
-		middle: 'bg-orange-200',
-		hard: 'bg-red-200',
+		easy: 'bg-green-200 hover:bg-green-200',
+		middle: 'bg-orange-200 hover:bg-orange-200',
+		hard: 'bg-red-200 hover:bg-red-200',
 	};
 	const { user } = useAuth0();
+	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
+		try {
+			if (user?.sub) {
+				const response = await fetch(
+					`http://localhost:3000/api/trainingsplan/completedtask/${encodeURIComponent(user.sub)}}`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ id: task._id }),
+					},
+				);
+				if (response.ok) {
+					console.log('Task erfolgreich abgesclossen!');
+					toast.success('Task has been completed');
+				} else {
+					toast.error('Task has not been completed');
+				}
+			}
+		} catch (error) {
+			console.error('Netzwerkfehler:', error);
+		}
+	}
 	useEffect(() => {
 		async function loadTrainingsplan() {
 			try {
@@ -242,13 +266,13 @@ export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarPr
 												'flex items-start gap-3 p-3 rounded-lg border transition-all',
 												task.completed
 													? 'bg-green-300/30 border-border shadow-sm'
-													: 'bg-primary/30 border-border shadow-sm',
+													: stringToBorder(task.planName || ''),
 											)}
 										>
 											<div className="flex items-center gap-3 flex-1 min-w-0">
 												<Checkbox
 													checked={task.completed}
-													onCheckedChange={() => (task.completed = true)}
+													onCheckedChange={() => onChecked(task)}
 												/>
 												<div className={cn('h-2 w-2 rounded-full shrink-0 mt-1.5', 'bg-primary')} />
 												<div className="flex-1 min-w-0">

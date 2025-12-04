@@ -270,14 +270,15 @@ export async function createTaskForTrainingsplan(trainingsplanID: Types.ObjectId
 	}
 }
 
-export async function createEmptyTrainingsplan(name: string, auth0: string, category: string) {
-	const trainingsplan = new TrainingsPlanModel({ name, auth0, category });
+export async function createEmptyTrainingsplan(name: string, auth0ID: string, category: string) {
+	const user = await getUserByAuth0id(auth0ID);
+	const trainingsplan = new TrainingsPlanModel({ name, userID: user._id, category });
 	try {
 		const created_trainingsplan = await trainingsplan.save();
 		logger.info('empty trainingsplan created');
 		return created_trainingsplan;
 	} catch (error) {
-		logger.error('failed to create empty trainingsplan');
+		logger.error('failed to create empty trainingsplan', error);
 		throw new HttpError(400, 'failed to create empy trainingsplan');
 	}
 }
@@ -374,7 +375,7 @@ export async function deleteTP(planID: string): Promise<void> {
  * @param deleteCurrentTaks: boolean = false,
  * @param createNew defines if a new plan should be created of to plan with targetID, default = false
  * @param name the name of the new plan, default = "new Plan"
- * @param categorie optional categorie for the new plan
+ * @param category optional category for the new plan
  * @returns the target (or created) Trainingsplan
  *
  * @throws {HttpError} 404 if no trainingsplan with currentID
@@ -388,7 +389,7 @@ export async function deleteTP(planID: string): Promise<void> {
 // 	deleteCurrentTaks: boolean = false,
 // 	name: string = 'New Plan',
 // 	createNew: boolean = false,
-// 	categorie?: string,
+// 	category?: string,
 // ): Promise<ITrainingsplanDokument> {
 // 	const current: ITrainingsplanDokument | null = await TrainingsPlanModel.findById(currentID);
 // 	if (!current) {
@@ -412,7 +413,7 @@ export async function deleteTP(planID: string): Promise<void> {
 // 		}
 
 // 		const userID = current.userID;
-// 		plan = { userID, name, tasks, categorie };
+// 		plan = { userID, name, tasks, category };
 // 	}
 
 // 	if (deleteCurrentTaks) {

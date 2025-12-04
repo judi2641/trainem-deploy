@@ -122,8 +122,8 @@ router.get('/trainingsplan/:auth0ID', async (req: Request, res: Response) => {
 
 router.put('/trainingsplan/:_id', async (req: Request, res: Response) => {
 	try {
-		const { name, tasks, categorie } = req.body;
-		const updates: Partial<Omit<ITrainingsplan, 'userID'>> = { name, tasks, categorie };
+		const { name, tasks, category } = req.body;
+		const updates: Partial<Omit<ITrainingsplan, 'userID'>> = { name, tasks, category };
 		const updated: ITrainingsplanDokument = await put(req.params._id, updates);
 		logger.info('Trainingsplan updated');
 		res.status(200).json(updated);
