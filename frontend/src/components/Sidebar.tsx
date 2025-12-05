@@ -10,6 +10,8 @@ import {
   HiOutlineQuestionMarkCircle,
   HiOutlineLogout
 } from 'react-icons/hi'; 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 
 
 export default function Sidebar() {
@@ -24,14 +26,20 @@ export default function Sidebar() {
     // bg-white: Weißer Hintergrund
     // p-6: 6 Einheiten Padding (Polsterung) innen
     // shadow-md: Ein mittlerer Schatten
-    <div className="w-64 bg-white p-6 shadow-md flex rounded-xl m-5 flex-col ">
-      
-       
-      <div className="flex items-center mb-8">
-        {/*<img src="/vite.svg" alt="Trainem Logo" className="h-8 w-8" /> */}
-        <NavLink to= "/"className="text-2xl font-bold text-gray-800 ml-2">Trainem</NavLink>
+        <div className="w-64 bg-white p-6 shadow-md flex rounded-xl m-5 flex-col">
+
+      {/* Logo + Avatar */}
+      <div className="flex items-center justify-between mb-8">
+        <NavLink to="/" className="text-2xl font-bold text-gray-800">
+          TrainEm
+        </NavLink>
+
+        <Avatar className="h-13 w-13 rounded-full border border-gray-300">
+          <AvatarImage src="/assets/avatar/muskelaufbau/blauLevel1Aufbau.png" />
+          <AvatarFallback>U</AvatarFallback>
+        </Avatar>
       </div>
-        
+    
       {/* 2. Navigations-Menü */}
       <nav className="grow"> 
         {/* MENÜ-Sektion */}
