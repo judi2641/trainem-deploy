@@ -13,6 +13,7 @@ export interface IUserInfo {
 	lastname?: string;
 	birthDate?: string;
 	gender?: string;
+	img?: string;
 }
 
 export interface IPlanInfo {
@@ -32,6 +33,8 @@ interface OnboardingContextType {
 
 	submitUserData: () => Promise<void>;
 	submitPlanData: () => Promise<void>;
+
+	getCurrentGoal: () => TrainingsGoals | null;
 }
 
 // ------------------------------------------------------
@@ -47,11 +50,16 @@ const OnboardingContext = createContext<OnboardingContextType | null>(null);
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
 	const { user, isLoading } = useAuth0();
 
+	const getCurrentGoal = () => {
+		return planData.goal;
+	};
+
 	const [userData, setUserData] = useState<IUserInfo>({
 		firstname: '',
 		lastname: '',
 		birthDate: '',
 		gender: '',
+		img: '',
 	});
 
 	const [planData, setPlanData] = useState<IPlanInfo>({
@@ -141,6 +149,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 				updatePlanData,
 				submitUserData,
 				submitPlanData,
+				getCurrentGoal,
 			}}
 		>
 			{children}

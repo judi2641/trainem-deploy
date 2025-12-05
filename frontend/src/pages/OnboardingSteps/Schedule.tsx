@@ -4,7 +4,7 @@ import { useOnboarding } from '../../context/OnboardingContext';
 import type { TrainingDays } from '../../../../shared/types/other/TrainingDays';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import avatar from "/assets/avatar/onboarding/AvatarScheduleOnboarding.png";
+import avatar from '/assets/avatar/onboarding/AvatarScheduleOnboarding.png';
 const daysOfWeek: { key: TrainingDays; label: string }[] = [
 	{ key: 'Mon', label: 'Mon' },
 	{ key: 'Tue', label: 'Tue' },
@@ -17,7 +17,7 @@ const daysOfWeek: { key: TrainingDays; label: string }[] = [
 
 export default function Schedule() {
 	const navigate = useNavigate();
-	const { planData, updatePlanData, submitPlanData, submitUserData } = useOnboarding();
+	const { planData, updatePlanData } = useOnboarding();
 
 	const [selected, setSelected] = useState<TrainingDays[]>(planData.trainingDays || []);
 
@@ -40,65 +40,54 @@ export default function Schedule() {
 			userData: planData,
 			planData,
 		});
-		await submitUserData();
-		await submitPlanData();
-		navigate('/dashboard');
+
+		navigate('/onboarding/CharacterColor');
 	};
 
 	return (
-  <div className="relative">
+		<div className="relative">
+			{/*Avatar oben rechts */}
+			<img src={avatar} alt="Avatar" className="absolute -top-5 right-0 w-15 h-auto select-none" />
 
-    {/*Avatar oben rechts */}
-    <img
-      src={avatar}
-      alt="Avatar"
-      className="absolute -top-5 right-0 w-15 h-auto select-none"
-    />
+			<h2 className="text-lg font-semibold mb-2">Training Schedule</h2>
+			<p className="text-sm text-gray-600 mb-4">Select the days you are available for training.</p>
 
-    <h2 className="text-lg font-semibold mb-2">Training Schedule</h2>
-    <p className="text-sm text-gray-600 mb-4">
-      Select the days you are available for training.
-    </p>
+			<div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+				{daysOfWeek.map((day) => {
+					const isSelected = selected.includes(day.key);
 
-    <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-      {daysOfWeek.map((day) => {
-        const isSelected = selected.includes(day.key);
-
-        return (
-          <Button
-            key={day.key}
-            variant={isSelected ? "default" : "outline"}
-            onClick={() => toggleDay(day.key)}
-            className={`
+					return (
+						<Button
+							key={day.key}
+							variant={isSelected ? 'default' : 'outline'}
+							onClick={() => toggleDay(day.key)}
+							className={`
               w-full py-3 text-md rounded-lg
-              ${
-                isSelected
-                  ? "bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600"
-                  : ""
-              }
+              ${isSelected ? 'bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600' : ''}
             `}
-          >
-            {day.label}
-          </Button>
-        );
-      })}
-    </div>
+						>
+							{day.label}
+						</Button>
+					);
+				})}
+			</div>
 
-    <div className="flex justify-between mt-6">
-      <Button
-        onClick={() => navigate("/onboarding")}
-        variant="outline"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <ArrowLeft className="h-5 w-5" />
-      </Button>
+			<div className="flex justify-between mt-6">
+				<Button
+					onClick={() => navigate('/onboarding')}
+					variant="outline"
+					className="h-11 w-11 p-0 flex items-center justify-center"
+				>
+					<ArrowLeft className="h-5 w-5" />
+				</Button>
 
-      <Button
-        onClick={handleFinish}
-        className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
-      >
-        <ArrowRight className="h-5 w-5" />
-      </Button>
-    </div>
-  </div>
-)};
+				<Button
+					onClick={handleFinish}
+					className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+				>
+					<ArrowRight className="h-5 w-5" />
+				</Button>
+			</div>
+		</div>
+	);
+}
