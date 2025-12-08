@@ -33,8 +33,6 @@ interface OnboardingContextType {
 
 	submitUserData: () => Promise<void>;
 	submitPlanData: () => Promise<void>;
-
-	getCurrentGoal: () => TrainingsGoals | null;
 }
 
 // ------------------------------------------------------
@@ -49,10 +47,6 @@ const OnboardingContext = createContext<OnboardingContextType | null>(null);
 
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
 	const { user, isLoading } = useAuth0();
-
-	const getCurrentGoal = () => {
-		return planData.goal;
-	};
 
 	const [userData, setUserData] = useState<IUserInfo>({
 		firstname: '',
@@ -96,7 +90,13 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(userData),
+				body: JSON.stringify({
+					firstname: userData.firstname,
+					lastname: userData.lastname,
+					birthDate: userData.birthDate,
+					gender: userData.gender,
+					img: userData.img,
+				}),
 			});
 
 			if (!res.ok) throw new Error('Error saving user basic info');
@@ -149,7 +149,6 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 				updatePlanData,
 				submitUserData,
 				submitPlanData,
-				getCurrentGoal,
 			}}
 		>
 			{children}
