@@ -10,6 +10,7 @@ import Experience from './pages/OnboardingSteps/Experience';
 import Goals from './pages/OnboardingSteps/Goals';
 import Schedule from './pages/OnboardingSteps/Schedule';
 import CharacterColor from './pages/OnboardingSteps/CharacterColor';
+import Intro from './pages/OnboardingSteps/Intro';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import Tasks from './pages/Tasks';
@@ -73,12 +74,14 @@ function App() {
 						</ProtectedRoute>
 					}
 				>
+					<Route path="intro" element={<Intro />} />
 					<Route index element={<Landing />} />
 					<Route path="basic" element={<BasicInfo />} />
 					<Route path="experience" element={<Experience />} />
 					<Route path="goals" element={<Goals />} />
 					<Route path="schedule" element={<Schedule />} />
 					<Route path="CharacterColor" element={<CharacterColor />} />
+					
 				</Route>
 			</Routes>
 		</Router>

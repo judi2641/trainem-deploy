@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Button } from '@/components/ui/button';
 export default function CharacterColor() {
 	const navigate = useNavigate();
 	const { updateUserData, submitPlanData, submitUserData, getCurrentGoal } = useOnboarding();
@@ -95,7 +96,7 @@ export default function CharacterColor() {
 		await submitUserData();
 		await submitPlanData();
 
-		navigate('/dashboard');
+		navigate('/onboarding/intro');
 	};
 
 	// -------------------------------------------------------------
@@ -133,29 +134,22 @@ export default function CharacterColor() {
 			</div>
 
 			{/* Navigation */}
-			<div className="flex justify-between mt-6">
-				<button
-					onClick={() => navigate(-1)}
-					className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-50"
-				>
-					Back
-				</button>
-
-				<button
-					onClick={handleFinish}
-					disabled={selected === null}
-					className={`
-						px-4 py-2 rounded
-						${
-							selected !== null
-								? 'bg-indigo-600 text-white hover:bg-indigo-700'
-								: 'bg-gray-300 text-gray-500 cursor-not-allowed'
-						}
-					`}
-				>
-					Continue
-				</button>
-			</div>
+    <div className="flex justify-between mt-10">
+      <Button
+        onClick={() => navigate("/onboarding")}
+        variant="outline"
+        className="h-11 w-11 p-0 flex items-center justify-center"
+      >
+        <ArrowLeft className="h-5 w-5" />
+      </Button>
+			<Button
+  onClick={handleFinish}
+  className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+>
+				
+        <ArrowRight className="h-5 w-5" />
+      </Button>
+    </div>
 		</div>
 	);
 }
