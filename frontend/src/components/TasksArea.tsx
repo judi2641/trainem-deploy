@@ -61,7 +61,7 @@ export default function TasksArea() {
 		async function loadCompletedTasks() {
 			try {
 				const res = await fetch(
-					`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
+					`http://localhost:3000/api/completedTasks/${encodeURIComponent(user.sub)}`,
 				);
 				if (!res.ok) {
 					setCompletedTasks([]);
@@ -72,6 +72,7 @@ export default function TasksArea() {
 					const doneDate = new Date(task.doneAt);
 					return doneDate >= weekStart && doneDate <= weekEnd;
 				});
+				console.log(completedTasksThisWeek);
 				setCompletedTasks(completedTasksThisWeek);
 			} catch (error) {
 				console.log(error);
@@ -87,7 +88,7 @@ export default function TasksArea() {
 
 	const tasks: (ITask & { planName: string } & { completed: boolean })[] = taskList.map((task) => ({
 		...task,
-		completed: !!completedTasks.some((ct) => ct._id?.toString() === task._id!.toString()),
+		completed: !!completedTasks.some((ct) => ct.taskID?.toString() === task._id!.toString()),
 	}));
 
 	const completedStat: number = tasks.filter((task) => task.completed === true).length;
@@ -154,7 +155,12 @@ export default function TasksArea() {
 				</div>
 			</div>
 			<div className="p-6">
-				<TaskCalendar weekStart={weekStart} tasks={tasks} onTaskCreated={triggerReload} />
+				<TaskCalendar
+					weekStart={weekStart}
+					tasks={tasks}
+					onTaskCreated={triggerReload}
+					onTaskCompleted={triggerReload}
+				/>
 			</div>
 		</div>
 	);

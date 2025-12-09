@@ -28,8 +28,14 @@ interface TaskCalendarProps {
 	weekStart: Date;
 	tasks: (ITask & { planName: string } & { completed: boolean })[];
 	onTaskCreated: () => void;
+	onTaskCompleted: () => void;
 }
-export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarProps) {
+export function TaskCalendar({
+	weekStart,
+	tasks,
+	onTaskCreated,
+	onTaskCompleted,
+}: TaskCalendarProps) {
 	const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
 	const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 	const [taskDay, setTaskDay] = useState<TrainingDays>();
@@ -47,7 +53,7 @@ export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarPr
 	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
 		try {
 			if (user?.sub) {
-				const response = await fetch(`http://localhost:3000/api/completedTasks/${user.sub}}`, {
+				const response = await fetch(`http://localhost:3000/api/completedTasks/${user.sub}`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -57,6 +63,7 @@ export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarPr
 				if (response.ok) {
 					console.log('Task erfolgreich abgesclossen!');
 					toast.success('Task has been completed');
+					onTaskCompleted();
 				} else {
 					toast.error('Task has not been completed');
 				}
