@@ -20,7 +20,7 @@ router.post('/:auth0Id', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/:authId', async (req: Request, res: Response) => {
+router.get('/:auth0Id', async (req: Request, res: Response) => {
 	try {
 		const auth0Id = req.params.auth0Id;
 		if (!auth0Id) {
