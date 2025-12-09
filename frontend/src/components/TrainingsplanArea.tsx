@@ -28,18 +28,23 @@ export default function TrainigsplanArea() {
 				const res = await fetch(
 					`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
 				);
+				if (!res.ok) {
+					setTrainingsplan([]);
+					return;
+				}
 				const trainingsplanResponse = await res.json();
 				setTrainingsplan(trainingsplanResponse);
 			}
 		} catch (error) {
 			console.log(error);
+			setTrainingsplan([]);
 		}
 	}
 	useEffect(() => {
 		loadTrainingsplan();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [activeTab]);
-	const visible = trainingsplan.flatMap((plan) =>
+	}, [user?.sub]);
+	const visible = trainingsplan?.flatMap((plan) =>
 		plan.tasks
 			.filter((t) => t.day === activeTab)
 			.map((task) => ({

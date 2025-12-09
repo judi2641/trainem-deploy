@@ -1,6 +1,10 @@
+import type { IUser } from '../../../../shared/types/database/user/User';
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { Progress } from '@/components/ui/progress';
-export default function Avatar() {
+interface AvatarProps {
+	user: IUser | undefined;
+}
+export default function Avatar({ user }: AvatarProps) {
 	return (
 		<div className="h-full">
 			<Card className="h-full">
@@ -8,10 +12,7 @@ export default function Avatar() {
 					<div className="flex flex-col m-6">
 						<h1 className="text-4xl font-bold text-center mb-2">Level 1</h1>
 						<div className="flex justify-center items-center pb-6">
-							<img
-								src="/assets/avatar/abnahme/blauLevel1Abnahme.png"
-								className="w-40 h-50 object-contain object-center"
-							/>
+							<img src={user?.img} className="w-40 h-50 object-contain object-center" />
 						</div>
 
 						<div className="flex justify-between mb-2">

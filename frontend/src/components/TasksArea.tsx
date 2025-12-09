@@ -14,10 +14,10 @@ import { useAuth0 } from '@auth0/auth0-react';
 export default function TasksArea() {
 	const [reloadTasksFlag, setReloadTasksFlag] = useState(false);
 	//taskList sind die gesammten tasks aller trainingspläne eines users
-	const [taskList, setTaskList] = useState<(ITask & { planName: string })[] | null>(null);
+	const [taskList, setTaskList] = useState<(ITask & { planName: string })[]>([]);
 
 	//completedTasks bestehen aus den abgeschlossenen tasks die zu dieser woche passen
-	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[] | null>(null);
+	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[]>([]);
 	//state um alles neu zu berechnen wenn man die wochenanzeige wechselt
 	const [currentDate, setCurrentDate] = useState(startOfToday());
 	const { user } = useAuth0();
@@ -32,10 +32,20 @@ export default function TasksArea() {
 					const res = await fetch(
 						`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
 					);
+					if (!res.ok) {
+						setTaskList([]);
+						return;
+					}
 					const trainingsplanResponse = await res.json();
+
+					if (!trainingsplanResponse || !Array.isArray(trainingsplanResponse)) {
+						setTaskList([]);
+						return;
+					}
+
 					setTaskList(
 						trainingsplanResponse.flatMap((tp: ITrainingsplan) =>
-							tp.tasks.map((task) => ({
+							(tp.tasks || []).map((task) => ({
 								...task,
 								planName: tp.name,
 							})),
@@ -44,40 +54,49 @@ export default function TasksArea() {
 				}
 			} catch (error) {
 				console.log(error);
+				setTaskList([]);
 			}
 		}
-		//hier werden erst alle completed tasks abgefragt und dann gefiltert ob sie in deser woche liegen
+
 		async function loadCompletedTasks() {
-			const res = await fetch('endpoint completed tasks');
-			const data = await res.json();
-			const completedTasksThisWeek: ICompletedTask[] = data.filter((task: ICompletedTask) => {
-				const doneDate = new Date(task.doneAt);
-				return doneDate >= weekStart && doneDate <= weekEnd;
-			});
-			setCompletedTasks(completedTasksThisWeek);
+			try {
+				const res = await fetch('endpoint completed tasks');
+				if (!res.ok) {
+					setCompletedTasks([]);
+					return;
+				}
+				const data = await res.json();
+				const completedTasksThisWeek: ICompletedTask[] = (data || []).filter(
+					(task: ICompletedTask) => {
+						const doneDate = new Date(task.doneAt);
+						return doneDate >= weekStart && doneDate <= weekEnd;
+					},
+				);
+				setCompletedTasks(completedTasksThisWeek);
+			} catch (error) {
+				console.log(error);
+				setCompletedTasks([]);
+			}
 		}
+
 		loadTrainingsplan();
 		loadCompletedTasks();
-	}, [reloadTasksFlag]);
-	const triggerReload = () => setReloadTasksFlag((f) => !f);
-	//hier werden completedTasks und taskList zusammengeführ es einsteht eine lsite an Itasks mit einem neuen feld completed
-	const tasks: (ITask & { planName: string } & { completed: boolean })[] = taskList
-		? taskList.map((task) => ({
-				...task,
-				completed: !!completedTasks?.some((ct) => ct.taskID.toString() === task._id!.toString()),
-			}))
-		: [];
+	}, [reloadTasksFlag, user?.sub]);
 
-	//hier werden die statistiken für die aktuelle Woche berechnet
+	const triggerReload = () => setReloadTasksFlag((f) => !f);
+
+	const tasks: (ITask & { planName: string } & { completed: boolean })[] = taskList.map((task) => ({
+		...task,
+		completed: !!completedTasks.some((ct) => ct.taskID.toString() === task._id!.toString()),
+	}));
+
 	const completedStat: number = tasks.filter((task) => task.completed === true).length;
 	const totalStat: number = tasks.length;
 	const pending: number = totalStat - completedStat;
 
-	//wenn einer der pfeiltasten gedrückt wird werden einfach 7 tage auf das aktuelle datum addiert oder subtrahiert
 	const handlePrevWeek = () => setCurrentDate((prev) => addDays(prev, -7));
 	const handleNextWeek = () => setCurrentDate((prev) => addDays(prev, 7));
 	const handleToday = () => setCurrentDate(startOfToday());
-
 	return (
 		<div className="h-full w-full bg-white shadow-md rounded-xl min-h-0 overflow-y-auto ">
 			<div className="top-0 grid grid-cols-3 p-6 z-20 rounded-xl pl-5 gap-4 sticky shadow-md bg-white backdrop-blur-3xl">

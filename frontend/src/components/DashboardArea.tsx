@@ -54,11 +54,12 @@ export default function DashboardArea() {
 		loadTrainingsplan();
 	}, [user?.sub]);
 	const currentDay = format(startOfToday(), 'eee');
+
 	const todaysTasks = taskList ? taskList.filter((task) => task.day === currentDay) : [];
 	return (
 		<div className="w-full h-full bg-white shadow-md p-6 rounded-xl grid grid-cols-12 gap-4">
 			<div className="col-span-4 row-span-3 max-h-screen">
-				<Avatar></Avatar>
+				<Avatar user={trainemUser}></Avatar>
 			</div>
 			<div className="col-span-4 max-h-2/3">
 				<TodaysTask tasks={todaysTasks}></TodaysTask>

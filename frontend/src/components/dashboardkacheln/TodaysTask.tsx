@@ -26,19 +26,27 @@ export default function TodaysTask({ tasks }: TodayTaskProps) {
 				</div>
 			</CardHeader>
 			<CardContent>
-				{/* Task Item */}
-				{tasks.map((task) => (
-					<div
-						key={task._id}
-						className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg"
-					>
-						<Checkbox id={task._id} />
-						<label htmlFor={task._id} className="flex-1 cursor-pointer">
-							<p className="font-medium">{task.title}</p>
-							<p className="text-sm text-gray-600">{task.description}</p>
-						</label>
+				{tasks.length === 0 ? (
+					<div className="flex flex-col items-center justify-center py-8 space-y-4">
+						<p className="text-muted-foreground text-center">No scheduled tasks today</p>
+						<Button variant="outline" onClick={() => navigate('/tasks')}>
+							Create task for today
+						</Button>
 					</div>
-				))}
+				) : (
+					tasks.map((task) => (
+						<div
+							key={task._id}
+							className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg"
+						>
+							<Checkbox id={task._id} />
+							<label htmlFor={task._id} className="flex-1 cursor-pointer">
+								<p className="font-medium">{task.title}</p>
+								<p className="text-sm text-gray-600">{task.description}</p>
+							</label>
+						</div>
+					))
+				)}
 			</CardContent>
 		</Card>
 	);

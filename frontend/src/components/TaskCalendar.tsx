@@ -37,7 +37,7 @@ export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarPr
 	const [taskDesc, setTaskDesc] = useState('');
 	const [taskDiff, setTaskDiff] = useState('');
 	const [taskTrainingsplanID, setTaskTrainingsplanID] = useState('');
-	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsplan[] | null>(null);
+	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsplan[]>([]);
 	const difficultyColors: Record<TaskDifficulty, string> = {
 		easy: 'bg-green-200 hover:bg-green-200',
 		middle: 'bg-orange-200 hover:bg-orange-200',
@@ -75,6 +75,10 @@ export function TaskCalendar({ weekStart, tasks, onTaskCreated }: TaskCalendarPr
 					const res = await fetch(
 						`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
 					);
+					if (!res.ok) {
+						setTrainingsplaene([]);
+						return;
+					}
 					const trainingsplanResponse = await res.json();
 					setTrainingsplaene(trainingsplanResponse);
 				}
