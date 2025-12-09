@@ -5,10 +5,10 @@ import { logger } from '../../utils/logger';
 
 const router = express();
 
-router.post('/:auth0Id', async (req: Request, res: Response) => {
+router.post('/:auth0ID', async (req: Request, res: Response) => {
 	try {
 		const taskId = req.body.id;
-		await createCompletedTask(taskId, req.params.auth0Id);
+		await createCompletedTask(taskId, req.params.auth0ID);
 		res.status(201).send();
 	} catch (error) {
 		if (error instanceof HttpError) {
@@ -20,12 +20,12 @@ router.post('/:auth0Id', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/:authId', async (req: Request, res: Response) => {
+router.get('/:auth0ID', async (req: Request, res: Response) => {
 	try {
-		const auth0Id = req.params.auth0Id;
+		const auth0Id = req.params.auth0ID;
 		if (!auth0Id) {
-			logger.error('auth0Id is missing');
-			res.status(400).json({ error: 'auth0Id is missing' });
+			logger.error('auth0ID is missing');
+			res.status(400).json({ error: 'auth0ID is missing' });
 		}
 		const tasks = await getAllCompletedTaskByAuthId(auth0Id);
 		res.status(200).json(tasks);
