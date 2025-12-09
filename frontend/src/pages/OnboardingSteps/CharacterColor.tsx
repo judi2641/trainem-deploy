@@ -16,7 +16,7 @@ const characterImages = {
 
 export default function CharacterColor() {
 	const navigate = useNavigate();
-	const { updateUserData, submitUserData } = useOnboarding();
+	const { updateUserData, submitUserData, submitPlanData } = useOnboarding();
 
 	// 👉 Optionen werden automatisch aus characterImages erzeugt
 	const characterOptions = [
@@ -41,7 +41,7 @@ export default function CharacterColor() {
 		console.log('Selected character:', selected);
 		console.log('Selected IMAGE:', selectedImage);
 		await submitUserData();
-
+		await submitPlanData();
 		navigate('/onboarding/intro');
 	};
 
@@ -78,22 +78,29 @@ export default function CharacterColor() {
 			</div>
 
 			{/* Navigation */}
-    <div className="flex justify-between mt-10">
-      <Button
-        onClick={() => navigate("/onboarding")}
-        variant="outline"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <ArrowLeft className="h-5 w-5" />
-      </Button>
-			<Button
-  onClick={handleFinish}
-  className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
->
+			<div className="flex justify-between mt-6">
+				<button
+					onClick={() => navigate(-1)}
+					className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-50"
+				>
+					Back
+				</button>
 
-        <ArrowRight className="h-5 w-5" />
-      </Button>
-    </div>
+				<button
+					onClick={handleFinish}
+					disabled={selected === null}
+					className={`
+						px-4 py-2 rounded
+						${
+							selected !== null
+								? 'bg-indigo-600 text-white hover:bg-indigo-700'
+								: 'bg-gray-300 text-gray-500 cursor-not-allowed'
+						}
+					`}
+				>
+					Continue
+				</button>
+			</div>
 		</div>
 	);
 }
