@@ -4,7 +4,7 @@ import { logger } from './utils/logger';
 import cors from 'cors';
 import { initDB } from './database/db';
 import UserRoute from './endpoints/user/UserRoute';
-import TrainingsplanRoute from "./endpoints/trainingsplan/TrainingsPlanRoute";
+import TrainingsplanRoute from './endpoints/trainingsplan/TrainingsPlanRoute';
 
 const app = express();
 
