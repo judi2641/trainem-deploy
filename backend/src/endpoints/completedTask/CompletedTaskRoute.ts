@@ -20,9 +20,9 @@ router.post('/:auth0ID', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/:auth0ID', async (req: Request, res: Response) => {
+router.get('/:auth0Id', async (req: Request, res: Response) => {
 	try {
-		const auth0Id = req.params.auth0ID;
+		const auth0Id = req.params.auth0Id;
 		if (!auth0Id) {
 			logger.error('auth0ID is missing');
 			res.status(400).json({ error: 'auth0ID is missing' });

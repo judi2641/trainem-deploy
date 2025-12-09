@@ -21,3 +21,7 @@ Content-Type: application/json
 {
     "id": "{{taskId}}"
 }
+
+###
+
+GET http://localhost:3000/api/completedTasks/auth0|691343d8c21036492a17e01e
