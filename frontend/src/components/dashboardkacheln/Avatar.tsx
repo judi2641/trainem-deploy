@@ -2,7 +2,7 @@ import type { IUser } from '../../../../shared/types/database/user/User';
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { Progress } from '@/components/ui/progress';
 interface AvatarProps {
-	user: IUser | undefined;
+	user?: IUser;
 }
 export default function Avatar({ user }: AvatarProps) {
 	return (
@@ -19,7 +19,7 @@ export default function Avatar({ user }: AvatarProps) {
 							<span className="font-semibold">Experience</span>
 							<span className="text-gray-500">10/100 XP</span>
 						</div>
-						<Progress value={10}></Progress>
+						<Progress value={1}></Progress>
 					</div>
 					<div className="grid grid-cols-2 gap-4 mb-4">
 						<Card>
