@@ -1,59 +1,68 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Intro() {
+export default function OnboardingSummary() {
   const navigate = useNavigate();
 
   return (
-    <div className="px-6 max-w-xl mx-auto">
-
-      {/* Titel */}
-      <h1 className="text-3xl font-bold text-gray-900 text-center">
-        Glückwunsch!
+    <div className="text-center space-y-6">
+      <h1 className="text-3xl font-bold text-gray-800">
+        Welcome to TrainEm! 
       </h1>
 
-      {/* Beschreibung */}
-      <p className="text-gray-700 text-lg leading-relaxed text-center mt-6">
-        Du hast alle Schritte erfolgreich abgeschlossen.
-        <br /><br />
-        TrainEm hat nun alle Informationen, um deinen persönlichen Trainingsplan
-        zu erstellen — basierend auf:
+      <p className="text-gray-600">
+        Here is a quick overview of your new fitness app.
       </p>
 
-      {/* Features */}
-      <div className="text-gray-800 space-y-2 font-medium text-center mt-4">
-        <p>• Deinem Trainingsziel</p>
-        <p>• Deiner Erfahrung</p>
-        <p>• Deiner Trainingsfrequenz</p>
-        <p>• Deinem gewählten Charakter</p>
+      <div className="grid gap-4 text-left">
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h2 className="text-xl font-semibold">🏋️ Your Avatar</h2>
+          <p className="text-gray-600">
+            Your avatar grows with your progress and shows your development over time.
+          </p>
+        </div>
+
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h2 className="text-xl font-semibold">📅 Training Plan</h2>
+          <p className="text-gray-600">
+            Based on your goals, you receive a personalized training plan tailored to you.
+          </p>
+        </div>
+
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h2 className="text-xl font-semibold">📊 Statistics</h2>
+          <p className="text-gray-600">
+            Track your workouts, level-ups, and daily activity.
+          </p>
+        </div>
+
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h2 className="text-xl font-semibold">🔥 Tasks & Achievements</h2>
+          <p className="text-gray-600">
+            Complete challenges and unlock new avatars as you improve.
+          </p>
+        </div>
+
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h2 className="text-xl font-semibold">🧭 Navigation</h2>
+          <p className="text-gray-600">
+            The sidebar helps you navigate quickly through all areas of the app.
+          </p>
+        </div>
       </div>
 
-      {/* Abschluss-Text */}
-      <p className="text-gray-700 text-lg text-center mt-6">
-        Du kannst jetzt loslegen. Viel Spaß beim Trainieren!
-      </p>
-
-      {/* Navigation wie auf allen anderen Seiten */}
-      <div className="flex justify-between mt-10 w-full">
-
-        {/* Zurück-Button */}
+      {/* BUTTONS */}
+      <div className="flex gap-4 mt-6 justify-center">
         <Button
-          onClick={() => navigate(-1)}
           variant="outline"
-          className="h-11 w-11 p-0 flex items-center justify-center"
+          onClick={() => navigate("/onboarding/CharacterColor")}
         >
-          <ArrowLeft className="h-5 w-5" />
+          Back
         </Button>
 
-        {/* Weiter zum Dashboard */}
-        <Button
-          onClick={() => navigate("/dashboard")}
-          className="h-11 w-11 p-0 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center"
-        >
-          <ArrowRight className="h-5 w-5" />
+        <Button onClick={() => navigate("/dashboard")}>
+          Let’s get started! 🚀
         </Button>
-
       </div>
     </div>
   );
