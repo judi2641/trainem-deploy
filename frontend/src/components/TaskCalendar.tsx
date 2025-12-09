@@ -53,13 +53,16 @@ export function TaskCalendar({
 	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
 		try {
 			if (user?.sub) {
-				const response = await fetch(`http://localhost:3000/api/completedTasks/${user.sub}`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
+				const response = await fetch(
+					`http://localhost:3000/api/completedTasks/${encodeURIComponent(user.sub)}`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ id: task._id }),
 					},
-					body: JSON.stringify({ id: task._id }),
-				});
+				);
 				if (response.ok) {
 					console.log('Task erfolgreich abgesclossen!');
 					toast.success('Task has been completed');
