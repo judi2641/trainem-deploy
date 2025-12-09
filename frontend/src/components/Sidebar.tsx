@@ -10,10 +10,32 @@ import {
   HiOutlineQuestionMarkCircle,
   HiOutlineLogout
 } from 'react-icons/hi'; 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
 
 
 export default function Sidebar() {
+  const {user}= useAuth0(); 
   const {logout} = useAuth0();
+
+    const [backendUser, setBackendUser] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadUser() {
+      if (!user?.sub) return;
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/user/${user.sub}`);
+        const data = await res.json();
+        setBackendUser(data);
+      } catch (err) {
+        console.error("Fehler beim Laden des Users", err);
+      }
+    }
+
+    loadUser();
+  }, [user]);
+
   const activeVisuals: string = "flex items-center p-2 rounded-lg bg-primary/15 text-primary font-semibold";
   const nonActiveVisuals: string = "flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100";
   return (
@@ -24,14 +46,29 @@ export default function Sidebar() {
     // bg-white: Weißer Hintergrund
     // p-6: 6 Einheiten Padding (Polsterung) innen
     // shadow-md: Ein mittlerer Schatten
-    <div className="w-64 bg-white p-6 shadow-md flex rounded-xl m-5 flex-col ">
-      
-       
-      <div className="flex items-center mb-8">
-        {/*<img src="/vite.svg" alt="Trainem Logo" className="h-8 w-8" /> */}
-        <NavLink to= "/"className="text-2xl font-bold text-gray-800 ml-2">Trainem</NavLink>
+        <div className="w-64 bg-white p-6 shadow-md flex rounded-xl m-5 flex-col">
+
+      {/* Logo  */}
+      <div className="flex flex-col items-center mb-8">
+        <div className="text-3xl font-extrabold text-gray-900 tracking-wide mb-6">
+          TrainEm
+        </div>
+
+        {/* Avatar */}
+      <Avatar className="h-20 w-20 border-2 border-gray-300 shadow-md bg-gray-100">
+  <AvatarImage src="" alt="" />
+  <AvatarFallback></AvatarFallback>
+</Avatar>
+
+
+
+ {/* Nur der Vorname */}
+    <p className="mt-3 text-lg font-semibold text-gray-800">
+  {backendUser?.firstName ?? ""}
+</p>
+
       </div>
-        
+    
       {/* 2. Navigations-Menü */}
       <nav className="grow"> 
         {/* MENÜ-Sektion */}

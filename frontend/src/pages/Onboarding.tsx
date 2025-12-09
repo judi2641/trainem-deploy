@@ -9,6 +9,7 @@ const steps = [
 	'/onboarding/goals',
 	'/onboarding/schedule',
 	'/onboarding/CharacterColor',
+	'/onboarding/intro',
 ];
 
 export default function Onboarding() {
@@ -17,10 +18,23 @@ export default function Onboarding() {
 	const current = idx !== -1 ? idx + 1 : 1;
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-green-200 via-green-300 to-green-500 flex items-center justify-center p-4">
+		<div
+			className="
+        min-h-screen 
+        bg-gradient-to-br 
+        from-[#1FAF66] 
+        via-[#0C7F45] 
+        to-[#054F2D]
+        flex 
+        items-center 
+        justify-center 
+        p-4
+      "
+		>
+			{/* HIER muss das Card-Element hin! */}
 			<Card className="w-full max-w-3xl shadow-xl p-5">
 				<CardHeader>
-					<ProgressBar current={current} total={6} />
+					<ProgressBar current={current} total={7} />
 				</CardHeader>
 
 				<CardContent>

@@ -20,7 +20,7 @@ export default function Landing() {
       </h1>
 
       <p className="text-black-600 text-xl mb-15 max-w-md">
-        Let’s set up your profile.
+        Let’s set up your profile
       </p>
 
       <Button

@@ -52,30 +52,36 @@ export default function Experience() {
 
       {/* Weight */}
       <div className="mb-4">
-        <Label htmlFor="weight">Weight (kg)</Label>
-        <Input
-          id="weight"
-          type="number"
-          placeholder="..."
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          className="mt-1"
-        />
-      </div>
+          <Label htmlFor="weight">Weight (kg)</Label>
+          <Input
+            id="weight"
+            type="text"           
+            inputMode="numeric"       
+            placeholder="e.g. 70"
+            value={weight}
+            onChange={(e) =>
+              setWeight(e.target.value.replace(/[^0-9]/g, "")) 
+            }
+            className="mt-1"
+          />
+        </div>
 
-      {/* Height */}
-      <div className="mb-2">
-        <Label htmlFor="height">Height (cm)</Label>
-        <Input
-          id="height"
-          type="number"
-          placeholder="..."
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-          className="mt-1"
-        />
+        {/* Height */}
+        <div className="mb-4">
+          <Label htmlFor="height">Height (cm)</Label>
+          <Input
+            id="height"
+            type="text"                
+            inputMode="numeric"
+            placeholder="e.g. 175"
+            value={height}
+            onChange={(e) =>
+              setHeight(e.target.value.replace(/[^0-9]/g, "")) 
+            }
+            className="mt-1"
+          />
+        </div>
       </div>
-    </div>
 
     {/* Experience */}
     <div>

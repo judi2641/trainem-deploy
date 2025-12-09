@@ -14,6 +14,7 @@ export async function saveBasicUserInfo(auth0ID: string, basicData: any) {
 			lastName: basicData.lastname,
 			birthDate: basicData.birthDate,
 			gender: basicData.gender,
+			img: basicData.img,
 		},
 		{ new: true, upsert: true },
 	);
