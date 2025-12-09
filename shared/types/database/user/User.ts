@@ -4,14 +4,14 @@
 -----------------------------------------------------
 */
 
-import { ObjectId } from "mongoose";
+import { ObjectId } from 'mongoose';
 
 /**
  * Base Interface for all the Users.
  * Contains all the Information, each User contains.
  */
 export interface IUser {
-	auth0ID: string; 
+	auth0ID: string;
 	email: string;
 	userType?: UserType;
 
@@ -26,9 +26,9 @@ export interface IUser {
 
 // gender
 export const GENDERS = {
-	m: 'm',
-	f: 'f',
-	d: 'd',
+	m: 'Male',
+	f: 'Female',
+	d: 'Divers',
 } as const;
 export type GenderType = (typeof GENDERS)[keyof typeof GENDERS];
 
@@ -36,7 +36,5 @@ export type GenderType = (typeof GENDERS)[keyof typeof GENDERS];
 export const USERS = {
 	trainer: 'trainer',
 	client: 'client',
-	
 } as const;
 export type UserType = (typeof USERS)[keyof typeof USERS];
-

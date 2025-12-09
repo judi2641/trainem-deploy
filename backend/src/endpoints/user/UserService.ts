@@ -2,6 +2,7 @@ import { IUser } from '../../../../shared/types/database/user/User';
 import { UserModel } from './UserModel';
 import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
+import { getAvatarImage } from '../../utils/getAvatarImage';
 
 /**
  *Finish Basic Info
@@ -57,4 +58,21 @@ export async function getUserByAuth0id(auth0ID: string) {
 	}
 
 	return user;
+}
+
+export async function addPoints(auth0ID: string, points: number) {
+	try {
+		const user = await getUserByAuth0id(auth0ID);
+		user.score += points;
+		user.img = getAvatarImage(user.img, user.score);
+		console.log(user);
+		user.save();
+	} catch (error) {
+		if (error instanceof HttpError) {
+			throw error;
+		} else {
+			logger.error(error);
+			throw new HttpError(400, 'failed to add points');
+		}
+	}
 }

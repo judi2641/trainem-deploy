@@ -11,11 +11,12 @@ const UserSchema = new Schema(
 		firstName: { type: String },
 		lastName: { type: String },
 		birthDate: { type: Date },
-		gender: { type: String, enum: Object.values(GENDERS) },
+		gender: { type: String, enum: ['Male', 'Female', 'Divers'] },
 
 		avatar: { type: String },
-		img: { type: String },
+		img: { type: String, required: true, default: 'blauLevel1Abnahme' },
 		onboardingCompleted: { type: Boolean, default: false },
+		score: { type: Number, required: true, default: 0 },
 	},
 	{
 		timestamps: true,

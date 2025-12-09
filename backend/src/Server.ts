@@ -5,6 +5,7 @@ import cors from 'cors';
 import { initDB } from './database/db';
 import UserRoute from './endpoints/user/UserRoute';
 import TrainingsplanRoute from './endpoints/trainingsplan/TrainingsPlanRoute';
+import CompletedTaskRoute from './endpoints/completedTask/CompletedTaskRoute';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 app.use('/api/user', UserRoute);
 app.use('/api/trainingsplan', TrainingsplanRoute);
+app.use('/api/completedTasks', CompletedTaskRoute);
 
 async function startServer() {
 	try {

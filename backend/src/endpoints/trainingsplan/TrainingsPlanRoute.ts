@@ -21,6 +21,7 @@ const router = express();
 
 router.post('/:auth0ID', async (req: Request, res: Response) => {
 	try {
+		logger.info('creating default trainingplan');
 		const user = await getUserByAuth0id(req.params.auth0ID);
 		const plan = await createDefaultTrainingsplanFromOnboarding(
 			user._id.toString(),
