@@ -127,3 +127,18 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+/* Simple invert-based dark mode */
+.invert-theme {
+	filter: invert(1) hue-rotate(180deg);
+	background-color: #000;
+}
+
+/* Re-invert media so they stay normal inside inverted mode */
+.invert-theme img,
+.invert-theme video,
+.invert-theme picture,
+.invert-theme canvas,
+.invert-theme svg {
+	filter: invert(1) hue-rotate(180deg);
+}
