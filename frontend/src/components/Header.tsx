@@ -1,8 +1,25 @@
+import { useEffect, useState } from "react";
 import { HiOutlineUser, HiOutlineSearch, HiOutlineMail } from "react-icons/hi";
+import { Moon, Sun } from "lucide-react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink } from "react-router-dom";
+import { applyInvertTheme, loadStoredInvertTheme } from "../util/theme";
+import { Button } from "@/components/ui/button";
+
 export default function Header(){
     const {user} = useAuth0();
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        setIsDark(loadStoredInvertTheme());
+    }, []);
+
+    function handleThemeToggle() {
+        const next = !isDark;
+        setIsDark(next);
+        applyInvertTheme(next);
+    }
+
     return (
         
         <div className="sticky h-15 bg-white shadow-md p-6 rounded-xl m-5 ml-0 flex items-center justify-between">
@@ -13,6 +30,15 @@ export default function Header(){
             </div>
             {/* User Icon */}
             <div className="flex items-center">
+                <Button
+                  variant={isDark ? "default" : "outline"}
+                  size="sm"
+                  onClick={handleThemeToggle}
+                  className="mr-4"
+                  aria-pressed={isDark}
+                >
+                    {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                </Button>
                 <NavLink to="#" className="bg-gray-100 h-7 w-7 rounded-full flex items-center justify-center mr-4 hover:bg-gray-200">
                     <HiOutlineUser className="w-5 h-5 "></HiOutlineUser>
                 </NavLink>

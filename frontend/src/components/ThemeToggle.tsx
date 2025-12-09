@@ -1,25 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Moon, Sun } from 'lucide-react';
-
-const STORAGE_KEY = 'trainem-simple-theme';
+import { applyInvertTheme, loadStoredInvertTheme } from '../util/theme';
 
 export default function ThemeToggle() {
 	const [isDark, setIsDark] = useState(false);
 
 	// Apply saved preference on mount
 	useEffect(() => {
-		const saved = localStorage.getItem(STORAGE_KEY);
-		const enabled = saved === 'dark';
-		setIsDark(enabled);
-		document.documentElement.classList.toggle('invert-theme', enabled);
+		setIsDark(loadStoredInvertTheme());
 	}, []);
 
 	function handleToggle() {
 		const next = !isDark;
 		setIsDark(next);
-		document.documentElement.classList.toggle('invert-theme', next);
-		localStorage.setItem(STORAGE_KEY, next ? 'dark' : 'light');
+		applyInvertTheme(next);
 	}
 
 	return (

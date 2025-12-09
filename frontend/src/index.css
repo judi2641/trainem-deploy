@@ -142,3 +142,18 @@
 .invert-theme svg {
 	filter: invert(1) hue-rotate(180deg);
 }
+
+/* Ensure currentColor-based SVGs adapt to the theme */
+svg[stroke="currentColor"],
+svg [stroke="currentColor"] {
+	stroke: currentColor;
+}
+
+.invert-theme svg {
+	color: #f5f6f7;
+}
+
+.invert-theme svg[stroke="currentColor"],
+.invert-theme svg [stroke="currentColor"] {
+	stroke: currentColor;
+}
