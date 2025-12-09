@@ -13,6 +13,8 @@ root.render(
 			redirect_uri: window.location.origin + '/callback',
 			audience: 'https://trainem.authentication',
 		}}
+		cacheLocation="localstorage"
+		useRefreshTokens
 	>
 		<App />
 		<Toaster position="top-center" richColors />
