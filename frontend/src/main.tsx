@@ -3,6 +3,9 @@ import App from './App.tsx';
 import './index.css';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { Toaster } from 'sonner';
+import { loadStoredInvertTheme } from './util/theme';
+
+loadStoredInvertTheme();
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
