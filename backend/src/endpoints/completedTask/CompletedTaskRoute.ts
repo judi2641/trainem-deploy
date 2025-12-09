@@ -5,10 +5,10 @@ import { logger } from '../../utils/logger';
 
 const router = express();
 
-router.post('/:auth0ID', async (req: Request, res: Response) => {
+router.post('/:auth0Id', async (req: Request, res: Response) => {
 	try {
 		const taskId = req.body.id;
-		await createCompletedTask(taskId, req.params.auth0ID);
+		await createCompletedTask(taskId, req.params.auth0Id);
 		res.status(201).send();
 	} catch (error) {
 		if (error instanceof HttpError) {
