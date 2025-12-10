@@ -22,7 +22,7 @@ export default function TasksArea() {
 	const [currentDate, setCurrentDate] = useState(startOfToday());
 	const { user } = useAuth0();
 	const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-	const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+	const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
 
 	useEffect(() => {
 		//hier werden alle trainingspläne geladen und daraus die tasks gezogen und in eine liste zusammengeführt
@@ -82,7 +82,7 @@ export default function TasksArea() {
 
 		loadTrainingsplan();
 		loadCompletedTasks();
-	}, [reloadTasksFlag, user?.sub]);
+	}, [reloadTasksFlag, user?.sub, weekStart]);
 
 	const triggerReload = () => setReloadTasksFlag((f) => !f);
 
