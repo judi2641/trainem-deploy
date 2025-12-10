@@ -1,6 +1,5 @@
 import Sidebar from '../components/Sidebar';
 import DashboardArea from '../components/DashboardArea';
-import Header from '@/components/Header';
 
 export default function Dashboard() {
 	return (

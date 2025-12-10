@@ -53,6 +53,7 @@ export function TaskCalendar({
 		middle: 'bg-orange-200 hover:bg-orange-200',
 		hard: 'bg-red-200 hover:bg-red-200',
 	};
+	const isFutureWeek = weekStart > startOfToday();
 	const { user } = useAuth0();
 
 	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
@@ -70,6 +71,7 @@ export function TaskCalendar({
 				);
 
 				if (response.ok) {
+					const updatedUser = await loadUser();
 					console.log('Task erfolgreich abgeschlossen!');
 					toast.custom(
 						(t) => (
@@ -80,9 +82,9 @@ export function TaskCalendar({
 								</div>
 								<div className="flex flex-col gap-1">
 									<span className="text-sm text-muted-foreground">
-										Level {(trainemUser?.score ?? 0) / 100}
+										Level {Math.floor((updatedUser?.score ?? 0) / 100) + 1}
 									</span>
-									<Progress value={(trainemUser?.score ?? 0) % 100} className="h-2" />
+									<Progress value={(updatedUser?.score ?? 0) % 100} className="h-2" />
 								</div>
 							</div>
 						),
@@ -93,8 +95,8 @@ export function TaskCalendar({
 
 					confetti({
 						particleCount: 150,
-						spread: 90,
-						origin: { y: 0.9 },
+						spread: 180,
+						origin: { y: 1 },
 					});
 
 					onTaskCompleted();
@@ -106,23 +108,24 @@ export function TaskCalendar({
 			console.error('Netzwerkfehler:', error);
 		}
 	}
-	useEffect(() => {
-		async function loadUser() {
-			try {
-				if (user?.sub) {
-					const res = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`);
-					console.log(res);
-					if (!res.ok) {
-						console.log('user nicht gefunden');
-						throw new Error('Fehler beim Laden des Users');
-					}
-					const userResponse = await res.json();
-					setTrainemUser(userResponse);
+	async function loadUser() {
+		try {
+			if (user?.sub) {
+				const res = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`);
+				console.log(res);
+				if (!res.ok) {
+					console.log('user nicht gefunden');
+					throw new Error('Fehler beim Laden des Users');
 				}
-			} catch (error) {
-				console.log(error);
+				const userResponse = await res.json();
+				setTrainemUser(userResponse);
+				return userResponse;
 			}
+		} catch (error) {
+			console.log(error);
 		}
+	}
+	useEffect(() => {
 		async function loadTrainingsplan() {
 			try {
 				if (user?.sub) {
@@ -331,7 +334,7 @@ export function TaskCalendar({
 												<Checkbox
 													checked={task.completed}
 													onCheckedChange={() => onChecked(task)}
-													disabled={task.completed}
+													disabled={task.completed || isFutureWeek || day < startOfToday()}
 												/>
 												<div className={cn('h-2 w-2 rounded-full shrink-0 mt-1.5', 'bg-primary')} />
 												<div className="flex-1 min-w-0">

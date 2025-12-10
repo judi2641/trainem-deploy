@@ -3,8 +3,10 @@ import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 import { Progress } from '@/components/ui/progress';
 interface AvatarProps {
 	user?: IUser;
+	todayExp: number;
+	streak: number;
 }
-export default function Avatar({ user }: AvatarProps) {
+export default function Avatar({ user, todayExp, streak }: AvatarProps) {
 	return (
 		<div className="h-full">
 			<Card className="h-full">
@@ -19,27 +21,30 @@ export default function Avatar({ user }: AvatarProps) {
 
 						<div className="flex justify-between mb-2">
 							<span className="font-semibold">Experience</span>
-							<span className="text-gray-500">{user?.score}</span>
+							<span className="text-gray-500">{(user?.score ?? 0) % 100}/100</span>
 						</div>
 						<Progress value={(user?.score ?? 0) % 100}></Progress>
 					</div>
 					<div className="grid grid-cols-2 gap-4 mb-4">
 						<Card>
-							<CardContent className="p-6 text-center">
-								<p className="text-gray-500">Today</p>
+							<CardContent className="p-4 text-center">
+								<p className="text-gray-500 mb-2">Today</p>
+								<p className="text-foreground">{todayExp}</p>
 							</CardContent>
 						</Card>
 
 						<Card>
-							<CardContent className="p-6 text-center">
+							<CardContent className="p-4 text-center">
 								<p className="text-gray-500 mb-2">Streak</p>
+								<p className="text-foreground">{streak > 0 ? `${streak}🔥` : '0'}</p>
 							</CardContent>
 						</Card>
 					</div>
 
 					<Card>
-						<CardContent className="p-6 text-center">
-							<p className="text-gray-500">Total XP</p>
+						<CardContent className="p-4 text-center">
+							<p className="text-gray-500 mb-2">Total XP</p>
+							<p className="text-foreground">{user?.score}</p>
 						</CardContent>
 					</Card>
 				</CardContent>
