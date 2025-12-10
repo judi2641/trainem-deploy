@@ -5,13 +5,18 @@ import type { ITask } from '../../../../shared/types/database/traininsplan/Task'
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
+import type { IUser } from '../../../../shared/types/database/user/User';
+import { CheckCircle2 } from 'lucide-react';
+import { Progress } from '../ui/progress';
+import confetti from 'canvas-confetti';
 
 interface TodayTaskProps {
 	tasks: (ITask & { planName: string })[];
 	onTaskCompleted: () => void;
+	trainemUser: IUser | undefined;
 }
 
-export default function TodaysTask({ tasks, onTaskCompleted }: TodayTaskProps) {
+export default function TodaysTask({ tasks, onTaskCompleted, trainemUser }: TodayTaskProps) {
 	const navigate = useNavigate();
 	const { user } = useAuth0();
 	async function onChecked(taskId: string) {
@@ -28,7 +33,30 @@ export default function TodaysTask({ tasks, onTaskCompleted }: TodayTaskProps) {
 					},
 				);
 				if (response.ok) {
-					toast.success('Task has been completed');
+					toast.custom(
+						(t) => (
+							<div className="bg-white border rounded-lg shadow-lg p-4 flex flex-col gap-2 w-90">
+								<div className="flex items-center gap-2">
+									<CheckCircle2 className="h-5 w-5 text-green-500" />
+									<span className="font-medium">Task completed!</span>
+								</div>
+								<div className="flex flex-col gap-1">
+									<span className="text-sm text-muted-foreground">
+										Level {(trainemUser?.score ?? 0) / 100}
+									</span>
+									<Progress value={(trainemUser?.score ?? 0) % 100} className="h-2" />
+								</div>
+							</div>
+						),
+						{
+							duration: 4000,
+						},
+					);
+					confetti({
+						particleCount: 150,
+						spread: 90,
+						origin: { y: 0.9 },
+					});
 					onTaskCompleted();
 				} else {
 					toast.error('Task has not been completed');

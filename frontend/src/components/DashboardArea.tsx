@@ -14,24 +14,26 @@ export default function DashboardArea() {
 	const [taskList, setTaskList] = useState<(ITask & { planName: string })[]>([]);
 	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[]>([]);
 	async function loadCompletedTasks() {
-		try {
-			const res = await fetch(
-				`http://localhost:3000/api/completedTasks/${encodeURIComponent(user.sub)}`,
-			);
-			if (!res.ok) {
+		if (user?.sub) {
+			try {
+				const res = await fetch(
+					`http://localhost:3000/api/completedTasks/${encodeURIComponent(user.sub)}`,
+				);
+				if (!res.ok) {
+					setCompletedTasks([]);
+					return;
+				}
+				const data = await res.json();
+				const completedTasksToday = (data || []).filter((task) => {
+					const doneDate = new Date(task.doneAt);
+					return isSameDay(doneDate, startOfToday());
+				});
+				console.log(completedTasksToday);
+				setCompletedTasks(completedTasksToday);
+			} catch (error) {
+				console.log(error);
 				setCompletedTasks([]);
-				return;
 			}
-			const data = await res.json();
-			const completedTasksToday = (data || []).filter((task) => {
-				const doneDate = new Date(task.doneAt);
-				return isSameDay(doneDate, startOfToday());
-			});
-			console.log(completedTasksToday);
-			setCompletedTasks(completedTasksToday);
-		} catch (error) {
-			console.log(error);
-			setCompletedTasks([]);
 		}
 	}
 	useEffect(() => {
@@ -96,7 +98,11 @@ export default function DashboardArea() {
 					<Avatar user={trainemUser} />
 				</div>
 				<div className="col-span-4 row-span-2 min-h-0">
-					<TodaysTask tasks={todaysTasks} onTaskCompleted={loadCompletedTasks} />
+					<TodaysTask
+						tasks={todaysTasks}
+						onTaskCompleted={loadCompletedTasks}
+						trainemUser={trainemUser}
+					/>
 				</div>
 				<div className="col-span-4 row-span-2">
 					<CompletedTasksChart />

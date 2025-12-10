@@ -22,7 +22,6 @@ export interface IUser {
 	score?: number;
 	avatar?: string;
 	img?: string;
-	score?: number;
 }
 
 // gender

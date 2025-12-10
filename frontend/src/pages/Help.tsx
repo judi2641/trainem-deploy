@@ -26,10 +26,11 @@ export default function Help() {
 			<div className="flex-1 flex flex-col">
 				<Header />
 				<main className="flex-1 pt-0 pl-0 p-5 min-h-0 overflow-y-auto">
-					<div className="bg-white shadow-md rounded-xl p-8 max-w-3xl">
+					<div className="bg-white shadow-md rounded-xl p-8 max-w-3xl ">
 						<h1 className="text-2xl font-bold mb-2">Help & Support</h1>
 						<p className="text-muted-foreground mb-6">
-							Du hast Verbesserungsvorschläge? Es funktioniert etwas noch nicht? Dann kontaktiere den Support.
+							Du hast Verbesserungsvorschläge? Es funktioniert etwas noch nicht? Dann kontaktiere
+							den Support.
 						</p>
 
 						<form onSubmit={handleSubmit} className="space-y-4">
@@ -80,7 +81,9 @@ export default function Help() {
 									Senden
 								</button>
 								{status === 'sent' && (
-									<span className="text-sm text-green-600">Vielen Dank! Wir melden uns zeitnah.</span>
+									<span className="text-sm text-green-600">
+										Vielen Dank! Wir melden uns zeitnah.
+									</span>
 								)}
 							</div>
 						</form>
