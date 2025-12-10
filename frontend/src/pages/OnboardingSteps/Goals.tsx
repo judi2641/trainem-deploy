@@ -91,7 +91,7 @@ export default function Goals() {
     {/* NAVIGATION */}
     <div className="flex justify-between mt-6">
       <Button
-        onClick={() => navigate("/onboarding")}
+        onClick={() => navigate('/onboarding/experience')}
         variant="outline"
         className="h-11 w-11 p-0 flex items-center justify-center"
       >

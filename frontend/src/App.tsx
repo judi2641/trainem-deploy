@@ -17,6 +17,10 @@ import Tasks from './pages/Tasks';
 import Callback from './pages/Callback';
 import Trainingsplan from './pages/Trainingsplan';
 import { OnboardingProvider } from './context/OnboardingContext';
+import Statistiken from './pages/Statistiken';
+import Gruppe from './pages/Gruppe';
+import Settings from './pages/Settings';
+import Help from './pages/Help';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -60,6 +64,38 @@ function App() {
 					element={
 						<ProtectedRoute>
 							<Trainingsplan />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/statistiken"
+					element={
+						<ProtectedRoute>
+							<Statistiken />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/gruppe"
+					element={
+						<ProtectedRoute>
+							<Gruppe />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/settings"
+					element={
+						<ProtectedRoute>
+							<Settings />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/help"
+					element={
+						<ProtectedRoute>
+							<Help />
 						</ProtectedRoute>
 					}
 				/>

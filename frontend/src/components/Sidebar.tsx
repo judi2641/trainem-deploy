@@ -36,6 +36,12 @@ export default function Sidebar() {
     loadUser();
   }, [user]);
 
+  const handleLogout = () => {
+    if (window.confirm("Willst du dich ausloggen?")) {
+      logout();
+    }
+  };
+
   const activeVisuals: string = "flex items-center p-2 rounded-lg bg-primary/15 text-primary font-semibold";
   const nonActiveVisuals: string = "flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100";
   return (
@@ -133,19 +139,33 @@ export default function Sidebar() {
         <h3 className="text-xs font-semibold text-gray-400 uppercase mt-8 mb-2">General</h3>
         <ul className="space-y-2">
           <li>
-            <NavLink to="" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink
+              to="/settings"
+              className={({ isActive }) =>
+                `flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 ${
+                  isActive ? 'bg-primary/15 text-primary font-semibold' : ''
+                }`
+              }
+            >
               <HiOutlineCog className="w-5 h-5" />
               <span className="ml-3">Settings</span>
             </NavLink>
           </li>
           <li>
-            <NavLink to="" className="flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+            <NavLink
+              to="/help"
+              className={({ isActive }) =>
+                `flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 ${
+                  isActive ? 'bg-primary/15 text-primary font-semibold' : ''
+                }`
+              }
+            >
               <HiOutlineQuestionMarkCircle className="w-5 h-5" />
               <span className="ml-3">Help</span>
             </NavLink>
           </li>
           <li>
-            <button onClick={() => logout()} className="cursor-pointer flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 pr-29">
+            <button onClick={handleLogout} className="cursor-pointer flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 pr-29">
               <HiOutlineLogout className="w-5 h-5" />
               <span className="ml-3">Logout</span>
             </button>

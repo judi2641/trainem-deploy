@@ -2,6 +2,7 @@
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header'; 
 import TasksArea from '../components/TasksArea';
+import FaqPopup from '../components/FaqPopup';
 
 export default function Tasks() {
   return (
@@ -11,6 +12,16 @@ export default function Tasks() {
       <div className="flex-1 flex flex-col">
          <Header /> 
         <main className="flex-1 pt-0 pl-0 p-5 min-h-0 overflow-y-auto">
+        <div className="flex justify-end mb-4 pr-1">
+          <FaqPopup
+            title="Tasks FAQs"
+            items={[
+              'Hier kannst du Aufgaben für deinen Plan anlegen und abhaken.',
+              'Nutze die Tages-Übersicht, um zu sehen, was heute ansteht.',
+              'Tasks können später erweitert werden – dies ist die Basisversion.',
+            ]}
+          />
+        </div>
         <TasksArea /> 
           
         </main>
