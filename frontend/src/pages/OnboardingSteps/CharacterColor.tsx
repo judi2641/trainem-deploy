@@ -7,11 +7,11 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 // 👉 PNG-Links zentral gespeichert
 // Füge hier deine 5 Bilder ein:
 const characterImages = {
-	char1: '../../../public/assets/avatar/abnahme/blauLevel1Abnahme.png',
-	char2: '../../../public/assets/avatar/abnahme/gelbLevel1Abnahme.png',
-	char3: '../../../public/assets/avatar/abnahme/lilaLevel1Abnahme.png',
-	char4: '../../../public/assets/avatar/abnahme/rotLevel1AbnahmeAbnahm.png',
-	char5: '../../../public/assets/avatar/abnahme/WeißLevel1Ab.png',
+	char1: '../../../public/assets/avatar/abnahme/Level1BlauAbn.png',
+	char2: '../../../public/assets/avatar/abnahme/GelbLevel1Abn.png',
+	char3: '../../../public/assets/avatar/abnahme/LilaLevel1Abn.png',
+	char4: '../../../public/assets/avatar/abnahme/RotLevel1Abn.png',
+	char5: '../../../public/assets/avatar/abnahme/Level1WeißAbna.png',
 };
 
 export default function CharacterColor() {
