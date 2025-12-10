@@ -19,7 +19,7 @@ export interface IUser {
 	lastName?: string;
 	birthDate?: Date;
 	gender?: GenderType;
-
+	score?: number;
 	avatar?: string;
 	img?: string;
 }

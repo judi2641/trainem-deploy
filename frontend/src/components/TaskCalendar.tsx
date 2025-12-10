@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
+import { CheckCircle2, Plus } from 'lucide-react';
 import type { ITask } from '../../../shared/types/database/traininsplan/Task';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from './ui/label';
@@ -24,6 +24,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
 import { toast } from 'sonner';
 import { stringToBorder } from '@/util/stringToColor';
+import confetti from 'canvas-confetti';
+import type { IUser } from '../../../shared/types/database/user/User';
+import { Progress } from './ui/progress';
 interface TaskCalendarProps {
 	weekStart: Date;
 	tasks: (ITask & { planName: string } & { completed: boolean })[];
@@ -42,6 +45,7 @@ export function TaskCalendar({
 	const [taskTitle, setTaskTitle] = useState('');
 	const [taskDesc, setTaskDesc] = useState('');
 	const [taskDiff, setTaskDiff] = useState('');
+	const [trainemUser, setTrainemUser] = useState<IUser>();
 	const [taskTrainingsplanID, setTaskTrainingsplanID] = useState('');
 	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsplan[]>([]);
 	const difficultyColors: Record<TaskDifficulty, string> = {
@@ -50,6 +54,7 @@ export function TaskCalendar({
 		hard: 'bg-red-200 hover:bg-red-200',
 	};
 	const { user } = useAuth0();
+
 	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
 		try {
 			if (user?.sub) {
@@ -63,9 +68,30 @@ export function TaskCalendar({
 						body: JSON.stringify({ id: task._id }),
 					},
 				);
+
 				if (response.ok) {
-					console.log('Task erfolgreich abgesclossen!');
-					toast.success('Task has been completed');
+					console.log('Task erfolgreich abgeschlossen!');
+					toast.custom((t) => (
+						<div className="bg-white border rounded-lg shadow-lg p-4 flex flex-col gap-2 w-90">
+							<div className="flex items-center gap-2">
+								<CheckCircle2 className="h-5 w-5 text-green-500" />
+								<span className="font-medium">Task completed!</span>
+							</div>
+							<div className="flex flex-col gap-1">
+								<span className="text-sm text-muted-foreground">
+									Level {Math.floor((trainemUser?.score ?? 0) / 100)}
+								</span>
+								<Progress value={(trainemUser?.score ?? 0) % 100} className="h-2" />
+							</div>
+						</div>
+					));
+
+					confetti({
+						particleCount: 150,
+						spread: 90,
+						origin: { y: 0.9 },
+					});
+
 					onTaskCompleted();
 				} else {
 					toast.error('Task has not been completed');
@@ -76,6 +102,22 @@ export function TaskCalendar({
 		}
 	}
 	useEffect(() => {
+		async function loadUser() {
+			try {
+				if (user?.sub) {
+					const res = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`);
+					console.log(res);
+					if (!res.ok) {
+						console.log('user nicht gefunden');
+						throw new Error('Fehler beim Laden des Users');
+					}
+					const userResponse = await res.json();
+					setTrainemUser(userResponse);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
 		async function loadTrainingsplan() {
 			try {
 				if (user?.sub) {
@@ -93,7 +135,7 @@ export function TaskCalendar({
 				console.log(error);
 			}
 		}
-
+		loadUser();
 		loadTrainingsplan();
 	}, []);
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -284,6 +326,7 @@ export function TaskCalendar({
 												<Checkbox
 													checked={task.completed}
 													onCheckedChange={() => onChecked(task)}
+													disabled={task.completed}
 												/>
 												<div className={cn('h-2 w-2 rounded-full shrink-0 mt-1.5', 'bg-primary')} />
 												<div className="flex-1 min-w-0">
