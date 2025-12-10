@@ -229,8 +229,8 @@ export function TaskCalendar({
 											className="text-primary hover:bg-primary/10"
 											onClick={() => setTaskDay(format(new Date(day), 'EEE') as TrainingDays)}
 										>
-											<Plus className="h-4 w-4 mr-1" />
-											Add
+											<Plus className="h-4 w-4 " />
+											Add Task
 										</Button>
 									</PopoverTrigger>
 									<PopoverContent
@@ -319,7 +319,7 @@ export function TaskCalendar({
 							{dayTasks.length === 0 ? (
 								<p className="text-xs text-muted-foreground italic py-2">No tasks</p>
 							) : (
-								<ul className="space-y-2">
+								<ul className="grid grid-cols-3 gap-2">
 									{dayTasks.map((task) => (
 										<li
 											key={task._id?.toString()}
@@ -351,30 +351,6 @@ export function TaskCalendar({
 													{task.description && (
 														<p className="text-xs text-muted-foreground mt-1">{task.description}</p>
 													)}
-												</div>
-
-												<div>
-													<Select name="difficulty">
-														<SelectTrigger>
-															<SelectValue
-																defaultValue={task.difficulty}
-																placeholder={task.difficulty}
-															/>
-														</SelectTrigger>
-														<SelectContent>
-															<SelectGroup>
-																{Object.values(DIFFICULTY).map((difficulty) => (
-																	<SelectItem
-																		className={cn('mb-0.5', difficultyColors[difficulty])}
-																		key={difficulty}
-																		value={difficulty}
-																	>
-																		{difficulty}
-																	</SelectItem>
-																))}
-															</SelectGroup>
-														</SelectContent>
-													</Select>
 												</div>
 											</div>
 										</li>
