@@ -10,8 +10,8 @@ const characterImages = {
 	char1: '../../../public/assets/avatar/abnahme/blauLevel1Abnahme.png',
 	char2: '../../../public/assets/avatar/abnahme/gelbLevel1Abnahme.png',
 	char3: '../../../public/assets/avatar/abnahme/lilaLevel1Abnahme.png',
-	char4: '../../../public/assets/avatar/abnahme/rotLevel1AbnahmeAbnahm.png', // findet nicht???
-	char5: '../../../public/assets/avatar/abnahme/weißLevel1Abnahme.png',
+	char4: '../../../public/assets/avatar/abnahme/rotLevel1AbnahmeAbnahm.png',
+	char5: '../../../public/assets/avatar/abnahme/WeißLevel1Ab.png',
 };
 
 export default function CharacterColor() {
