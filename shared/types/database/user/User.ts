@@ -22,13 +22,14 @@ export interface IUser {
 	score?: number;
 	avatar?: string;
 	img?: string;
+	score?: number;
 }
 
 // gender
 export const GENDERS = {
 	m: 'Male',
 	f: 'Female',
-	d: 'Divers',
+	d: 'Diverse',
 } as const;
 export type GenderType = (typeof GENDERS)[keyof typeof GENDERS];
 

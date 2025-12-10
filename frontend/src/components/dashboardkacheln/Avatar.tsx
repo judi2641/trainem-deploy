@@ -10,16 +10,18 @@ export default function Avatar({ user }: AvatarProps) {
 			<Card className="h-full">
 				<CardContent className=" flex flex-col justify-between h-full">
 					<div className="flex flex-col m-6">
-						<h1 className="text-4xl font-bold text-center mb-2">Level 1</h1>
+						<h1 className="text-4xl font-bold text-center mb-2">
+							Level {Math.min(14, Math.floor((user?.score ?? 0) / 100) + 1)}
+						</h1>
 						<div className="flex justify-center items-center pb-6">
 							<img src={user?.img} className="w-40 h-50 object-contain object-center" />
 						</div>
 
 						<div className="flex justify-between mb-2">
 							<span className="font-semibold">Experience</span>
-							<span className="text-gray-500">10/100 XP</span>
+							<span className="text-gray-500">{user?.score}</span>
 						</div>
-						<Progress value={1}></Progress>
+						<Progress value={(user?.score ?? 0) % 100}></Progress>
 					</div>
 					<div className="grid grid-cols-2 gap-4 mb-4">
 						<Card>

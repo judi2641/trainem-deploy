@@ -11,7 +11,7 @@ const UserSchema = new Schema(
 		firstName: { type: String },
 		lastName: { type: String },
 		birthDate: { type: Date },
-		gender: { type: String, enum: ['Male', 'Female', 'Divers'] },
+		gender: { type: String, enum: ['Male', 'Female', 'Diverse'] },
 
 		avatar: { type: String },
 		img: { type: String, required: true, default: 'blauLevel1Abnahme' },
