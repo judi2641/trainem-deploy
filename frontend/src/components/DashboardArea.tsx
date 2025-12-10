@@ -6,11 +6,34 @@ import TodaysTask from './dashboardkacheln/TodaysTask';
 import CompletedTasksChart from './dashboardkacheln/CompletedTasksChart';
 import type { ITask } from '../../../shared/types/database/traininsplan/Task';
 import type { ITrainingsplan } from '../../../shared/types/database/traininsplan/TrainingPlan';
-import { format, startOfToday } from 'date-fns';
+import { format, startOfToday, isSameDay } from 'date-fns';
+import type { ICompletedTask } from '../../../shared/types/database/CompletedTask';
 export default function DashboardArea() {
 	const { user } = useAuth0();
 	const [trainemUser, setTrainemUser] = useState<IUser>();
 	const [taskList, setTaskList] = useState<(ITask & { planName: string })[]>([]);
+	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[]>([]);
+	async function loadCompletedTasks() {
+		try {
+			const res = await fetch(
+				`http://localhost:3000/api/completedTasks/${encodeURIComponent(user.sub)}`,
+			);
+			if (!res.ok) {
+				setCompletedTasks([]);
+				return;
+			}
+			const data = await res.json();
+			const completedTasksToday = (data || []).filter((task) => {
+				const doneDate = new Date(task.doneAt);
+				return isSameDay(doneDate, startOfToday());
+			});
+			console.log(completedTasksToday);
+			setCompletedTasks(completedTasksToday);
+		} catch (error) {
+			console.log(error);
+			setCompletedTasks([]);
+		}
+	}
 	useEffect(() => {
 		async function loadUser() {
 			try {
@@ -52,12 +75,15 @@ export default function DashboardArea() {
 
 		loadUser();
 		loadTrainingsplan();
+		loadCompletedTasks();
 	}, [user?.sub]);
 	const currentDay = format(startOfToday(), 'eee');
 
-	const todaysTasks = taskList ? taskList.filter((task) => task.day === currentDay) : [];
+	const todaysTasks = taskList
+		.filter((task) => task.day === currentDay)
+		.filter((task) => !completedTasks.some((ct) => ct.taskID?.toString() === task._id?.toString()));
 	return (
-		<div className="h-full w-full bg-white shadow-md p-6 rounded-xl overflow-hidden flex flex-col">
+		<div className="h-full w-full  bg-white shadow-md p-6 rounded-xl overflow-hidden flex flex-col">
 			{/* Begrüßung AUSSERHALB des Grids */}
 			<div className="mb-6">
 				<h1 className="text-3xl font-bold">Welcome, {trainemUser?.firstName || user?.name}!</h1>
@@ -70,7 +96,7 @@ export default function DashboardArea() {
 					<Avatar user={trainemUser} />
 				</div>
 				<div className="col-span-4 row-span-2 min-h-0">
-					<TodaysTask tasks={todaysTasks} />
+					<TodaysTask tasks={todaysTasks} onTaskCompleted={loadCompletedTasks} />
 				</div>
 				<div className="col-span-4 row-span-2">
 					<CompletedTasksChart />

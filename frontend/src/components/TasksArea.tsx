@@ -82,7 +82,7 @@ export default function TasksArea() {
 
 		loadTrainingsplan();
 		loadCompletedTasks();
-	}, [reloadTasksFlag, user?.sub, weekStart]);
+	}, [reloadTasksFlag, user?.sub, currentDate]);
 
 	const triggerReload = () => setReloadTasksFlag((f) => !f);
 
