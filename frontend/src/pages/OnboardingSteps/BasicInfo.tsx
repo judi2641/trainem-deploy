@@ -133,27 +133,19 @@ export default function BasicInfo() {
 					<ArrowLeft className="h-5 w-5" />
 				</Button>
 
-<<<<<<< HEAD
-				<Button
-					onClick={handleNext}
-					variant="outline"
-					className="h-11 w-11 p-0 flex items-center justify-center"
-				>
-					<ArrowRight className="h-5 w-5" />
-				</Button>
-=======
 
-				<Button
+	
+			<Button
    			 onClick={handleNext}
    			 variant="outline"
     		className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
 			>
     <ArrowRight className="h-5 w-5" />
 		</Button>
+					
 
 				
           
->>>>>>> 73b3d00 (handleNext() wird wieder aufgerufen)
 			</div>
 		</div>
 	);
