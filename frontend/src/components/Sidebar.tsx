@@ -41,8 +41,9 @@ export default function Sidebar() {
 		}
 	};
 
-	const activeVisuals: string =
-		'flex items-center p-2 rounded-lg bg-primary/15 text-primary font-semibold';
+	const activeVisuals =
+    'flex items-center p-2 rounded-lg bg-green-100 text-green-600 font-semibold';
+
 	const nonActiveVisuals: string =
 		'flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100';
 	return (
@@ -130,7 +131,7 @@ export default function Sidebar() {
 							to="/settings"
 							className={({ isActive }) =>
 								`flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 ${
-									isActive ? 'bg-primary/15 text-primary font-semibold' : ''
+									isActive ? 'bg-green-100 text-green-700 font-semibold' : ''
 								}`
 							}
 						>
@@ -143,7 +144,7 @@ export default function Sidebar() {
 							to="/help"
 							className={({ isActive }) =>
 								`flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 ${
-									isActive ? 'bg-primary/15 text-primary font-semibold' : ''
+									isActive ? 'bg-green-100 text-green-700 font-semibold' : ''
 								}`
 							}
 						>
@@ -154,7 +155,8 @@ export default function Sidebar() {
 					<li>
 						<button
 							onClick={handleLogout}
-							className="cursor-pointer flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 pr-29"
+							className="cursor-pointer flex items-center p-2 rounded-lg text-gray-600 
+               hover:bg-gray-100 active:bg-green-200 active:text-green-700 pr-29"
 						>
 							<HiOutlineLogout className="w-5 h-5" />
 							<span className="ml-3">Logout</span>
