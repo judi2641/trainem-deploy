@@ -60,7 +60,7 @@ export default function Sidebar() {
 
 				{/* Avatar */}
 				<Avatar className="h-20 w-20 border-2 border-gray-300 shadow-md bg-gray-100">
-					<AvatarImage src="" alt="" />
+					<AvatarImage src={backendUser?.img ?? ''} alt="" />
 					<AvatarFallback></AvatarFallback>
 				</Avatar>
 
