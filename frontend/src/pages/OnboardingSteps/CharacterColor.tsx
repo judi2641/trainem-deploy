@@ -7,11 +7,11 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 // 👉 PNG-Links zentral gespeichert
 // Füge hier deine 5 Bilder ein:
 const characterImages = {
-	char1: '../../../public/assets/avatar/abnahme/Level1BlauAbn.png',
-	char2: '../../../public/assets/avatar/abnahme/GelbLevel1Abn.png',
-	char3: '../../../public/assets/avatar/abnahme/LilaLevel1Abn.png',
-	char4: '../../../public/assets/avatar/abnahme/RotLevel1Abn.png',
-	char5: '../../../public/assets/avatar/abnahme/Level1WeißAbna.png',
+	char1: '../../../public/assets/avatar/abnahme/blauLevel1Abnahme.png',
+	char2: '../../../public/assets/avatar/abnahme/gelbLevel1Abnahme.png',
+	char3: '../../../public/assets/avatar/abnahme/lilaLevel1Abnahme.png',
+	char4: '../../../public/assets/avatar/abnahme/rotLevel1Abnahme.png',
+	char5: '../../../public/assets/avatar/abnahme/weißLevel1Abnahme.png',
 };
 
 export default function CharacterColor() {
@@ -77,32 +77,33 @@ export default function CharacterColor() {
 				})}
 			</div>
 
-		 {/* Navigation */}
-      <div className="flex justify-between mt-10">
+			{/* Navigation */}
+			<div className="flex justify-between mt-10">
+				{/* Zurück */}
+				<Button
+					onClick={() => navigate('/onboarding/schedule')}
+					variant="outline"
+					className="h-11 w-11 p-0 flex items-center justify-center"
+				>
+					<ArrowLeft className="h-5 w-5" />
+				</Button>
 
-        {/* Zurück */}
-        <Button
-          onClick={() => navigate("/onboarding/schedule")}
-          variant="outline"
-          className="h-11 w-11 p-0 flex items-center justify-center"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-
-        {/* Weiter */}
-        <Button
-          onClick={handleFinish}
-          disabled={selected === null}
-          className={`
+				{/* Weiter */}
+				<Button
+					onClick={handleFinish}
+					disabled={selected === null}
+					className={`
             h-11 w-11 p-0 flex items-center justify-center
-            ${selected !== null 
-              ? "bg-green-600 hover:bg-green-700 text-white"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"}
+            ${
+							selected !== null
+								? 'bg-green-600 hover:bg-green-700 text-white'
+								: 'bg-gray-300 text-gray-500 cursor-not-allowed'
+						}
           `}
-        >
-          <ArrowRight className="h-5 w-5" />
-        </Button>
-      </div>
-    </div>
-  );
+				>
+					<ArrowRight className="h-5 w-5" />
+				</Button>
+			</div>
+		</div>
+	);
 }

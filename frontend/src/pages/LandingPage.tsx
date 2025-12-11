@@ -78,7 +78,7 @@ export default function LandingPage() {
 						<img src="/assets/avatar/abnahme/blauLevel2Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel3Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel4Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel5Abnahmepng.png" className="h-20" />
+						<img src="/assets/avatar/abnahme/blauLevel5Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel6Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel7Abnahme.png" className="h-20" />
 					</div>
