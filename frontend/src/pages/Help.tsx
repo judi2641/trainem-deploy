@@ -20,7 +20,7 @@ export default function Help() {
 	}
 
 	return (
-		<div className="flex h-screen bg-gray-100">
+		<div className="flex h-screen bg-[radial-gradient(circle_at_top_left,var(--color-primary),#ffe5c4)]">
 			<Sidebar />
 
 			<div className="flex-1 flex flex-col">

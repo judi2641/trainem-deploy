@@ -41,8 +41,7 @@ export default function Sidebar() {
 		}
 	};
 
-	const activeVisuals =
-    'flex items-center p-2 rounded-lg bg-green-100 text-green-600 font-semibold';
+	const activeVisuals = 'flex items-center p-2 rounded-lg bg-primary/20 text-primary font-semibold';
 
 	const nonActiveVisuals: string =
 		'flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100';
@@ -61,7 +60,11 @@ export default function Sidebar() {
 
 				{/* Avatar */}
 				<Avatar className="h-20 w-20 border-2 border-gray-300 shadow-md bg-gray-100">
-					<AvatarImage src={backendUser?.img ?? ''} alt="" />
+					<AvatarImage
+						src={backendUser?.img ?? ''}
+						alt="Avatar"
+						className="object-cover object-top"
+					/>
 					<AvatarFallback></AvatarFallback>
 				</Avatar>
 
@@ -129,11 +132,7 @@ export default function Sidebar() {
 					<li>
 						<NavLink
 							to="/settings"
-							className={({ isActive }) =>
-								`flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 ${
-									isActive ? 'bg-green-100 text-green-700 font-semibold' : ''
-								}`
-							}
+							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineCog className="w-5 h-5" />
 							<span className="ml-3">Settings</span>
@@ -142,11 +141,7 @@ export default function Sidebar() {
 					<li>
 						<NavLink
 							to="/help"
-							className={({ isActive }) =>
-								`flex items-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 ${
-									isActive ? 'bg-green-100 text-green-700 font-semibold' : ''
-								}`
-							}
+							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineQuestionMarkCircle className="w-5 h-5" />
 							<span className="ml-3">Help</span>

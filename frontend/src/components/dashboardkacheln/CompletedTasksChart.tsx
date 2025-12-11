@@ -21,7 +21,7 @@ export function CompletedTasksChart({ data }: CompletedTasksChartProps) {
 	const chartConfig = {
 		tasks: {
 			label: 'Tasks',
-			color: 'var(--chart-1)',
+			color: 'var(--color-primary)',
 		},
 	} satisfies ChartConfig;
 
