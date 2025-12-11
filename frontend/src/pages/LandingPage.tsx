@@ -78,19 +78,19 @@ export default function LandingPage() {
 						<img src="/assets/avatar/abnahme/blauLevel2Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel3Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel4Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel5Abnahmepng.png" className="h-20"/>
+						<img src="/assets/avatar/abnahme/blauLevel5Abnahmepng.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel6Abnahme.png" className="h-20" />
 						<img src="/assets/avatar/abnahme/blauLevel7Abnahme.png" className="h-20" />
 					</div>
 					{/* Rechte Seite – dünn → fit */}
 					<div className="flex flex-col justify-start gap-4 mt-20">
-						<img src="/assets/avatar/landingpage/Level1.png" className="h-20" />
-						<img src="/assets/avatar/landingpage/Level2.png" className="h-20" />
-						<img src="/assets/avatar/landingpage/Level3.png" className="h-20" />
-							<img src="/assets/avatar/landingpage/Level4.png" className="h-20" />
-							<img src="/assets/avatar/landingpage/Level5.png" className="h-20" />
-							<img src="/assets/avatar/landingpage/Level6.png" className="h-20" />
-							<img src="/assets/avatar/landingpage/Level7.png" className="h-20" />
+						<img src="/assets/avatar/abnahme/blauLevel8Abnahme.png" className="h-20 w-15" />
+						<img src="/assets/avatar/abnahme/blauLevel9Abnahme.png" className="h-20 w-15" />
+						<img src="/assets/avatar/abnahme/blauLevel10Abnahme.png" className="h-20 w-15" />
+						<img src="/assets/avatar/abnahme/blauLevel11Abnahme.png" className="h-20 w-15" />
+						<img src="/assets/avatar/abnahme/blauLevel12Abnahme.png" className="h-20 w-15" />
+						<img src="/assets/avatar/abnahme/blauLevel13Abnahme.png" className="h-20 w-15" />
+						<img src="/assets/avatar/abnahme/blauLevel14Abnahme.png" className="h-20 w-15" />
 					</div>
 				</div>
 

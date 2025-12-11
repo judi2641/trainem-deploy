@@ -144,8 +144,8 @@
 }
 
 /* Ensure currentColor-based SVGs adapt to the theme */
-svg[stroke="currentColor"],
-svg [stroke="currentColor"] {
+svg[stroke='currentColor'],
+svg [stroke='currentColor'] {
 	stroke: currentColor;
 }
 
@@ -153,7 +153,7 @@ svg [stroke="currentColor"] {
 	color: #f5f6f7;
 }
 
-.invert-theme svg[stroke="currentColor"],
-.invert-theme svg [stroke="currentColor"] {
+.invert-theme svg[stroke='currentColor'],
+.invert-theme svg [stroke='currentColor'] {
 	stroke: currentColor;
 }
