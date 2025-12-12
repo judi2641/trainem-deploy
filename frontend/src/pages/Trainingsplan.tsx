@@ -9,8 +9,8 @@ export default function Trainingsplan() {
 			<Sidebar />
 
 			<div className="flex-1 flex flex-col">
-				<main className="flex-1 pt-0 pl-0 p-5 min-h-0 overflow-y-auto">
-					<div className="flex justify-end mb-4 pr-1">
+				<main className="flex-1  pl-0 p-5 min-h-0 overflow-y-auto">
+					{/* <div className="flex justify-end mb-4 pr-1">
 						<FaqPopup
 							title="Trainingsplan FAQs"
 							items={[
@@ -19,7 +19,7 @@ export default function Trainingsplan() {
 								'Mehr Features folgen – diese FAQs zeigen dir die Basisfunktionen.',
 							]}
 						/>
-					</div>
+					</div> */}
 					<TrainingsplanArea />
 				</main>
 			</div>

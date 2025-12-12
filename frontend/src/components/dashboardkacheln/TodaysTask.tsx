@@ -155,95 +155,6 @@ export default function TodaysTask({
 				{tasks.length === 0 ? (
 					<div className="flex flex-col items-center justify-center mt-6 space-y-4">
 						<p className="text-muted-foreground text-center">No scheduled tasks today</p>
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button
-									size="sm"
-									variant="ghost"
-									className="text-primary hover:bg-primary/10"
-									onClick={() => setTaskDay(format(startOfToday(), 'EEE') as TrainingDays)}
-								>
-									<Plus className="h-4 w-4 mr-1" />
-									Add task for today
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent
-								className="w-96"
-								side="bottom"
-								align="start"
-								sideOffset={8}
-								alignOffset={0}
-							>
-								<form onSubmit={handleSubmit}>
-									<div className="grid gap-4">
-										<div className="grid gap-3">
-											<Label>Task name</Label>
-											<Input
-												id="taskName"
-												name="taskName"
-												onChange={(e) => setTaskTitle(e.target.value)}
-											/>
-										</div>
-										<div className="grid gap-3">
-											<Label>Task Description</Label>
-											<Input
-												id="taskDescription"
-												name="taskDescription"
-												onChange={(e) => setTaskDesc(e.target.value)}
-											/>
-										</div>
-										<div className="grid gap-3">
-											<Label>Trainingsplan</Label>
-											<Select
-												name="trainingsplanName"
-												value={taskTrainingsplanID}
-												onValueChange={setTaskTrainingsplanID}
-											>
-												<SelectTrigger>
-													<SelectValue placeholder="Select a trainingsplan" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectGroup>
-														{trainingsplaene?.map((trainingsplan) => (
-															<SelectItem
-																className={'mb-0.5'}
-																key={trainingsplan._id?.toString()}
-																value={trainingsplan._id?.toString() || ''}
-															>
-																{trainingsplan.name}
-															</SelectItem>
-														))}
-													</SelectGroup>
-												</SelectContent>
-											</Select>
-										</div>
-
-										<div className="grid gap-3">
-											<Label>Difficulty</Label>
-											<Select name="difficulty" value={taskDiff} onValueChange={setTaskDiff}>
-												<SelectTrigger>
-													<SelectValue placeholder="Select a difficulty" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectGroup>
-														{Object.values(DIFFICULTY).map((difficulty) => (
-															<SelectItem className="mb-0.5" key={difficulty} value={difficulty}>
-																{difficulty}
-															</SelectItem>
-														))}
-													</SelectGroup>
-												</SelectContent>
-											</Select>
-										</div>
-									</div>
-									<div className="flex justify-end gap-2 mt-3">
-										<Button type="submit" size="sm">
-											Save task
-										</Button>
-									</div>
-								</form>
-							</PopoverContent>
-						</Popover>
 					</div>
 				) : (
 					tasks.map((task) => (
@@ -259,6 +170,97 @@ export default function TodaysTask({
 						</div>
 					))
 				)}
+				<div className="flex items-center justify-center mt-3">
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button
+								size="sm"
+								variant="ghost"
+								className="text-primary hover:bg-primary/10"
+								onClick={() => setTaskDay(format(startOfToday(), 'EEE') as TrainingDays)}
+							>
+								<Plus className="h-4 w-4 mr-1" />
+								Add task for today
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent
+							className="w-96"
+							side="bottom"
+							align="start"
+							sideOffset={8}
+							alignOffset={0}
+						>
+							<form onSubmit={handleSubmit}>
+								<div className="grid gap-4">
+									<div className="grid gap-3">
+										<Label>Task name</Label>
+										<Input
+											id="taskName"
+											name="taskName"
+											onChange={(e) => setTaskTitle(e.target.value)}
+										/>
+									</div>
+									<div className="grid gap-3">
+										<Label>Task Description</Label>
+										<Input
+											id="taskDescription"
+											name="taskDescription"
+											onChange={(e) => setTaskDesc(e.target.value)}
+										/>
+									</div>
+									<div className="grid gap-3">
+										<Label>Trainingsplan</Label>
+										<Select
+											name="trainingsplanName"
+											value={taskTrainingsplanID}
+											onValueChange={setTaskTrainingsplanID}
+										>
+											<SelectTrigger>
+												<SelectValue placeholder="Select a trainingsplan" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													{trainingsplaene?.map((trainingsplan) => (
+														<SelectItem
+															className={'mb-0.5'}
+															key={trainingsplan._id?.toString()}
+															value={trainingsplan._id?.toString() || ''}
+														>
+															{trainingsplan.name}
+														</SelectItem>
+													))}
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									</div>
+
+									<div className="grid gap-3">
+										<Label>Difficulty</Label>
+										<Select name="difficulty" value={taskDiff} onValueChange={setTaskDiff}>
+											<SelectTrigger>
+												<SelectValue placeholder="Select a difficulty" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													{Object.values(DIFFICULTY).map((difficulty) => (
+														<SelectItem className="mb-0.5" key={difficulty} value={difficulty}>
+															{difficulty}
+														</SelectItem>
+													))}
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									</div>
+								</div>
+								<div className="flex justify-end gap-2 mt-3">
+									<Button type="submit" size="sm">
+										Save task
+									</Button>
+								</div>
+							</form>
+						</PopoverContent>
+					</Popover>
+				</div>
 			</CardContent>
 		</Card>
 	);

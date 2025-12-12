@@ -48,11 +48,7 @@ export function TaskCalendar({
 	const [trainemUser, setTrainemUser] = useState<IUser>();
 	const [taskTrainingsplanID, setTaskTrainingsplanID] = useState('');
 	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsplan[]>([]);
-	const difficultyColors: Record<TaskDifficulty, string> = {
-		easy: 'bg-green-200 hover:bg-green-200',
-		middle: 'bg-orange-200 hover:bg-orange-200',
-		hard: 'bg-red-200 hover:bg-red-200',
-	};
+
 	const isFutureWeek = weekStart > startOfToday();
 	const { user } = useAuth0();
 
@@ -294,7 +290,7 @@ export function TaskCalendar({
 															<SelectGroup>
 																{Object.values(DIFFICULTY).map((difficulty) => (
 																	<SelectItem
-																		className={cn('mb-0.5', difficultyColors[difficulty])}
+																		className={cn('mb-0.5')}
 																		key={difficulty}
 																		value={difficulty}
 																	>
