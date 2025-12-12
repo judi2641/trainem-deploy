@@ -74,7 +74,7 @@ export default function Schedule() {
 
 			<div className="flex justify-between mt-6">
 				<Button
-					onClick={() => navigate('/onboarding')}
+					onClick={() => navigate('/onboarding/goals')}
 					variant="outline"
 					className="h-11 w-11 p-0 flex items-center justify-center"
 				>

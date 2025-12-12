@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
+import { CheckCircle2, Plus } from 'lucide-react';
 import type { ITask } from '../../../shared/types/database/traininsplan/Task';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from './ui/label';
@@ -24,6 +24,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
 import { toast } from 'sonner';
 import { stringToBorder } from '@/util/stringToColor';
+import confetti from 'canvas-confetti';
+import type { IUser } from '../../../shared/types/database/user/User';
+import { Progress } from './ui/progress';
 interface TaskCalendarProps {
 	weekStart: Date;
 	tasks: (ITask & { planName: string } & { completed: boolean })[];
@@ -42,14 +45,13 @@ export function TaskCalendar({
 	const [taskTitle, setTaskTitle] = useState('');
 	const [taskDesc, setTaskDesc] = useState('');
 	const [taskDiff, setTaskDiff] = useState('');
+	const [trainemUser, setTrainemUser] = useState<IUser>();
 	const [taskTrainingsplanID, setTaskTrainingsplanID] = useState('');
 	const [trainingsplaene, setTrainingsplaene] = useState<ITrainingsplan[]>([]);
-	const difficultyColors: Record<TaskDifficulty, string> = {
-		easy: 'bg-green-200 hover:bg-green-200',
-		middle: 'bg-orange-200 hover:bg-orange-200',
-		hard: 'bg-red-200 hover:bg-red-200',
-	};
+
+	const isFutureWeek = weekStart > startOfToday();
 	const { user } = useAuth0();
+
 	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
 		try {
 			if (user?.sub) {
@@ -63,9 +65,36 @@ export function TaskCalendar({
 						body: JSON.stringify({ id: task._id }),
 					},
 				);
+
 				if (response.ok) {
-					console.log('Task erfolgreich abgesclossen!');
-					toast.success('Task has been completed');
+					const updatedUser = await loadUser();
+					console.log('Task erfolgreich abgeschlossen!');
+					toast.custom(
+						(t) => (
+							<div className="bg-white border rounded-lg shadow-lg p-4 flex flex-col gap-2 w-90">
+								<div className="flex items-center gap-2">
+									<CheckCircle2 className="h-5 w-5 text-green-500" />
+									<span className="font-medium">Task completed!</span>
+								</div>
+								<div className="flex flex-col gap-1">
+									<span className="text-sm text-muted-foreground">
+										Level {Math.floor((updatedUser?.score ?? 0) / 100) + 1}
+									</span>
+									<Progress value={(updatedUser?.score ?? 0) % 100} className="h-2" />
+								</div>
+							</div>
+						),
+						{
+							duration: 4000,
+						},
+					);
+
+					confetti({
+						particleCount: 150,
+						spread: 180,
+						origin: { y: 1 },
+					});
+
 					onTaskCompleted();
 				} else {
 					toast.error('Task has not been completed');
@@ -73,6 +102,23 @@ export function TaskCalendar({
 			}
 		} catch (error) {
 			console.error('Netzwerkfehler:', error);
+		}
+	}
+	async function loadUser() {
+		try {
+			if (user?.sub) {
+				const res = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`);
+				console.log(res);
+				if (!res.ok) {
+					console.log('user nicht gefunden');
+					throw new Error('Fehler beim Laden des Users');
+				}
+				const userResponse = await res.json();
+				setTrainemUser(userResponse);
+				return userResponse;
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 	useEffect(() => {
@@ -93,7 +139,7 @@ export function TaskCalendar({
 				console.log(error);
 			}
 		}
-
+		loadUser();
 		loadTrainingsplan();
 	}, []);
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -179,8 +225,8 @@ export function TaskCalendar({
 											className="text-primary hover:bg-primary/10"
 											onClick={() => setTaskDay(format(new Date(day), 'EEE') as TrainingDays)}
 										>
-											<Plus className="h-4 w-4 mr-1" />
-											Add
+											<Plus className="h-4 w-4 " />
+											Add Task
 										</Button>
 									</PopoverTrigger>
 									<PopoverContent
@@ -244,7 +290,7 @@ export function TaskCalendar({
 															<SelectGroup>
 																{Object.values(DIFFICULTY).map((difficulty) => (
 																	<SelectItem
-																		className={cn('mb-0.5', difficultyColors[difficulty])}
+																		className={cn('mb-0.5')}
 																		key={difficulty}
 																		value={difficulty}
 																	>
@@ -269,7 +315,7 @@ export function TaskCalendar({
 							{dayTasks.length === 0 ? (
 								<p className="text-xs text-muted-foreground italic py-2">No tasks</p>
 							) : (
-								<ul className="space-y-2">
+								<ul className="grid grid-cols-3 gap-2">
 									{dayTasks.map((task) => (
 										<li
 											key={task._id?.toString()}
@@ -284,6 +330,7 @@ export function TaskCalendar({
 												<Checkbox
 													checked={task.completed}
 													onCheckedChange={() => onChecked(task)}
+													disabled={task.completed || isFutureWeek || day < startOfToday()}
 												/>
 												<div className={cn('h-2 w-2 rounded-full shrink-0 mt-1.5', 'bg-primary')} />
 												<div className="flex-1 min-w-0">
@@ -300,30 +347,6 @@ export function TaskCalendar({
 													{task.description && (
 														<p className="text-xs text-muted-foreground mt-1">{task.description}</p>
 													)}
-												</div>
-
-												<div>
-													<Select name="difficulty">
-														<SelectTrigger>
-															<SelectValue
-																defaultValue={task.difficulty}
-																placeholder={task.difficulty}
-															/>
-														</SelectTrigger>
-														<SelectContent>
-															<SelectGroup>
-																{Object.values(DIFFICULTY).map((difficulty) => (
-																	<SelectItem
-																		className={cn('mb-0.5', difficultyColors[difficulty])}
-																		key={difficulty}
-																		value={difficulty}
-																	>
-																		{difficulty}
-																	</SelectItem>
-																))}
-															</SelectGroup>
-														</SelectContent>
-													</Select>
 												</div>
 											</div>
 										</li>

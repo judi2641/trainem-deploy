@@ -10,7 +10,7 @@ const characterImages = {
 	char1: '../../../public/assets/avatar/abnahme/blauLevel1Abnahme.png',
 	char2: '../../../public/assets/avatar/abnahme/gelbLevel1Abnahme.png',
 	char3: '../../../public/assets/avatar/abnahme/lilaLevel1Abnahme.png',
-	char4: '../../../public/assets/avatar/abnahme/rotLevel1Abnahme.png', // findet nicht???
+	char4: '../../../public/assets/avatar/abnahme/rotLevel1Abnahme.png',
 	char5: '../../../public/assets/avatar/abnahme/weißLevel1Abnahme.png',
 };
 
@@ -78,28 +78,31 @@ export default function CharacterColor() {
 			</div>
 
 			{/* Navigation */}
-			<div className="flex justify-between mt-6">
-				<button
-					onClick={() => navigate(-1)}
-					className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-50"
+			<div className="flex justify-between mt-10">
+				{/* Zurück */}
+				<Button
+					onClick={() => navigate('/onboarding/schedule')}
+					variant="outline"
+					className="h-11 w-11 p-0 flex items-center justify-center"
 				>
-					Back
-				</button>
+					<ArrowLeft className="h-5 w-5" />
+				</Button>
 
-				<button
+				{/* Weiter */}
+				<Button
 					onClick={handleFinish}
 					disabled={selected === null}
 					className={`
-						px-4 py-2 rounded
-						${
+            h-11 w-11 p-0 flex items-center justify-center
+            ${
 							selected !== null
-								? 'bg-indigo-600 text-white hover:bg-indigo-700'
+								? 'bg-green-600 hover:bg-green-700 text-white'
 								: 'bg-gray-300 text-gray-500 cursor-not-allowed'
 						}
-					`}
+          `}
 				>
-					Continue
-				</button>
+					<ArrowRight className="h-5 w-5" />
+				</Button>
 			</div>
 		</div>
 	);

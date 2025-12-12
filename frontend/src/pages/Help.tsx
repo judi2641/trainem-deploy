@@ -39,18 +39,27 @@ export default function Help() {
 	}
 
 	return (
-		<div className="flex h-screen bg-gray-100">
+		<div className="flex h-screen bg-[radial-gradient(circle_at_top_left,var(--color-primary),#ffe5c4)]">
 			<Sidebar />
 
 			<div className="flex-1 flex flex-col">
 				<Header />
 				<main className="flex-1 pt-0 pl-0 p-5 min-h-0 overflow-y-auto">
+<<<<<<< HEAD
 					<div className="grid gap-6 grid-cols-1 xl:grid-cols-[1.3fr,1fr] items-start">
 						<div className="bg-white shadow-md rounded-xl p-8">
 							<h1 className="text-2xl font-bold mb-2">Help & Support</h1>
 							<p className="text-muted-foreground mb-6">
 								Have suggestions or found an issue? Reach out to support and we will get back to you.
 							</p>
+=======
+					<div className="bg-white shadow-md rounded-xl p-8 max-w-3xl ">
+						<h1 className="text-2xl font-bold mb-2">Help & Support</h1>
+						<p className="text-muted-foreground mb-6">
+							Du hast Verbesserungsvorschläge? Es funktioniert etwas noch nicht? Dann kontaktiere
+							den Support.
+						</p>
+>>>>>>> 495655ceb86891caf97c7d6a03040cdfd0cb50ef
 
 							<form onSubmit={handleSubmit} className="space-y-4">
 								<div>
@@ -123,7 +132,50 @@ export default function Help() {
 									</div>
 								))}
 							</div>
+<<<<<<< HEAD
 						</div>
+=======
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+									E-Mail
+								</label>
+								<input
+									id="email"
+									type="email"
+									name="email"
+									required
+									className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+									placeholder="you@example.com"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="message">
+									Nachricht
+								</label>
+								<textarea
+									id="message"
+									required
+									name="message"
+									rows={4}
+									className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+									placeholder="Beschreibe dein Anliegen oder den Fehler."
+								/>
+							</div>
+							<div className="flex items-center gap-3">
+								<button
+									type="submit"
+									className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+								>
+									Senden
+								</button>
+								{status === 'sent' && (
+									<span className="text-sm text-green-600">
+										Vielen Dank! Wir melden uns zeitnah.
+									</span>
+								)}
+							</div>
+						</form>
+>>>>>>> 495655ceb86891caf97c7d6a03040cdfd0cb50ef
 					</div>
 				</main>
 			</div>

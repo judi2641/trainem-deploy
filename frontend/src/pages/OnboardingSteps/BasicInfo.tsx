@@ -86,7 +86,14 @@ export default function BasicInfo() {
 							captionLayout="dropdown"
 							className="w-full"
 							selected={birthDate ? new Date(birthDate) : undefined}
-							onSelect={(value) => value && setBirthDate(value.toISOString().split('T')[0])}
+							onSelect={(value) => {
+								if (!value) return;
+
+								const date = new Date(value);
+								date.setHours(12, 0, 0, 0); // <-- WICHTIGER FIX
+
+								setBirthDate(date.toISOString().split('T')[0]);
+							}}
 						/>
 					</PopoverContent>
 				</Popover>
@@ -120,12 +127,19 @@ export default function BasicInfo() {
 					<ArrowLeft className="h-5 w-5" />
 				</Button>
 
-				<Button
-					onClick={handleNext}
-					className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
-				>
-					<ArrowRight className="h-5 w-5" />
-				</Button>
+
+	
+			<Button
+   			 onClick={handleNext}
+   			 variant="outline"
+    		className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+			>
+    <ArrowRight className="h-5 w-5" />
+		</Button>
+					
+
+				
+          
 			</div>
 		</div>
 	);

@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify({ name: planName, category: planCat }),
+						body: JSON.stringify({ name: planName, category: 'default' }),
 					},
 				);
 
@@ -127,14 +127,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 										onChange={(e) => setPlanName(e.target.value)}
 									/>
 								</div>
-								<div className="grid gap-3">
+								{/* <div className="grid gap-3">
 									<Label>Category</Label>
 									<Input
 										id="planCategory"
 										name="planCategory"
 										onChange={(e) => setPlanCat(e.target.value)}
 									/>
-								</div>
+								</div> */}
 							</div>
 							<div className="flex justify-end gap-2 mt-3">
 								<Button type="submit" size="sm">

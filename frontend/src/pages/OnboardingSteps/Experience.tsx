@@ -123,7 +123,7 @@ export default function Experience() {
     {/* Navigation */}
     <div className="flex justify-between mt-10">
       <Button
-        onClick={() => navigate("/onboarding")}
+        onClick={() => navigate('/onboarding/basic')}
         variant="outline"
         className="h-11 w-11 p-0 flex items-center justify-center"
       >

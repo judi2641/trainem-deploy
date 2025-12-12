@@ -22,7 +22,7 @@ export default function TasksArea() {
 	const [currentDate, setCurrentDate] = useState(startOfToday());
 	const { user } = useAuth0();
 	const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-	const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+	const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
 
 	useEffect(() => {
 		//hier werden alle trainingspläne geladen und daraus die tasks gezogen und in eine liste zusammengeführt
@@ -82,7 +82,7 @@ export default function TasksArea() {
 
 		loadTrainingsplan();
 		loadCompletedTasks();
-	}, [reloadTasksFlag, user?.sub]);
+	}, [reloadTasksFlag, user?.sub, currentDate]);
 
 	const triggerReload = () => setReloadTasksFlag((f) => !f);
 
@@ -109,7 +109,7 @@ export default function TasksArea() {
 							</p>
 							<p className="text-3xl font-bold text-foreground mt-2">{totalStat}</p>
 						</div>
-						<Circle className="h-10 w-10 text-primary/70 shrink-0" />
+						<Circle className="h-10 w-10 text-blue-200 shrink-0" />
 					</div>
 				</Card>
 				<Card className="p-5 border border-border bg-card shadow-sm ">
@@ -120,7 +120,7 @@ export default function TasksArea() {
 							</p>
 							<p className="text-3xl font-bold text-foreground mt-2">{completedStat}</p>
 						</div>
-						<CheckCircle2 className="h-10 w-10 text-green-300/70 shrink-0" />
+						<CheckCircle2 className="h-10 w-10 text-green-200 shrink-0" />
 					</div>
 				</Card>
 				<Card className="p-5 border border-border bg-card shadow-sm ">
@@ -131,7 +131,7 @@ export default function TasksArea() {
 							</p>
 							<p className="text-3xl font-bold text-foreground mt-2">{pending}</p>
 						</div>
-						<Circle className="h-10 w-10 text-orange-300/70 shrink-0" />
+						<Circle className="h-10 w-10 text-orange-200 shrink-0" />
 					</div>
 				</Card>
 			</div>

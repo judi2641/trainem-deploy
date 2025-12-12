@@ -4,7 +4,7 @@ import ThemeToggle from '../components/ThemeToggle';
 
 export default function Settings() {
 	return (
-		<div className="flex h-screen bg-gray-100">
+		<div className="flex h-screen bg-[radial-gradient(circle_at_top_left,var(--color-primary),#ffe5c4)]">
 			<Sidebar />
 
 			<div className="flex-1 flex flex-col">
@@ -13,7 +13,12 @@ export default function Settings() {
 					<div className="bg-white shadow-md rounded-xl p-8 max-w-3xl">
 						<h1 className="text-2xl font-bold mb-2">Settings</h1>
 						<p className="text-muted-foreground mb-6">
+<<<<<<< HEAD
 							Enable dark mode with a quick color swap. If something looks off, you can switch back anytime.
+=======
+							Darkmode per einfacher Farb-Umkehr. Falls etwas noch nicht perfekt aussieht, kannst du
+							jederzeit zurückschalten.
+>>>>>>> 495655ceb86891caf97c7d6a03040cdfd0cb50ef
 						</p>
 						<ThemeToggle />
 					</div>
