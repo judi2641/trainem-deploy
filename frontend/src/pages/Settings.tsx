@@ -11,10 +11,9 @@ export default function Settings() {
 				<Header />
 				<main className="flex-1 pt-0 pl-0 p-5 min-h-0 overflow-y-auto">
 					<div className="bg-white shadow-md rounded-xl p-8 max-w-3xl">
-						<h1 className="text-2xl font-bold mb-2">Einstellungen</h1>
+						<h1 className="text-2xl font-bold mb-2">Settings</h1>
 						<p className="text-muted-foreground mb-6">
-							Darkmode per einfacher Farb-Umkehr. Falls etwas noch nicht perfekt aussieht, kannst du jederzeit
-							zurückschalten.
+							Enable dark mode with a quick color swap. If something looks off, you can switch back anytime.
 						</p>
 						<ThemeToggle />
 					</div>

@@ -28,7 +28,7 @@ export interface IUser {
 export const GENDERS = {
 	m: 'Male',
 	f: 'Female',
-	d: 'Divers',
+	d: 'Diverse',
 } as const;
 export type GenderType = (typeof GENDERS)[keyof typeof GENDERS];
 

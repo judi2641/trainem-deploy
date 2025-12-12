@@ -20,11 +20,11 @@ export default function ThemeToggle() {
 	return (
 		<div className="flex flex-col gap-3">
 			<p className="text-sm text-muted-foreground">
-				Einfache Farb-Umkehr: aktiviert invertiert alle Farben via CSS.
+				Simple color inversion: toggles an inverted color scheme via CSS.
 			</p>
 			<Button variant={isDark ? 'default' : 'outline'} onClick={handleToggle} aria-pressed={isDark}>
 				{isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-				<span className="ml-2">{isDark ? 'Dark aktiv' : 'Dark aus'}</span>
+				<span className="ml-2">{isDark ? 'Dark on' : 'Dark off'}</span>
 			</Button>
 		</div>
 	);

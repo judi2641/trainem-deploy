@@ -46,10 +46,8 @@ export default function BasicInfo() {
 					className="w-full h-auto"
 				/>
 			</div>
-
 			<h2 className="text-xl font-bold mb-4">Basic Information</h2>
 			<p className="text-gray-600 mb-6">Please enter some personal information about yourself.</p>
-
 			{/* Firstname */}
 			<p className="mb-2 font-medium">Firstname</p>
 			<Input
@@ -58,7 +56,6 @@ export default function BasicInfo() {
 				onChange={(e) => setFirstName(e.target.value)}
 				className="mb-4"
 			/>
-
 			{/* Lastname */}
 			<p className="mb-2 font-medium">Lastname</p>
 			<Input
@@ -67,7 +64,6 @@ export default function BasicInfo() {
 				onChange={(e) => setLastName(e.target.value)}
 				className="mb-4"
 			/>
-
 			{/* Birthdate */}
 			<div className="mb-4">
 				<p className="mb-2 font-medium">Birthdate</p>
@@ -95,8 +91,7 @@ export default function BasicInfo() {
 					</PopoverContent>
 				</Popover>
 			</div>
-
-			{/* Gender */}
+			j{/* Gender */}
 			<div className="mb-4">
 				<p className="mb-2 font-medium">Gender</p>
 				<div className="flex gap-4 justify-center mt-4">
@@ -115,7 +110,6 @@ export default function BasicInfo() {
 					))}
 				</div>
 			</div>
-
 			{/* Navigation */}
 			<div className="flex justify-between mt-6">
 				<Button
