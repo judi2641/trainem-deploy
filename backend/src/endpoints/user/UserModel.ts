@@ -11,10 +11,6 @@ const UserSchema = new Schema(
 		firstName: { type: String },
 		lastName: { type: String },
 		birthDate: { type: Date },
-<<<<<<< HEAD
-		// TODO: Hier 'Divers', in BasicInfo 'Diverse'
-=======
->>>>>>> 495655ceb86891caf97c7d6a03040cdfd0cb50ef
 		gender: { type: String, enum: ['Male', 'Female', 'Diverse'] },
 
 		avatar: { type: String },
