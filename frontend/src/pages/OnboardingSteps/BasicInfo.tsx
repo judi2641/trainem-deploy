@@ -6,24 +6,22 @@ import { enUS } from 'date-fns/locale';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { format, startOfToday, subYears } from 'date-fns';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function BasicInfo() {
 	const navigate = useNavigate();
 	const { userData, updateUserData } = useOnboarding();
-
+	const today = startOfToday();
+	const maxSelectableDate = subYears(today, 16); //user muss mindestens 16 sein
 	// Prefill if user goes back
 	const [firstname, setFirstName] = useState(userData.firstname || '');
 	const [lastname, setLastName] = useState(userData.lastname || '');
 	const [birthDate, setBirthDate] = useState(userData.birthDate || '');
 	const [gender, setGender] = useState(userData.gender || '');
 
-	const [month, setMonth] = useState<Date>(
-  birthDate ? new Date(birthDate) : new Date(2010, 0)
-);
-
+	const [month, setMonth] = useState<Date>(birthDate ? new Date(birthDate) : new Date(2000, 0));
 
 	const handleNext = async () => {
 		if (!firstname.trim() || !lastname.trim() || !birthDate || !gender) {
@@ -73,72 +71,71 @@ export default function BasicInfo() {
 			{/* Birthdate */}
 			<div className="mb-4">
 				<p className="mb-2 font-medium">Birthdate</p>
-<Popover>
-  <PopoverTrigger asChild>
-    <Button
-      variant="outline"
-      className={`w-full justify-start font-normal ${
-        !birthDate ? 'text-muted-foreground' : 'text-foreground'
-      }`}
-    >
-      {birthDate ? format(new Date(birthDate), 'dd.MM.yyyy') : 'Select date e.g. "20.07.2005"'}
-    </Button>
-  </PopoverTrigger>
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button
+							variant="outline"
+							className={`w-full justify-start font-normal ${
+								!birthDate ? 'text-muted-foreground' : 'text-foreground'
+							}`}
+						>
+							{birthDate
+								? format(new Date(birthDate), 'dd.MM.yyyy')
+								: 'Select date (DD.MM.YYYY) e.g. 18.12.2025'}
+						</Button>
+					</PopoverTrigger>
 
-  <PopoverContent className="p-0 w-[350px] min-h-[380px]">
-    <Calendar
-  mode="single"
-  captionLayout="dropdown"
-  className="w-full"
+					<PopoverContent className="p-0 w-[350px] min-h-[380px]">
+						<Calendar
+							mode="single"
+							captionLayout="dropdown"
+							className="w-full"
+							month={month}
+							onMonthChange={(newMonth) => {
+								// optionaler Schutz: falls man irgendwie "zu weit" navigiert, clampen
+								const clampedMonth = newMonth > maxSelectableDate ? maxSelectableDate : newMonth;
+								setMonth(clampedMonth);
 
-  /* 🔑 kontrollierter Monat */
-  month={month}
-  onMonthChange={(newMonth) => {
-    setMonth(newMonth);
+								if (birthDate) {
+									const selected = new Date(birthDate);
 
-    // 👉 wenn schon ein Tag gewählt ist: BEHALTEN
-    if (birthDate) {
-      const selected = new Date(birthDate);
+									const year = clampedMonth.getFullYear();
+									const monthIndex = clampedMonth.getMonth();
 
-      const year = newMonth.getFullYear();
-      const monthIndex = newMonth.getMonth();
+									const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+									const dayToKeep = Math.min(selected.getDate(), lastDay);
 
-      // letzter Tag im neuen Monat
-      const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+									const updated = new Date(year, monthIndex, dayToKeep);
+									updated.setHours(12, 0, 0, 0);
 
-      const dayToKeep = Math.min(selected.getDate(), lastDay);
+									setBirthDate(updated.toISOString().split('T')[0]);
+								}
+							}}
+							locale={enUS}
+							selected={birthDate ? new Date(birthDate) : undefined}
+							defaultMonth={birthDate ? new Date(birthDate) : new Date(2000, 0)}
+							startMonth={new Date(1900, 0)}
+							endMonth={maxSelectableDate}
+							fromYear={1900}
+							toYear={maxSelectableDate.getFullYear()}
+							disabled={{ after: maxSelectableDate }}
+							onSelect={(value) => {
+								if (!value) return;
 
-      const updated = new Date(year, monthIndex, dayToKeep);
-      updated.setHours(12, 0, 0, 0);
+								// extra safety (falls disabled umgangen wird)
+								if (value > maxSelectableDate) return;
 
-      setBirthDate(updated.toISOString().split('T')[0]);
-    }
-  }}
-  locale={enUS}
-  /* 🔑 ausgewähltes Datum */
-  selected={birthDate ? new Date(birthDate) : undefined}
+								const date = new Date(value);
+								date.setHours(12, 0, 0, 0);
 
-  /* 🔑 Bereich */
-  defaultMonth={birthDate ? new Date(birthDate) : new Date(2010, 0)}
-  startMonth={new Date(1940, 0)}
-  endMonth={new Date(2010, 11)}
-
-  onSelect={(value) => {
-    if (!value) return;
-
-    const date = new Date(value);
-    date.setHours(12, 0, 0, 0);
-
-    setBirthDate(date.toISOString().split('T')[0]);
-    setMonth(date); // 🔑 Monat synchron halten
-  }}
-/>
-
-  </PopoverContent>
-</Popover>
-
+								setBirthDate(date.toISOString().split('T')[0]);
+								setMonth(date);
+							}}
+						/>
+					</PopoverContent>
+				</Popover>
 			</div>
-			j{/* Gender */}
+			{/* Gender */}
 			<div className="mb-4">
 				<p className="mb-2 font-medium">Gender</p>
 				<div className="flex gap-4 justify-center mt-4">
@@ -167,19 +164,13 @@ export default function BasicInfo() {
 					<ArrowLeft className="h-5 w-5" />
 				</Button>
 
-
-	
-			<Button
-   			 onClick={handleNext}
-   			 variant="outline"
-    		className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
-			>
-    <ArrowRight className="h-5 w-5" />
-		</Button>
-					
-
-				
-          
+				<Button
+					onClick={handleNext}
+					variant="outline"
+					className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+				>
+					<ArrowRight className="h-5 w-5" />
+				</Button>
 			</div>
 		</div>
 	);

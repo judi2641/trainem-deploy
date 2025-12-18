@@ -52,6 +52,14 @@ export function TaskCalendar({
 	const isFutureWeek = weekStart > startOfToday();
 	const { user } = useAuth0();
 
+	// Trainingsplan vorauswählen wenn es nur einen gibt: -->
+	useEffect(() => {
+		if (trainingsplaene?.length === 1 && !taskTrainingsplanID) {
+			const onlyId = trainingsplaene[0]?._id?.toString() || '';
+			if (onlyId) setTaskTrainingsplanID(onlyId);
+		}
+	}, [trainingsplaene, taskTrainingsplanID]);
+
 	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
 		try {
 			if (user?.sub) {
@@ -262,7 +270,8 @@ export function TaskCalendar({
 														onValueChange={setTaskTrainingsplanID}
 													>
 														<SelectTrigger>
-															<SelectValue placeholder="Select a trainingsplan" />
+															<SelectValue placeholder="Select a trainingsplan" />{' '}
+															{/* comment  ----------------------------------------------------------------------------------------------------------------------- */}
 														</SelectTrigger>
 														<SelectContent>
 															<SelectGroup>
