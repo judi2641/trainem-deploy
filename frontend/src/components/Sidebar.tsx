@@ -1,17 +1,16 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import {
-	HiOutlineViewGrid,
-	HiOutlineCheckCircle,
-	HiOutlineCalendar,
-	HiOutlineChartBar,
-	HiOutlineUserGroup,
-	HiOutlineCog,
-	HiOutlineQuestionMarkCircle,
-	HiOutlineLogout,
-} from 'react-icons/hi';
+import { LayoutDashboard } from "lucide-react";
+import {SquareCheckBig}from "lucide-react";
+import { CalendarDays } from 'lucide-react';
+import { ChartNoAxesColumnIncreasing } from 'lucide-react';
+import { UsersRound } from 'lucide-react';
+import {Settings} from 'lucide-react';
+import { CircleQuestionMark } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
+import { Button } from "@/components/ui/button";
 
 export default function Sidebar() {
 	const { user } = useAuth0();
@@ -83,7 +82,7 @@ export default function Sidebar() {
 							to="/dashboard"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineViewGrid className="w-5 h-5" />
+							<LayoutDashboard className="h-5 w-5"></LayoutDashboard>
 							<span className="ml-3">Dashboard</span>
 						</NavLink>
 					</li>
@@ -93,7 +92,7 @@ export default function Sidebar() {
 							to="/tasks"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineCheckCircle className="w-5 h-5" />
+							<SquareCheckBig className="h-5 w-5"></SquareCheckBig>
 							<span className="ml-3">Tasks</span>
 						</NavLink>
 					</li>
@@ -102,7 +101,7 @@ export default function Sidebar() {
 							to="/trainingsplan"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineCalendar className="w-5 h-5" />
+							<CalendarDays className="h-5 w-5"/>
 							<span className="ml-3">Trainingsplan</span>
 						</NavLink>
 					</li>
@@ -111,16 +110,18 @@ export default function Sidebar() {
 							to="/statistiken"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineChartBar className="w-5 h-5" />
+							<ChartNoAxesColumnIncreasing 
+							className="h-5 w-5"
+							strokeWidth={2.5} />
 							<span className="ml-3">Statistiken</span>
 						</NavLink>
 					</li>
-					<li>
+					<li>	
 						<NavLink
 							to="/gruppe"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineUserGroup className="w-5 h-5" />
+							<UsersRound className="h-5 w-5" strokeWidth={2.25} />
 							<span className="ml-3">Gruppe</span>
 						</NavLink>
 					</li>
@@ -134,7 +135,7 @@ export default function Sidebar() {
 							to="/settings"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineCog className="w-5 h-5" />
+							<Settings className ="h5- w-5" strokeWidth={2.25}/>
 							<span className="ml-3">Settings</span>
 						</NavLink>
 					</li>
@@ -143,7 +144,7 @@ export default function Sidebar() {
 							to="/help"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
-							<HiOutlineQuestionMarkCircle className="w-5 h-5" />
+							<CircleQuestionMark className="h-5 w-5" strokeWidth={2.25}/>
 							<span className="ml-3">Help</span>
 						</NavLink>
 					</li>
@@ -153,7 +154,7 @@ export default function Sidebar() {
 							className="cursor-pointer flex items-center p-2 rounded-lg text-gray-600 
                hover:bg-gray-100 active:bg-green-200 active:text-green-700 pr-29"
 						>
-							<HiOutlineLogout className="w-5 h-5" />
+							<LogOut  className="w-5 h-5" strokeWidth= {2.25} />
 							<span className="ml-3">Logout</span>
 						</button>
 					</li>
