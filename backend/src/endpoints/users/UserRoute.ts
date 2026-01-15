@@ -1,13 +1,13 @@
 import express, { Request, Response } from 'express';
 import { HttpError } from '../../errors/HttpError';
-import { createInitialUser, getUserByAuth0id, saveBasicUserInfo } from '../service/UserService';
+import { createInitialUser, getUserByAuth0id, saveBasicUserInfo } from './UserService';
 import { logger } from '../../utils/logger';
 
 const router = express();
 
-router.post('/:auth0ID/basic', async (req: Request, res: Response) => {
+router.post('/:auth0Id/basic', async (req: Request, res: Response) => {
 	try {
-		const user = await saveBasicUserInfo(req.params.auth0ID, req.body);
+		const user = await saveBasicUserInfo(req.params.auth0Id, req.body);
 		res.status(200).json(user);
 	} catch (error) {
 		logger.error(error);
@@ -41,9 +41,9 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/:auth0ID', async (req: Request, res: Response) => {
+router.get('/:auth0Id', async (req: Request, res: Response) => {
 	try {
-		const user = await getUserByAuth0id(req.params.auth0ID);
+		const user = await getUserByAuth0id(req.params.auth0Id);
 		return res.status(200).json(user);
 	} catch (error) {
 		if (error instanceof HttpError) {

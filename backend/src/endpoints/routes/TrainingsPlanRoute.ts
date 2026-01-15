@@ -11,10 +11,10 @@ import {
 	put,
 } from '../service/TrainingsPlanService';
 import { HttpError } from '../../errors/HttpError';
-import { getUserByAuth0id } from '../service/UserService';
+import { getUserByAuth0id } from '../users/UserService';
 import { Types } from 'mongoose';
 import { isInt8Array } from 'util/types';
-import { ITrainingsplanDokument, TrainingsPlanModel } from '../models/WorkoutModel';
+import { ITrainingsplanDokument, TrainingsPlanModel } from '../workouts/WorkoutModel';
 import { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
 
 const router = express();

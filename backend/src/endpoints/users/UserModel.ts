@@ -1,5 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
-import { GENDERS, USERS } from '../../../../shared/types/database/user/User';
+import { Schema, model } from 'mongoose';
 
 const pixelSchema = new Schema(
 	{
@@ -25,10 +24,10 @@ const canvasSchema = new Schema(
 const UserSchema = new Schema(
 	{
 		email: { type: String, required: true, unique: true },
-		auth0ID: { type: String, required: true, unique: true },
-		userType: { type: String, enum: Object.values(USERS) },
+		auth0Id: { type: String, required: true, unique: true },
 		firstName: { type: String },
 		lastName: { type: String },
+		birthDate: { type: Date },
 
 		pixels: [pixelSchema],
 		canvas: canvasSchema,
@@ -43,4 +42,5 @@ const UserSchema = new Schema(
 	},
 );
 
-export const UserModel = model('User', UserSchema);
+const UserModel = model('User', UserSchema);
+export default UserModel;

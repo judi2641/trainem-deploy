@@ -19,5 +19,5 @@ const habitSchema = new Schema(
 		timestamps: true,
 	},
 );
-
-export default model('Habit', habitSchema);
+const HabitModel = model('Habit', habitSchema);
+export default HabitModel;

@@ -1,9 +1,9 @@
 import { Types } from 'mongoose';
 import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
-import { TrainingsPlanModel } from '../models/WorkoutModel';
+import { TrainingsPlanModel } from '../workouts/WorkoutModel';
 import CompletedTaskModel from '../models/ExerciseModel';
-import { addPoints } from './UserService';
+import { addPoints } from '../users/UserService';
 
 export async function createCompletedTask(id: string, auth0Id: string) {
 	try {
