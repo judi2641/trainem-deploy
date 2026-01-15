@@ -3,7 +3,8 @@ import { HttpError } from '../../errors/HttpError';
 import { createInitialUser, getUserByAuth0id, saveBasicUserInfo } from './UserService';
 import { logger } from '../../utils/logger';
 
-const router = express();
+const router = express.Router();
+
 
 router.post('/:auth0Id/basic', async (req: Request, res: Response) => {
 	try {
@@ -22,13 +23,13 @@ router.post('/:auth0Id/basic', async (req: Request, res: Response) => {
 //after registration
 router.post('/', async (req: Request, res: Response) => {
 	try {
-		const { auth0id, email } = req.body;
+		const { auth0Id, email } = req.body;
 
-		if (!auth0id || !email) {
-			return res.status(400).json({ error: 'email and auth0id required' });
+		if (!auth0Id || !email) {
+			return res.status(400).json({ error: 'email and auth0Id required' });
 		}
 
-		const user = await createInitialUser(auth0id, email);
+		const user = await createInitialUser(auth0Id, email);
 		return res.status(201).json(user);
 	} catch (error) {
 		if (error instanceof HttpError) {

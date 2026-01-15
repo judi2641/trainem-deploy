@@ -94,7 +94,7 @@ export default function Sidebar() {
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineCheckCircle className="w-5 h-5" />
-							<span className="ml-3">Tasks</span>
+							<span className="ml-3">Calendar</span>
 						</NavLink>
 					</li>
 					<li>
@@ -103,7 +103,7 @@ export default function Sidebar() {
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineCalendar className="w-5 h-5" />
-							<span className="ml-3">Trainingsplan</span>
+							<span className="ml-3">Workouts</span>
 						</NavLink>
 					</li>
 					<li>
@@ -112,7 +112,7 @@ export default function Sidebar() {
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineChartBar className="w-5 h-5" />
-							<span className="ml-3">Statistiken</span>
+							<span className="ml-3">Habits</span>
 						</NavLink>
 					</li>
 					<li>
@@ -121,7 +121,7 @@ export default function Sidebar() {
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineUserGroup className="w-5 h-5" />
-							<span className="ml-3">Gruppe</span>
+							<span className="ml-3">Progress</span>
 						</NavLink>
 					</li>
 				</ul>

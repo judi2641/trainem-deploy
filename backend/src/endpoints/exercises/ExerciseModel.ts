@@ -4,7 +4,6 @@ export const ExerciseSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
-		trim: true,
 	},
 	type: {
 		type: String,
@@ -16,6 +15,6 @@ export const ExerciseSchema = new Schema({
 	imageUrl: String,
 });
 
-const ExerciseModel = model('Exercise', ExerciseSchema);
+export const ExerciseModel = model('Exercise', ExerciseSchema);
 
 export default ExerciseModel;

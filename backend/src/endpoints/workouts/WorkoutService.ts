@@ -3,6 +3,7 @@ import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
 import ExerciseModel from '../exercises/ExerciseModel';
 
+
 /**
  *
  * @param auth0Id
@@ -37,9 +38,9 @@ export async function createEmptyWorkout(auth0Id: String, name: String, descript
 export async function addExerciseToWorkout(
 	exerciseName: String,
 	workoutId: String,
-	sets: Number,
-	reps: Number,
-	duration: Number,
+	sets?: Number,
+	reps?: Number,
+	duration?: Number,
 ) {
 	const workout = await WorkoutModel.findById(workoutId);
 
@@ -55,7 +56,7 @@ export async function addExerciseToWorkout(
 	}
 
 	const workoutExercise = {
-		exercise: exercise,
+		exercise: exercise.toObject(),
 		sets: sets,
 		reps: reps,
 		duration: duration,
@@ -63,4 +64,18 @@ export async function addExerciseToWorkout(
 
 	workout.exercises.push(workoutExercise);
 	return await workout.save();
+}
+/**
+ *
+ * @param auth0Id
+ * @returns workout array
+ */
+export async function getAllWorkoutsFromUser(auth0Id: string){
+try {
+	return await WorkoutModel.find({ auth0Id:auth0Id });
+  } catch (error) {
+	logger.error('getAllWorkoutsFromUser failed', error);
+	if (error instanceof HttpError) throw error;
+	throw new HttpError(500, 'failed to get workouts');
+  }
 }

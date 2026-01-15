@@ -1,9 +1,9 @@
 import { Schema, model, Types } from 'mongoose';
-import ExerciseSchema from '../exercises/ExerciseModel';
+import { ExerciseSchema } from '../exercises/ExerciseModel';
 
 export const workoutExerciseSchema = new Schema(
 	{
-		exercise: ExerciseSchema,
+		exercise: { type: ExerciseSchema, required: true },
 		sets: Number,
 		reps: Number,
 		duration: Number,
