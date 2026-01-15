@@ -29,7 +29,7 @@ import type { IUser } from '../../../shared/types/database/user/User';
 import { Progress } from './ui/progress';
 interface TaskCalendarProps {
 	weekStart: Date;
-	tasks: (ITask & { planName: string } & { completed: boolean })[];
+	tasks: (ITask & { planName: string } & { completed: boolean } & { missed: boolean })[];
 	onTaskCreated: () => void;
 	onTaskCompleted: () => void;
 }
@@ -52,7 +52,9 @@ export function TaskCalendar({
 	const isFutureWeek = weekStart > startOfToday();
 	const { user } = useAuth0();
 
-	async function onChecked(task: ITask & { planName: string } & { completed: boolean }) {
+	async function onChecked(
+		task: ITask & { planName: string } & { completed: boolean } & { missed: boolean },
+	) {
 		try {
 			if (user?.sub) {
 				const response = await fetch(
@@ -321,9 +323,9 @@ export function TaskCalendar({
 											key={task._id?.toString()}
 											className={cn(
 												'flex items-start gap-3 p-3 rounded-lg border transition-all',
-												task.completed
-													? 'bg-green-300/30 border-border shadow-sm'
-													: stringToBorder(task.planName || ''),
+												task.completed && 'bg-green-300/30 border-border shadow-sm',
+												!task.completed && task.missed && 'bg-red-300/30 border-border shadow-sm',
+												stringToBorder(task.planName || ''),
 											)}
 										>
 											<div className="flex items-center gap-3 flex-1 min-w-0">

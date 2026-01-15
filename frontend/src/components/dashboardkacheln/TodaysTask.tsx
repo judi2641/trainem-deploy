@@ -137,7 +137,7 @@ export default function TodaysTask({
 		}
 	};
 	return (
-		<Card className=" overflow-auto ">
+		<Card className=" overflow-auto max-h-full">
 			<CardHeader className="p-3 sticky top-0 bg-white shadow-md rounded-xl">
 				<div className="flex items-center justify-between">
 					<CardTitle>Todays tasks</CardTitle>
