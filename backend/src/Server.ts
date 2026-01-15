@@ -3,9 +3,9 @@ import type { Request, Response } from 'express';
 import { logger } from './utils/logger';
 import cors from 'cors';
 import { initDB } from './database/db';
-import UserRoute from './endpoints/user/UserRoute';
-import TrainingsplanRoute from './endpoints/trainingsplan/TrainingsPlanRoute';
-import CompletedTaskRoute from './endpoints/completedTask/CompletedTaskRoute';
+import UserRoute from './endpoints/routes/UserRoute';
+import TrainingsplanRoute from './endpoints/routes/TrainingsPlanRoute';
+import CompletedTaskRoute from './endpoints/routes/CompletedTaskRoute';
 
 const app = express();
 

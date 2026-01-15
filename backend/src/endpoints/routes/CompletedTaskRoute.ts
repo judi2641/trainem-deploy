@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createCompletedTask, getAllCompletedTaskByAuthId } from './CompletedTaskService';
+import { createCompletedTask, getAllCompletedTaskByAuthId } from '../service/CompletedTaskService';
 import { HttpError } from '../../errors/HttpError';
 import { logger } from '../../utils/logger';
 

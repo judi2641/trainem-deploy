@@ -1,4 +1,4 @@
-import { ITaskDocument, ITrainingsplanDokument, TrainingsPlanModel } from './TrainingsPlanModel';
+import { ITaskDocument, ITrainingsplanDokument, TrainingsPlanModel } from '../models/WorkoutModel';
 import mongoose, { Types } from 'mongoose';
 import { ITask } from '../../../../shared/types/database/traininsplan/Task';
 import { HttpError } from '../../errors/HttpError';
@@ -7,7 +7,7 @@ import { TrainingsExperience } from '../../../../shared/types/other/TrainingsExp
 import { TrainingsGoals } from '../../../../shared/types/other/TrainingsGoal';
 import { OnboardingClientData } from '../../../../shared/types/other/OnboardingClientData';
 import { TrainingDays } from '../../../../shared/types/other/TrainingDays';
-import { getUserByAuth0id } from '../user/UserService';
+import { getUserByAuth0id } from './UserService';
 import { ITrainingsplan } from '../../../../shared/types/database/traininsplan/TrainingPlan';
 
 const SESSION_TYPES = [

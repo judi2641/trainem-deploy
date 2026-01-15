@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { HttpError } from '../../errors/HttpError';
-import { createInitialUser, getUserByAuth0id, saveBasicUserInfo } from './UserService';
+import { createInitialUser, getUserByAuth0id, saveBasicUserInfo } from '../service/UserService';
 import { logger } from '../../utils/logger';
 
 const router = express();

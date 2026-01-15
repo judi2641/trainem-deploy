@@ -1,5 +1,5 @@
 import { IUser } from '../../../../shared/types/database/user/User';
-import { UserModel } from './UserModel';
+import { UserModel } from '../models/UserModel';
 import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
 import { getAvatarImage } from '../../utils/getAvatarImage';
