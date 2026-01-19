@@ -117,7 +117,8 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 				}),
 			});
 			if (!res_onboarding_workout.ok) throw new Error('Error creating inital workout');
-			await setWorkouts(await res_onboarding_workout.json());
+			const new_workout = await res_onboarding_workout.json();
+			setWorkouts((prev) => [...prev, new_workout]);
 			console.log('inital workout created');
 		} catch (err) {
 			console.error('API error:', err);

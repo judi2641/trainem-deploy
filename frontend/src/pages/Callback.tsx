@@ -6,49 +6,92 @@ import { useMyContext } from '../context/AppContext';
 export default function Callback() {
 	const navigate = useNavigate();
 	const { user, isLoading } = useAuth0();
-	const { setMyUser, setWorkout, setEntries, myUser } = useMyContext();
+	const { setMyUser, setWorkouts, setEntries } = useMyContext();
 
-	useEffect(() => {
-		async function getData() {
-			if (!isLoading && user) {
-				if (user.sub) {
-					const res_user = await fetch(
-						`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
-					);
-					let contextUser;
-					if (res_user.ok) {
-						contextUser = await res_user.json();
-						console.log('Backend user');
-					}
-					if (!res_user.ok) {
-						const res_newuser = await fetch(`http://localhost:3000/api/user`, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
-						});
-
-						if (!res_newuser.ok) {
-							console.log('fehler beim erstellen');
-							navigate('/');
-							return;
-						}
-						contextUser = await res_newuser.json();
-					}
-					setMyUser(contextUser);
-					if (contextUser.onboardingCompleted) {
-						navigate('/dashboard');
-					} else {
-						navigate('/onboarding');
-					}
-				} else {
-					console.log('keine user.sub');
-					navigate('/');
+	async function setUserData() {
+		if (!isLoading && user) {
+			if (user.sub) {
+				const res_user = await fetch(
+					`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
+				);
+				let contextUser;
+				if (res_user.ok) {
+					contextUser = await res_user.json();
+					console.log('Backend user');
 				}
+				if (!res_user.ok) {
+					const res_newuser = await fetch(`http://localhost:3000/api/user`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
+					});
+
+					if (!res_newuser.ok) {
+						console.log('fehler beim erstellen');
+						navigate('/');
+						return;
+					}
+					contextUser = await res_newuser.json();
+				}
+				setMyUser(contextUser);
+				if (contextUser.onboardingCompleted) {
+					navigate('/dashboard');
+				} else {
+					navigate('/onboarding');
+				}
+			} else {
+				console.log('keine user.sub');
+				navigate('/');
 			}
 		}
-		getUser();
+	}
+
+	async function setEntriesData() {
+		if (!isLoading && user) {
+			if (user.sub) {
+				const res_entries = await fetch(`http://localhost:3000/api/entries/${user.sub}`, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+
+				if (!res_entries.ok) {
+					console.log('fehler beim fetch von entries');
+					navigate('/');
+					return;
+				}
+
+				setEntries(await res_entries.json());
+			}
+		}
+	}
+
+	async function setWorkoutsData() {
+		if (!isLoading && user) {
+			if (user.sub) {
+				const res_workouts = await fetch(`http://localhost:3000/api/workouts/${user.sub}`, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+
+				if (!res_workouts.ok) {
+					console.log('fehler beim fetch von workouts');
+					navigate('/');
+					return;
+				}
+
+				setWorkouts(await res_workouts.json());
+			}
+		}
+	}
+
+	useEffect(() => {
+		setUserData();
+		setEntriesData();
+		setWorkoutsData();
 	}, [isLoading, user]);
 
 	return (
