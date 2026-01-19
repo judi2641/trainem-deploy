@@ -1,175 +1,83 @@
 import { useEffect, useState } from 'react';
 import { format, startOfToday, addDays, startOfWeek, endOfWeek, isBefore } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { TaskCalendar } from '@/components/TaskCalendar';
+import { EntryCalendar } from './EntryCalendar';
 import { Card } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight, CheckCircle2, Circle, CircleX } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { ITask } from '../../../shared/types/database/traininsplan/Task';
-import type { ICompletedTask } from '../../../shared/types/database/CompletedTask';
-import type { ITrainingsplan } from '../../../shared/types/database/traininsplan/TrainingPlan';
-
-import { useAuth0 } from '@auth0/auth0-react';
+import { useMyContext } from '@/context/AppContext';
 
 export default function TasksArea() {
-	const [reloadTasksFlag, setReloadTasksFlag] = useState(false);
-	//taskList sind die gesammten tasks aller trainingspläne eines users
-	const [taskList, setTaskList] = useState<(ITask & { planName: string })[]>([]);
-
-	//completedTasks bestehen aus den abgeschlossenen tasks die zu dieser woche passen
-	const [completedTasks, setCompletedTasks] = useState<ICompletedTask[]>([]);
-	//state um alles neu zu berechnen wenn man die wochenanzeige wechselt
+	const { myUser, entries } = useMyContext();
 	const [currentDate, setCurrentDate] = useState(startOfToday());
-	const { user } = useAuth0();
+	const [reloadFlag, setReloadFlag] = useState(false);
+
 	const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
 	const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
 	const today = startOfToday();
-	const weekdayIndex: Record<string, number> = {
-		Mon: 0,
-		Tue: 1,
-		Wed: 2,
-		Thu: 3,
-		Fri: 4,
-		Sat: 5,
-		Sun: 6,
-	};
 
-	useEffect(() => {
-		//hier werden alle trainingspläne geladen und daraus die tasks gezogen und in eine liste zusammengeführt
-		async function loadTrainingsplan() {
-			try {
-				if (user?.sub) {
-					const res = await fetch(
-						`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
-					);
-					if (!res.ok) {
-						setTaskList([]);
-						return;
-					}
-					const trainingsplanResponse = await res.json();
+	// Entries für diese Woche filtern
+	const weekEntries = entries.filter((entry) => {
+		const entryDate = new Date(entry.date);
+		return entryDate >= weekStart && entryDate <= weekEnd;
+	});
 
-					if (!trainingsplanResponse || !Array.isArray(trainingsplanResponse)) {
-						setTaskList([]);
-						return;
-					}
-
-					setTaskList(
-						trainingsplanResponse.flatMap((tp: ITrainingsplan) =>
-							(tp.tasks || []).map((task) => ({
-								...task,
-								planName: tp.name,
-							})),
-						),
-					);
-				}
-			} catch (error) {
-				console.log(error);
-				setTaskList([]);
-			}
-		}
-
-		async function loadCompletedTasks() {
-			try {
-				const res = await fetch(
-					`http://localhost:3000/api/completedTasks/${encodeURIComponent(user.sub)}`,
-				);
-				if (!res.ok) {
-					setCompletedTasks([]);
-					return;
-				}
-				const data: ICompletedTask[] = await res.json();
-				const completedTasksThisWeek = (data || []).filter((task) => {
-					const doneDate = new Date(task.doneAt);
-					return doneDate >= weekStart && doneDate <= weekEnd;
-				});
-				console.log(completedTasksThisWeek);
-				setCompletedTasks(completedTasksThisWeek);
-			} catch (error) {
-				console.log(error);
-				setCompletedTasks([]);
-			}
-		}
-
-		loadTrainingsplan();
-		loadCompletedTasks();
-	}, [reloadTasksFlag, user?.sub, currentDate]);
-
-	const triggerReload = () => setReloadTasksFlag((f) => !f);
-
-	const tasks: (ITask & { planName: string; completed: boolean; missed: boolean })[] = taskList.map(
-		(task) => {
-			const completed = !!completedTasks.some(
-				(ct) => ct.taskID?.toString() === task._id!.toString(),
-			);
-
-			const missed = !completed && isBefore(addDays(weekStart, weekdayIndex[task.day]), today);
-
-			return {
-				...task,
-				completed,
-				missed,
-			};
-		},
+	// Statistiken berechnen
+	const totalExercises = weekEntries.reduce(
+		(sum, entry) => sum + (entry.plannedExercises?.length ?? 0),
+		0,
 	);
+	const completedExercises = weekEntries.reduce(
+		(sum, entry) => sum + (entry.completed_exercises?.length ?? 0),
+		0,
+	);
+	const pendingExercises = totalExercises - completedExercises;
 
-	const completedStat: number = tasks.filter((task) => task.completed === true).length;
-	const totalStat: number = tasks.length;
-	const pending: number = totalStat - completedStat;
-	const missed: number = tasks.filter((task) => task.missed === true).length;
+	const triggerReload = () => setReloadFlag((f) => !f);
 
 	const handlePrevWeek = () => setCurrentDate((prev) => addDays(prev, -7));
 	const handleNextWeek = () => setCurrentDate((prev) => addDays(prev, 7));
 	const handleToday = () => setCurrentDate(startOfToday());
+
 	return (
-		<div className="h-full w-full bg-white shadow-md rounded-xl min-h-0 overflow-y-auto ">
+		<div className="h-full w-full bg-white shadow-md rounded-xl min-h-0 overflow-y-auto">
 			<div className="top-0 grid grid-cols-4 p-6 z-20 rounded-xl pl-5 gap-4 sticky shadow-md bg-white backdrop-blur-3xl">
-				<Card className="p-5 border border-border bg-card shadow-sm ">
+				<Card className="p-5 border border-border bg-card shadow-sm">
 					<div className="flex items-start justify-between">
 						<div>
 							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-								Total Tasks
+								Total Exercises
 							</p>
-							<p className="text-3xl font-bold text-foreground mt-2">{totalStat}</p>
+							<p className="text-3xl font-bold text-foreground mt-2">{totalExercises}</p>
 						</div>
 						<Circle className="h-10 w-10 text-blue-200 shrink-0" />
 					</div>
 				</Card>
-				<Card className="p-5 border border-border bg-card shadow-sm ">
+				<Card className="p-5 border border-border bg-card shadow-sm">
 					<div className="flex items-start justify-between">
 						<div>
 							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
 								Completed
 							</p>
-							<p className="text-3xl font-bold text-foreground mt-2">{completedStat}</p>
+							<p className="text-3xl font-bold text-foreground mt-2">{completedExercises}</p>
 						</div>
 						<CheckCircle2 className="h-10 w-10 text-green-200 shrink-0" />
 					</div>
 				</Card>
-				<Card className="p-5 border border-border bg-card shadow-sm ">
+				<Card className="p-5 border border-border bg-card shadow-sm">
 					<div className="flex items-start justify-between">
 						<div>
 							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
 								Pending
 							</p>
-							<p className="text-3xl font-bold text-foreground mt-2">{pending}</p>
+							<p className="text-3xl font-bold text-foreground mt-2">{pendingExercises}</p>
 						</div>
 						<Circle className="h-10 w-10 text-orange-200 shrink-0" />
 					</div>
 				</Card>
-				<Card className="p-5 border border-border bg-card shadow-sm ">
-					<div className="flex items-start justify-between">
-						<div>
-							<p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-								Missed
-							</p>
-							<p className="text-3xl font-bold text-foreground mt-2">{missed}</p>
-						</div>
-						<CircleX className="h-10 w-10 text-red-200 shrink-0" />
-					</div>
-				</Card>
 			</div>
 
-			<div className="p-6 pt-3 pb-0 ">
+			<div className="p-6 pt-3 pb-0">
 				<div className="flex items-center justify-between">
 					<h2 className="text-lg font-semibold text-foreground">
 						{format(currentDate, 'MMMM yyyy', { locale: de })}
@@ -188,12 +96,7 @@ export default function TasksArea() {
 				</div>
 			</div>
 			<div className="p-6">
-				<TaskCalendar
-					weekStart={weekStart}
-					tasks={tasks}
-					onTaskCreated={triggerReload}
-					onTaskCompleted={triggerReload}
-				/>
+				<EntryCalendar weekStart={weekStart} onEntryUpdated={triggerReload} />
 			</div>
 		</div>
 	);
