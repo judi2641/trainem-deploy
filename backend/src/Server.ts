@@ -9,6 +9,7 @@ import UserRoute from './endpoints/users/UserRoute';
 import WorkoutRoute from './endpoints/workouts/WorkoutRoute'
 import HabitRoute from './endpoints/habits/HabitRoute'
 import EntryRoute from './endpoints/entries/EntryRoute'
+import ExerciseRoute from './endpoints/exercises/ExerciseRoute'
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/api/user', UserRoute);
 app.use('/api/workouts', WorkoutRoute);
 app.use('/api/habits', HabitRoute);
 app.use('/api/entries', EntryRoute);
+app.use('/api/exercises', ExerciseRoute);
 
 async function startServer() {
 	try {

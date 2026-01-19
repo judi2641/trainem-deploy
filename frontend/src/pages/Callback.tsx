@@ -6,7 +6,7 @@ import { useMyContext } from '../context/AppContext';
 export default function Callback() {
 	const navigate = useNavigate();
 	const { user, isLoading } = useAuth0();
-	const { setMyUser, setWorkouts, setEntries } = useMyContext();
+	const { setMyUser, setWorkouts, setEntries, setExercises } = useMyContext();
 
 	async function setUserData() {
 		if (!isLoading && user) {
@@ -88,10 +88,31 @@ export default function Callback() {
 		}
 	}
 
+	async function setExercisesData() {
+		if (!isLoading && user) {
+			if (user.sub) {
+				const res_exercises = await fetch(`http://localhost:3000/api/exercises`, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+
+				if (!res_exercises.ok) {
+					console.log('fehler beim fetch von Exercises');
+					navigate('/');
+					return;
+				}
+
+				setExercises(await res_exercises.json());
+			}
+		}
+	}
+
 	useEffect(() => {
 		setUserData();
 		setEntriesData();
 		setWorkoutsData();
+		setExercisesData();
 	}, [isLoading, user]);
 
 	return (
