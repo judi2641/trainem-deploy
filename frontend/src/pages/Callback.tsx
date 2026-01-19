@@ -9,7 +9,7 @@ export default function Callback() {
 	const { setMyUser, setWorkout, setEntries, myUser } = useMyContext();
 
 	useEffect(() => {
-		async function getUser() {
+		async function getData() {
 			if (!isLoading && user) {
 				if (user.sub) {
 					const res_user = await fetch(
