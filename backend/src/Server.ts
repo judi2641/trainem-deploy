@@ -19,7 +19,7 @@ app.get('/', (req: Request, res: Response) => {
 	res.status(200).json('Hi');
 });
 app.use('/api/user', UserRoute);
-app.use('/api/workout', WorkoutRoute);
+app.use('/api/workouts', WorkoutRoute);
 app.use('/api/habits', HabitRoute);
 app.use('/api/entries', EntryRoute);
 

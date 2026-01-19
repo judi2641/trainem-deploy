@@ -99,7 +99,7 @@ export default function Sidebar() {
 					</li>
 					<li>
 						<NavLink
-							to="/trainingsplan"
+							to="/workouts"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineCalendar className="w-5 h-5" />

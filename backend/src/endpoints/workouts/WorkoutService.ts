@@ -72,7 +72,8 @@ export async function addExerciseToWorkout(
  */
 export async function getAllWorkoutsFromUser(auth0Id: string){
 try {
-	return await WorkoutModel.find({ auth0Id:auth0Id });
+	const workouts:any[] = await WorkoutModel.find({ auth0Id:auth0Id });
+	return workouts;
   } catch (error) {
 	logger.error('getAllWorkoutsFromUser failed', error);
 	if (error instanceof HttpError) throw error;

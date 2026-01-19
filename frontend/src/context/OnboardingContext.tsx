@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import type { TrainingsGoals } from '../../../shared/types/other/TrainingsGoal';
 import type { TrainingsExperience } from '../../../shared/types/other/TrainingsExperience';
 import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
+import { useMyContext } from '../context/AppContext';
 
 // ------------------------------------------------------
 // TYPES
@@ -47,6 +48,7 @@ const OnboardingContext = createContext<OnboardingContextType | null>(null);
 
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
 	const { user, isLoading } = useAuth0();
+	const { setWorkouts } = useMyContext();
 
 	const [userData, setUserData] = useState<IUserInfo>({
 		firstname: '',
@@ -102,6 +104,21 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			if (!res.ok) throw new Error('Error saving user basic info');
 
 			console.log('✔ User basic info saved successfully');
+
+			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workout/onboarding`, {
+				method: 'POST',
+				headers: {
+					'Content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					auth0Id: user.sub,
+					name: 'onboarding workout',
+					description: 'created in onboarding',
+				}),
+			});
+			if (!res_onboarding_workout.ok) throw new Error('Error creating inital workout');
+			await setWorkouts(await res_onboarding_workout.json());
+			console.log('inital workout created');
 		} catch (err) {
 			console.error('API error:', err);
 		}

@@ -29,6 +29,17 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/onboarding', async (req: Request, res: Response) => {
+  try {
+    const { auth0Id, name, description } = req.body;
+    const workout = await createEmptyWorkout(auth0Id, name, description);
+    res.status(201).json(workout);
+  }
+  catch(err){
+    sendError(res, err);
+  }
+})
+
 // POST /workouts/:workoutId/exercises  { exerciseName, sets?, reps?, duration? }
 router.post('/:workoutId/exercises', async (req: Request, res: Response) => {
   try {

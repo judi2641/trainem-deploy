@@ -21,6 +21,8 @@ import Statistiken from './pages/Statistiken';
 import Gruppe from './pages/Gruppe';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
+import { ContextProvider } from './context/AppContext';
+import Workouts from './pages/Workouts';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -36,90 +38,91 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function App() {
 	return (
 		<Router>
-			<Routes>
-				{/* Öffentlich */}
-				<Route path="/" element={<LandingPage />} />
+			<ContextProvider>
+				<Routes>
+					{/* Öffentlich */}
+					<Route path="/" element={<LandingPage />} />
 
-				<Route path="/callback" element={<Callback />} />
+					<Route path="/callback" element={<Callback />} />
 
-				{/* Geschützt */}
-				<Route
-					path="/dashboard"
-					element={
-						<ProtectedRoute>
-							<Dashboard />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/tasks"
-					element={
-						<ProtectedRoute>
-							<Tasks />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/trainingsplan"
-					element={
-						<ProtectedRoute>
-							<Trainingsplan />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/statistiken"
-					element={
-						<ProtectedRoute>
-							<Statistiken />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/gruppe"
-					element={
-						<ProtectedRoute>
-							<Gruppe />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/settings"
-					element={
-						<ProtectedRoute>
-							<Settings />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/help"
-					element={
-						<ProtectedRoute>
-							<Help />
-						</ProtectedRoute>
-					}
-				/>
+					{/* Geschützt */}
+					<Route
+						path="/dashboard"
+						element={
+							<ProtectedRoute>
+								<Dashboard />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/tasks"
+						element={
+							<ProtectedRoute>
+								<Tasks />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/workouts"
+						element={
+							<ProtectedRoute>
+								<Workouts />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/statistiken"
+						element={
+							<ProtectedRoute>
+								<Statistiken />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/gruppe"
+						element={
+							<ProtectedRoute>
+								<Gruppe />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/settings"
+						element={
+							<ProtectedRoute>
+								<Settings />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/help"
+						element={
+							<ProtectedRoute>
+								<Help />
+							</ProtectedRoute>
+						}
+					/>
 
-				<Route
-					path="/onboarding"
-					element={
-						<ProtectedRoute>
-							<OnboardingProvider>
-								<Onboarding />
-							</OnboardingProvider>
-						</ProtectedRoute>
-					}
-				>
-					<Route path="intro" element={<Intro />} />
-					<Route index element={<Landing />} />
-					<Route path="basic" element={<BasicInfo />} />
-					<Route path="experience" element={<Experience />} />
-					<Route path="goals" element={<Goals />} />
-					<Route path="schedule" element={<Schedule />} />
-					<Route path="CharacterColor" element={<CharacterColor />} />
-					
-				</Route>
-			</Routes>
+					<Route
+						path="/onboarding"
+						element={
+							<ProtectedRoute>
+								<OnboardingProvider>
+									<Onboarding />
+								</OnboardingProvider>
+							</ProtectedRoute>
+						}
+					>
+						<Route path="intro" element={<Intro />} />
+						<Route index element={<Landing />} />
+						<Route path="basic" element={<BasicInfo />} />
+						<Route path="experience" element={<Experience />} />
+						<Route path="goals" element={<Goals />} />
+						<Route path="schedule" element={<Schedule />} />
+						<Route path="CharacterColor" element={<CharacterColor />} />
+					</Route>
+				</Routes>
+			</ContextProvider>
 		</Router>
 	);
 }
