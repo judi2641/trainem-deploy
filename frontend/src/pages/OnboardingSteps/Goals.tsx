@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
 import type { TrainingsGoals } from '../../../../shared/types/other/TrainingsGoal';
-import AvatarGoals from "/assets/avatar/onboarding/AvatarGoalsOnboarding.png";
+
 
 
 import { Button } from '@/components/ui/button';
@@ -79,14 +79,7 @@ export default function Goals() {
       })}
     </div>
 
-    {/* ⭐ AVATAR UNTER BUILD MUSCLE (zentriert) */}
-    <div className="w-full flex justify-center mt-6">
-      <img
-        src={AvatarGoals}
-        alt="Avatar"
-        className="w-24 h-auto"
-      />
-    </div>
+   
 
     {/* NAVIGATION */}
     <div className="flex justify-between mt-6">
@@ -100,7 +93,7 @@ export default function Goals() {
 
       <Button
         onClick={handleNext}
-        className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+        className="bg-amber-400 hover:bg-amber-500 text-black"
       >
         <ArrowRight className="h-5 w-5" />
       </Button>

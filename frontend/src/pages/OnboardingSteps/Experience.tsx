@@ -111,14 +111,7 @@ export default function Experience() {
       </div>
     </div>
 
-    {/* Avatar unten zentriert */}
-    <div className="flex justify-center mt-6">
-      <img
-        src={AvatarExperience}
-        alt="Avatar"
-        className="w-18 h-auto select-none"
-      />
-    </div>
+   
 
     {/* Navigation */}
     <div className="flex justify-between mt-10">
@@ -132,7 +125,7 @@ export default function Experience() {
 
       <Button
         onClick={handleNext}
-        className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+        className="bg-amber-400 hover:bg-amber-500 text-black"
       >
         <ArrowRight className="h-5 w-5" />
       </Button>

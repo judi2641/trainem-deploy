@@ -43,13 +43,7 @@ export default function BasicInfo() {
 	return (
 		<div className="relative">
 			{/* Avatar rechts oben */}
-			<div className="absolute right-4 top-0 w-25 opacity-95 pointer-events-none">
-				<img
-					src="/assets/avatar/onboarding/AvatarBasicInfoOnboarding.png"
-					alt="Onboarding Avatar"
-					className="w-full h-auto"
-				/>
-			</div>
+		
 			<h2 className="text-xl font-bold mb-4">Basic Information</h2>
 			<p className="text-gray-600 mb-6">Please enter some personal information about yourself.</p>
 			{/* Firstname */}
@@ -167,7 +161,7 @@ export default function BasicInfo() {
 				<Button
 					onClick={handleNext}
 					variant="outline"
-					className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+					className="bg-amber-400 hover:bg-amber-500 text-black"
 				>
 					<ArrowRight className="h-5 w-5" />
 				</Button>

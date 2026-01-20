@@ -1,119 +1,98 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useAuth0 } from "@auth0/auth0-react";
+import { Button } from "@/components/ui/button";
+import PixelBackground from "@/components/pixel/PixelBackground";
 
 export default function LandingPage() {
-	const { loginWithRedirect, logout, isLoading } = useAuth0();
-	// LOGIN → go to Dashboard
-	const handleLogin = () => {
-		loginWithRedirect({
-			appState: { returnTo: '/dashboard' },
-		});
-	};
-	// REGISTER → go to Onboarding
-	const handleRegister = () => {
-		logout({ logoutParams: { returnTo: window.location.origin } });
+  const { loginWithRedirect, logout } = useAuth0();
 
-		setTimeout(() => {
-			loginWithRedirect({
-				authorizationParams: {
-					screen_hint: 'signup',
-				},
-				appState: { returnTo: '/onboarding' },
-			});
-		}, 200);
-	};
+  const handleRegister = () => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
+    setTimeout(() => {
+      loginWithRedirect({
+        authorizationParams: { screen_hint: "signup" },
+        appState: { returnTo: "/onboarding" },
+      });
+    }, 150);
+  };
 
-	// Prevent rendering until Auth0 is ready
-	if (isLoading) {
-		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="text-xl">Loading...</div>
-			</div>
-		);
-	}
-	const hintergrundfarbe = cn(
-		'min-h-screen',
-		'bg-gradient-to-br',
-		'from-[#1FAF66]',
-		'via-[#0C7F45]',
-		'to-[#054F2D]',
-	);
+  const handleLogin = () => {
+    loginWithRedirect({ appState: { returnTo: "/dashboard" } });
+  };
 
-	return (
-		<div className={hintergrundfarbe}>
-			{/* Navbar */}
-			<nav className="p-6 flex justify-between items-center">
-				{/* TRAINEM LOGO — größer + schwarze Umrandung */}
-				<div
-					className="text-white text-5xl font-bold -mt-4"
-					style={{
-						textShadow: `
-              2px 2px 0 #000,
-              -2px -2px 0 #000,
-              -2px 2px 0 #000,
-              2px -2px 0 #000
-            `,
-					}}
-				>
-					TrainEm
-				</div>
-			</nav>
-			{/* Hero Section */}
-			<div className="max-w-6xl mx-auto px-6 py-10 text-center">
-				<h1 className="text-5xl md:text-7xl font-bold text-white mb-15">
-					Your personal
-					<br />
-					<span className="text-yellow-300">Training Plan</span>
-				</h1>
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
+      {/* subtle grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-20"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
 
-				<p className="text-xl md:text-2xl text-white/90 mb-25 max-w-2xl mx-auto">
-					Achieve your fitness goals with a personalized training plan designed just for you!
-				</p>
-				{/* Background Avatars */}
-				<div className="pointer-events-none absolute inset-0 flex justify-between px-10 opacity-100">
-					{/* Linke Seite – dick → dünn */}
-					<div className="flex flex-col justify-start gap-4 mt-20">
-						<img src="/assets/avatar/abnahme/blauLevel1Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel2Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel3Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel4Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel5Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel6Abnahme.png" className="h-20" />
-						<img src="/assets/avatar/abnahme/blauLevel7Abnahme.png" className="h-20" />
-					</div>
-					{/* Rechte Seite – dünn → fit */}
-					<div className="flex flex-col justify-start gap-4 mt-20">
-						<img src="/assets/avatar/abnahme/blauLevel8Abnahme.png" className="h-20 w-15" />
-						<img src="/assets/avatar/abnahme/blauLevel9Abnahme.png" className="h-20 w-15" />
-						<img src="/assets/avatar/abnahme/blauLevel10Abnahme.png" className="h-20 w-15" />
-						<img src="/assets/avatar/abnahme/blauLevel11Abnahme.png" className="h-20 w-15" />
-						<img src="/assets/avatar/abnahme/blauLevel12Abnahme.png" className="h-20 w-15" />
-						<img src="/assets/avatar/abnahme/blauLevel13Abnahme.png" className="h-20 w-15" />
-						<img src="/assets/avatar/abnahme/blauLevel14Abnahme.png" className="h-20 w-15" />
-					</div>
-				</div>
+      {/* glow */}
+      <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-emerald-300/35 blur-3xl" />
+      <div className="absolute -bottom-48 -right-48 h-[620px] w-[620px] rounded-full bg-amber-300/40 blur-3xl" />
 
-				<div className="flex flex-col sm:flex-row gap-20 justify-center">
-					<Button
-						onClick={handleRegister}
-						className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-20 py-8 rounded-xl shadow-md text-lg"
-					>
-						Register 🚀
-					</Button>
+      {/* pixel background */}
+      <PixelBackground count={220} seed={24} />
 
-					<Button
-						onClick={handleLogin}
-						variant="outline"
-						className="bg-green-900/60 border-2 border-yellow-400 text-yellow-300 
-             hover:bg-green-800/60 font-semibold px-20 py-8 
-             rounded-xl shadow-md text-lg min-w-[260px]
-"
-					>
-						Login
-					</Button>
-				</div>
-			</div>
-		</div>
-	);
+      {/* header */}
+      <header className="relative z-10 flex items-center px-10 py-7">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 bg-emerald-500 border-2 border-black" />
+          <span className="font-pixel text-black text-3xl">
+            TrainEm
+          </span>
+        </div>
+      </header>
+
+      {/* center card */}
+      <main className="relative z-10 flex min-h-[calc(100vh-96px)] items-center justify-center px-4">
+        <div className="relative">
+          {/* shadow layer */}
+          <div className="absolute left-3 top-3 h-full w-full border-4 border-black bg-black/10" />
+
+          {/* card */}
+          <div className="relative bg-white/85 backdrop-blur border-4 border-black px-16 py-14">
+            
+            {/* HEADLINE */}
+            <div className="flex justify-center">
+              <h1
+                className="font-pixel text-4xl md:text-5xl leading-none text-black text-left"
+                style={{
+                  letterSpacing: "0",
+                  wordSpacing: "-0.45em",
+                }}
+              >
+                TRAIN SMART
+                <br />
+                STAY CONSISTENT
+              </h1>
+            </div>
+
+            {/* buttons */}
+            <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Button
+                onClick={handleRegister}
+                className="pixel-btn font-pixel bg-amber-400 text-black hover:bg-amber-500 px-12 py-7"
+              >
+                REGISTER
+              </Button>
+
+              <Button
+                onClick={handleLogin}
+                variant="outline"
+                className="pixel-btn font-pixel bg-white text-black hover:bg-black/5 px-12 py-7 border-2 border-black"
+              >
+                LOGIN
+              </Button>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 }
