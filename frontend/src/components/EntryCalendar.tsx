@@ -8,7 +8,7 @@ import { CheckCircle2, Plus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import { Progress } from './ui/progress';
@@ -60,7 +60,7 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 				setEntries((prev: any) => prev.map((e: any) => (e._id === entryId ? updatedEntry : e)));
 
 				toast.custom(
-					(t) => (
+					() => (
 						<div className="bg-white border rounded-lg shadow-lg p-4 flex flex-col gap-2 w-90">
 							<div className="flex items-center gap-2">
 								<CheckCircle2 className="h-5 w-5 text-green-500" />
