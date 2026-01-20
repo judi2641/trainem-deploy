@@ -17,7 +17,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { DIFFICULTY, type TaskDifficulty } from '../../../shared/types/other/TaskDifficulty';
+import { DIFFICULTY } from '../../../shared/types/other/TaskDifficulty';
 import { useEffect, useState, type FormEvent } from 'react';
 import type { ITrainingsplan } from '../../../shared/types/database/traininsplan/TrainingPlan';
 import { useAuth0 } from '@auth0/auth0-react';

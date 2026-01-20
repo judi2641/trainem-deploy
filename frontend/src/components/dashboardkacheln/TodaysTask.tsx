@@ -38,7 +38,6 @@ export default function TodaysTask({
 	tasks,
 	onTaskCompleted,
 	onUserUpdate,
-	trainemUser,
 	trainingsplaene,
 }: TodayTaskProps) {
 	const [taskDay, setTaskDay] = useState<TrainingDays>();
@@ -65,7 +64,7 @@ export default function TodaysTask({
 				if (response.ok) {
 					const updatedUser = await onUserUpdate();
 					toast.custom(
-						(t) => (
+						() => (
 							<div className="bg-white border rounded-lg shadow-lg p-4 flex flex-col gap-2 w-90">
 								<div className="flex items-center gap-2">
 									<CheckCircle2 className="h-5 w-5 text-green-500" />

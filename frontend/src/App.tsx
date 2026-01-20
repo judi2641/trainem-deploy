@@ -13,9 +13,7 @@ import CharacterColor from './pages/OnboardingSteps/CharacterColor';
 import Intro from './pages/OnboardingSteps/Intro';
 
 import { useAuth0 } from '@auth0/auth0-react';
-import Tasks from './pages/Calendar';
 import Callback from './pages/Callback';
-import Trainingsplan from './pages/Trainingsplan';
 import { OnboardingProvider } from './context/OnboardingContext';
 import Statistiken from './pages/Statistiken';
 import Gruppe from './pages/Gruppe';
