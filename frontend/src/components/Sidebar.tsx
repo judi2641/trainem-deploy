@@ -1,16 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LayoutDashboard } from 'lucide-react';
-import { SquareCheckBig } from 'lucide-react';
-import { CalendarDays } from 'lucide-react';
-import { ChartNoAxesColumnIncreasing } from 'lucide-react';
-import { UsersRound } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import { CircleQuestionMark } from 'lucide-react';
 import { LogOut } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
 	HiOutlineCheckCircle,
 	HiOutlineCalendar,
