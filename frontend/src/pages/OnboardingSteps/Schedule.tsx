@@ -46,7 +46,6 @@ export default function Schedule() {
 
 	return (
 		<div className="relative">
-			
 			<h2 className="text-lg font-semibold mb-2">Training Schedule</h2>
 			<p className="text-sm text-gray-600 mb-4">Select the days you are available for training.</p>
 
@@ -79,10 +78,7 @@ export default function Schedule() {
 					<ArrowLeft className="h-5 w-5" />
 				</Button>
 
-				<Button
-					onClick={handleFinish}
-					className="bg-amber-400 hover:bg-amber-500 text-black"
-				>
+				<Button onClick={handleFinish} className="bg-amber-400 hover:bg-amber-500 text-black">
 					<ArrowRight className="h-5 w-5" />
 				</Button>
 			</div>

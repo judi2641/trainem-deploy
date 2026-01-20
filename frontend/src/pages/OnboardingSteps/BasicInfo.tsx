@@ -43,7 +43,7 @@ export default function BasicInfo() {
 	return (
 		<div className="relative">
 			{/* Avatar rechts oben */}
-		
+
 			<h2 className="text-xl font-bold mb-4">Basic Information</h2>
 			<p className="text-gray-600 mb-6">Please enter some personal information about yourself.</p>
 			{/* Firstname */}

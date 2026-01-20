@@ -24,6 +24,7 @@ import Help from './pages/Help';
 import { ContextProvider } from './context/AppContext';
 import Workouts from './pages/Workouts';
 import Calendar from './pages/Calendar';
+import PixelArt from './pages/PixelArt';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -100,6 +101,15 @@ function App() {
 						element={
 							<ProtectedRoute>
 								<Help />
+							</ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path="/pixel-art"
+						element={
+							<ProtectedRoute>
+								<PixelArt />
 							</ProtectedRoute>
 						}
 					/>
