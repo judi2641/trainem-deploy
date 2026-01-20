@@ -111,8 +111,8 @@ export async function initDB() {
         });
         _db = mongoose.connection;
         logger.info("database connected");
-        await createExercises();
-        logger.info("exercises created");
+        const exercises = await ExerciseModel.find();
+        if(exercises.length == 0) await createExercises();
     }
     catch(error){    
         logger.error("connection to database failed:", error);    
