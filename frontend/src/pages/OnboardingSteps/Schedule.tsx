@@ -41,7 +41,7 @@ export default function Schedule() {
 			planData,
 		});
 
-		navigate('/onboarding/CharacterColor');
+		navigate('/onboarding/pixel-intro');
 	};
 
 	return (

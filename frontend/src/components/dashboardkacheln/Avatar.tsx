@@ -16,7 +16,13 @@ export default function Avatar({ user, todayExp, streak }: AvatarProps) {
 							Level {Math.min(14, Math.floor((user?.score ?? 0) / 100) + 1)}
 						</h1>
 						<div className="flex justify-center items-center pb-6">
-							<img src={user?.img} className="w-40 h-50 object-contain object-center" />
+							{user?.img ? (
+								<img src={user.img} className="w-40 h-50 object-contain object-center" />
+							) : (
+								<div className="w-40 h-40 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-400">
+									No pixel art yet
+								</div>
+							)}
 						</div>
 
 						<div className="flex justify-between mb-2">

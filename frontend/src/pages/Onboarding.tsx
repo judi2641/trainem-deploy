@@ -8,6 +8,7 @@ const steps = [
 	'/onboarding/experience',
 	'/onboarding/goals',
 	'/onboarding/schedule',
+	'/onboarding/pixel-intro',
 	'/onboarding/CharacterColor',
 	'/onboarding/intro',
 ];
@@ -34,7 +35,7 @@ export default function Onboarding() {
 			{/* HIER muss das Card-Element hin! */}
 			<Card className="w-full max-w-3xl shadow-xl p-5">
 				<CardHeader>
-					<ProgressBar current={current} total={7} />
+					<ProgressBar current={current} total={steps.length} />
 				</CardHeader>
 
 				<CardContent>

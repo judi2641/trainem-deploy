@@ -6,6 +6,7 @@ import {
 	HiOutlineCalendar,
 	HiOutlineChartBar,
 	HiOutlineUserGroup,
+	HiOutlineColorSwatch,
 	HiOutlineCog,
 	HiOutlineQuestionMarkCircle,
 	HiOutlineLogout,
@@ -60,12 +61,10 @@ export default function Sidebar() {
 
 				{/* Avatar */}
 				<Avatar className="h-20 w-20 border-2 border-gray-300 shadow-md bg-gray-100">
-					<AvatarImage
-						src={backendUser?.img ?? ''}
-						alt="Avatar"
-						className="object-cover object-top"
-					/>
-					<AvatarFallback></AvatarFallback>
+					{backendUser?.img ? (
+						<AvatarImage src={backendUser.img} alt="Avatar" className="object-cover object-top" />
+					) : null}
+					<AvatarFallback>?</AvatarFallback>
 				</Avatar>
 
 				{/* Nur der Vorname */}
@@ -95,6 +94,15 @@ export default function Sidebar() {
 						>
 							<HiOutlineCheckCircle className="w-5 h-5" />
 							<span className="ml-3">Tasks</span>
+						</NavLink>
+					</li>
+					<li>
+						<NavLink
+							to="/pixel-art"
+							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
+						>
+							<HiOutlineColorSwatch className="w-5 h-5" />
+							<span className="ml-3">Pixel Art</span>
 						</NavLink>
 					</li>
 					<li>
