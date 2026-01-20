@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { format, startOfToday, addDays, startOfWeek, endOfWeek, isBefore } from 'date-fns';
+import { useState } from 'react';
+import { format, startOfToday, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { EntryCalendar } from './EntryCalendar';
 import { Card } from '@/components/ui/card';
@@ -8,13 +8,12 @@ import { Button } from '@/components/ui/button';
 import { useMyContext } from '@/context/AppContext';
 
 export default function EntryArea() {
-	const { myUser, entries } = useMyContext();
+	const { entries } = useMyContext();
 	const [currentDate, setCurrentDate] = useState(startOfToday());
-	const [reloadFlag, setReloadFlag] = useState(false);
+	const [, setReloadFlag] = useState(false);
 
 	const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
 	const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
-	const today = startOfToday();
 
 	// Entries für diese Woche filtern
 	const weekEntries = entries.filter((entry: any) => {
@@ -33,7 +32,7 @@ export default function EntryArea() {
 	);
 	const pendingExercises = totalExercises - completedExercises;
 
-	const triggerReload = () => setReloadFlag((f) => !f);
+	const triggerReload = () => setReloadFlag((f: any) => !f);
 
 	const handlePrevWeek = () => setCurrentDate((prev) => addDays(prev, -7));
 	const handleNextWeek = () => setCurrentDate((prev) => addDays(prev, 7));

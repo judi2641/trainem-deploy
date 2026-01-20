@@ -103,7 +103,7 @@ export default function PixelCanvas({
 	useEffect(() => {
 		if (!initialPixels || initialPixels.length === 0) return;
 		if (hasInitializedRef.current) return;
-		setGrid((prev) => {
+		setGrid(() => {
 			const next = createGrid(gridSize);
 			initialPixels.forEach((pixel) => {
 				if (pixel.x >= 0 && pixel.y >= 0 && pixel.y < next.length && pixel.x < next.length) {
@@ -150,7 +150,9 @@ export default function PixelCanvas({
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center justify-between text-sm text-slate-600">
-				<span>Unlocked pixels: {usedPixels}/{maxPixels}</span>
+				<span>
+					Unlocked pixels: {usedPixels}/{maxPixels}
+				</span>
 				<span>{remainingPixels} remaining</span>
 			</div>
 
@@ -193,7 +195,7 @@ export default function PixelCanvas({
 								style={{ backgroundColor: pixel ?? '#ffffff' }}
 								aria-label={`Pixel ${rowIndex + 1}, ${colIndex + 1}`}
 							/>
-						))
+						)),
 					)}
 				</div>
 			</div>
@@ -205,7 +207,9 @@ export default function PixelCanvas({
 						type="button"
 						onClick={() => setSelectedColor(color)}
 						className={`h-8 w-8 rounded border ${
-							selectedColor === color ? 'ring-2 ring-slate-900 border-slate-900' : 'border-slate-300'
+							selectedColor === color
+								? 'ring-2 ring-slate-900 border-slate-900'
+								: 'border-slate-300'
 						}`}
 						style={{ backgroundColor: color }}
 						aria-label={`Select color ${color}`}

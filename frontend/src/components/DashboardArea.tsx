@@ -1,20 +1,11 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect, useState } from 'react';
 import { type IUser } from '../../../shared/types/database/user/User';
-import Avatar from './dashboardkacheln/Avatar';
 import TodaysTask from './dashboardkacheln/TodaysTask';
 import { CompletedTasksChart } from './dashboardkacheln/CompletedTasksChart';
 import type { ITask } from '../../../shared/types/database/traininsplan/Task';
 import type { ITrainingsplan } from '../../../shared/types/database/traininsplan/TrainingPlan';
-import {
-	format,
-	startOfToday,
-	isSameDay,
-	addDays,
-	subWeeks,
-	eachWeekOfInterval,
-	endOfWeek,
-} from 'date-fns';
+import { format, startOfToday, isSameDay, subWeeks, eachWeekOfInterval, endOfWeek } from 'date-fns';
 import type { ICompletedTask } from '../../../shared/types/database/CompletedTask';
 export default function DashboardArea() {
 	const { user } = useAuth0();
@@ -35,7 +26,7 @@ export default function DashboardArea() {
 				}
 				const data = await res.json();
 				setAllWeeksCompletedTasks(data);
-				const completedTasksToday = (data || []).filter((task) => {
+				const completedTasksToday = (data || []).filter((task: any) => {
 					const doneDate = new Date(task.doneAt);
 					return isSameDay(doneDate, startOfToday());
 				});
@@ -94,32 +85,7 @@ export default function DashboardArea() {
 		loadCompletedTasks();
 	}, [user?.sub]);
 	const currentDay = format(startOfToday(), 'eee');
-	const difficultyPoints: Record<string, number> = {
-		easy: 50,
-		middle: 100,
-		hard: 150,
-	};
-	const calculateStreak = (): number => {
-		let streak = 0;
-		let checkDate = startOfToday();
 
-		while (true) {
-			const hasTaskOnDay = completedTasks.some((task) =>
-				isSameDay(new Date(task.doneAt), checkDate),
-			);
-
-			if (hasTaskOnDay) {
-				streak++;
-				checkDate = addDays(checkDate, -1);
-			} else {
-				break;
-			}
-		}
-
-		return streak;
-	};
-
-	const currentStreak = calculateStreak();
 	const fourWeeksAgo = subWeeks(startOfToday(), 3);
 	const weeks = eachWeekOfInterval(
 		{ start: fourWeeksAgo, end: startOfToday() },
@@ -138,9 +104,6 @@ export default function DashboardArea() {
 			tasks: count,
 		};
 	});
-	const todayExp = completedTasks
-		.filter((task) => isSameDay(new Date(task.doneAt), startOfToday()))
-		.reduce((total, ct) => total + (difficultyPoints[ct.difficulty] || 0), 0);
 
 	const todaysTasks = taskList
 		.filter((task) => task.day === currentDay)
@@ -155,9 +118,6 @@ export default function DashboardArea() {
 
 			{/* Grid für die Kacheln */}
 			<div className="flex-1 grid grid-cols-12 gap-4 grid-rows-[1fr_1fr_1fr] overflow-hidden">
-				<div className="col-span-4 row-span-3">
-					<Avatar user={trainemUser} todayExp={todayExp} streak={currentStreak} />
-				</div>
 				<div className="col-span-4 row-span-2 min-h-0">
 					<TodaysTask
 						tasks={todaysTasks}

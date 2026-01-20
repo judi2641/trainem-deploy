@@ -131,7 +131,7 @@ export default function WorkoutsArea() {
 			if (!res.ok) throw new Error('Übung konnte nicht hinzugefügt werden');
 
 			const updatedWorkout = await res.json();
-			setWorkouts((prev) => prev.map((w) => (w._id === workoutId ? updatedWorkout : w)));
+			setWorkouts((prev: any) => prev.map((w: any) => (w._id === workoutId ? updatedWorkout : w)));
 
 			setAddExerciseOpen(null);
 			resetExerciseForm();
@@ -162,8 +162,8 @@ export default function WorkoutsArea() {
 
 	async function saveWorkoutEdits() {
 		if (!activeWorkout) return;
-		setWorkouts((prev) =>
-			prev.map((w) => (w._id === activeWorkout._id ? { ...w, name, description } : w)),
+		setWorkouts((prev: any) =>
+			prev.map((w: any) => (w._id === activeWorkout._id ? { ...w, name, description } : w)),
 		);
 		setEditOpen(false);
 		resetForm();
@@ -248,7 +248,7 @@ export default function WorkoutsArea() {
 			)}
 
 			<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-				{workouts.map((w) => (
+				{workouts.map((w: any) => (
 					<Card key={w._id} className="bg-white/70">
 						<CardHeader className="space-y-1">
 							<div className="flex items-start justify-between gap-2">
@@ -335,7 +335,7 @@ export default function WorkoutsArea() {
 											<CommandInput placeholder="Übung suchen..." />
 											<CommandEmpty>Keine Übung gefunden.</CommandEmpty>
 											<CommandGroup className="max-h-64 overflow-auto">
-												{exercises.map((ex) => (
+												{exercises.map((ex: any) => (
 													<CommandItem key={ex._id} onSelect={() => setSelectedExercise(ex)}>
 														<div className="flex flex-col">
 															<span>{ex.name}</span>

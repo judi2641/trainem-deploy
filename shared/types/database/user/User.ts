@@ -4,8 +4,6 @@
 -----------------------------------------------------
 */
 
-import { ObjectId } from 'mongoose';
-
 /**
  * Base Interface for all the Users.
  * Contains all the Information, each User contains.

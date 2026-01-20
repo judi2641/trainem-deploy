@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import type { TrainingDays } from '../../other/TrainingDays';
 
 export interface ITask {
