@@ -96,8 +96,9 @@ export default function CharacterColor() {
             h-11 w-11 p-0 flex items-center justify-center
             ${
 							selected !== null
-								? 'bg-green-600 hover:bg-green-700 text-white'
-								: 'bg-gray-300 text-gray-500 cursor-not-allowed'
+  						? 'bg-amber-400 hover:bg-amber-500 text-black border-2 border-black'
+ 					 : 'bg-gray-200 text-gray-400 cursor-not-allowed border-2 border-gray-300'
+
 						}
           `}
 				>

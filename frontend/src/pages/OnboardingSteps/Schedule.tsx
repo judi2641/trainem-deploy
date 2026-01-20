@@ -4,7 +4,7 @@ import { useOnboarding } from '../../context/OnboardingContext';
 import type { TrainingDays } from '../../../../shared/types/other/TrainingDays';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import avatar from '/assets/avatar/onboarding/AvatarScheduleOnboarding.png';
+
 const daysOfWeek: { key: TrainingDays; label: string }[] = [
 	{ key: 'Mon', label: 'Mon' },
 	{ key: 'Tue', label: 'Tue' },
@@ -46,9 +46,7 @@ export default function Schedule() {
 
 	return (
 		<div className="relative">
-			{/*Avatar oben rechts */}
-			<img src={avatar} alt="Avatar" className="absolute -top-5 right-0 w-15 h-auto select-none" />
-
+			
 			<h2 className="text-lg font-semibold mb-2">Training Schedule</h2>
 			<p className="text-sm text-gray-600 mb-4">Select the days you are available for training.</p>
 
@@ -83,7 +81,7 @@ export default function Schedule() {
 
 				<Button
 					onClick={handleFinish}
-					className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
+					className="bg-amber-400 hover:bg-amber-500 text-black"
 				>
 					<ArrowRight className="h-5 w-5" />
 				</Button>
