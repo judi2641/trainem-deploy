@@ -57,7 +57,7 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 			if (res.ok) {
 				const updatedEntry = await res.json();
 
-				setEntries((prev) => prev.map((e) => (e._id === entryId ? updatedEntry : e)));
+				setEntries((prev: any) => prev.map((e: any) => (e._id === entryId ? updatedEntry : e)));
 
 				toast.custom(
 					(t) => (
@@ -132,7 +132,7 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 
 			<div className="space-y-6">
 				{days.map((day) => {
-					const dayEntries = entries.filter((entry) => isSameDay(new Date(entry.date), day));
+					const dayEntries = entries.filter((entry: any) => isSameDay(new Date(entry.date), day));
 					const isToday = isSameDay(day, startOfToday());
 
 					return (
@@ -184,7 +184,7 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 													</SelectTrigger>
 													<SelectContent>
 														<SelectGroup>
-															{workouts.map((workout) => (
+															{workouts.map((workout: any) => (
 																<SelectItem key={workout._id} value={workout._id}>
 																	{workout.name}
 																</SelectItem>
@@ -215,8 +215,8 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 								<p className="text-xs text-muted-foreground italic py-2">No workouts scheduled</p>
 							) : (
 								<ul className="space-y-3">
-									{dayEntries.map((entry) => {
-										const workout = workouts.find((w) => w._id === entry.workoutId);
+									{dayEntries.map((entry: any) => {
+										const workout = workouts.find((w: any) => w._id === entry.workoutId);
 										const isCompleted = entry.completed;
 
 										return (
@@ -232,9 +232,9 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 													{workout?.name || 'Unknown Workout'}
 												</div>
 												<div className="space-y-2">
-													{entry.plannedExercises?.map((ex, idx) => {
+													{entry.plannedExercises?.map((ex: any, idx: any) => {
 														const isExerciseCompleted = entry.completed_exercises?.some(
-															(completed) => completed.exercise.name === ex.exercise.name,
+															(completed: any) => completed.exercise.name === ex.exercise.name,
 														);
 
 														return (
