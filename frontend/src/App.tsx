@@ -13,7 +13,7 @@ import CharacterColor from './pages/OnboardingSteps/CharacterColor';
 import Intro from './pages/OnboardingSteps/Intro';
 
 import { useAuth0 } from '@auth0/auth0-react';
-import Tasks from './pages/Tasks';
+import Tasks from './pages/Calendar';
 import Callback from './pages/Callback';
 import Trainingsplan from './pages/Trainingsplan';
 import { OnboardingProvider } from './context/OnboardingContext';
@@ -23,6 +23,7 @@ import Settings from './pages/Settings';
 import Help from './pages/Help';
 import { ContextProvider } from './context/AppContext';
 import Workouts from './pages/Workouts';
+import Calendar from './pages/Calendar';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -55,10 +56,10 @@ function App() {
 						}
 					/>
 					<Route
-						path="/tasks"
+						path="/calendar"
 						element={
 							<ProtectedRoute>
-								<Tasks />
+								<Calendar />
 							</ProtectedRoute>
 						}
 					/>

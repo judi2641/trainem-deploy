@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, CheckCircle2, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMyContext } from '@/context/AppContext';
 
-export default function TasksArea() {
+export default function EntryArea() {
 	const { myUser, entries } = useMyContext();
 	const [currentDate, setCurrentDate] = useState(startOfToday());
 	const [reloadFlag, setReloadFlag] = useState(false);
@@ -17,18 +17,18 @@ export default function TasksArea() {
 	const today = startOfToday();
 
 	// Entries für diese Woche filtern
-	const weekEntries = entries.filter((entry) => {
+	const weekEntries = entries.filter((entry: any) => {
 		const entryDate = new Date(entry.date);
 		return entryDate >= weekStart && entryDate <= weekEnd;
 	});
 
 	// Statistiken berechnen
 	const totalExercises = weekEntries.reduce(
-		(sum, entry) => sum + (entry.plannedExercises?.length ?? 0),
+		(sum: any, entry: any) => sum + (entry.plannedExercises?.length ?? 0),
 		0,
 	);
 	const completedExercises = weekEntries.reduce(
-		(sum, entry) => sum + (entry.completed_exercises?.length ?? 0),
+		(sum: any, entry: any) => sum + (entry.completed_exercises?.length ?? 0),
 		0,
 	);
 	const pendingExercises = totalExercises - completedExercises;

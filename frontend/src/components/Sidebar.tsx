@@ -90,7 +90,7 @@ export default function Sidebar() {
 					{/* Inaktiver NavLink (Tasks) */}
 					<li>
 						<NavLink
-							to="/tasks"
+							to="/calendar"
 							className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
 						>
 							<HiOutlineCheckCircle className="w-5 h-5" />
