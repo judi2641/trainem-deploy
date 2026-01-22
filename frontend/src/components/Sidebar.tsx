@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
+import { useMyContext } from '@/context/AppContext';
 
 // Pixel-style icon components
 function PixelDashboardIcon({ className }: { className?: string }) {
@@ -112,8 +113,11 @@ function PixelLogoutIcon({ className }: { className?: string }) {
 }
 
 export default function Sidebar() {
+	const { myUser, workouts, entries, setEntries } = useMyContext();
 	const { user, logout } = useAuth0();
 	const [backendUser, setBackendUser] = useState<any>(null);
+	const completedWorkouts = entries.filter((e: any) => e.completed).length;
+	const level = Math.floor(completedWorkouts / 5) + 1;
 
 	useEffect(() => {
 		async function loadUser() {
@@ -164,12 +168,12 @@ export default function Sidebar() {
 							/>
 						) : null}
 						<AvatarFallback className="bg-amber-400 text-black font-pixel text-xs">
-							{backendUser?.firstName?.[0] ?? '?'}
+							{myUser?.firstName?.[0] ?? '?'}
 						</AvatarFallback>
 					</Avatar>
 					<div className="flex-1 min-w-0">
-						<p className="font-medium text-black truncate">{backendUser?.firstName ?? 'User'}</p>
-						<p className="text-xs text-black/60">Level 1</p>
+						<p className="font-medium text-black truncate">{myUser?.firstName ?? 'User'}</p>
+						<p className="text-xs text-black/60">Level {level}</p>
 					</div>
 				</div>
 

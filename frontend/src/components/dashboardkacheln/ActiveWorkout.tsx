@@ -1,7 +1,3 @@
-'use client';
-
-import React from 'react';
-
 import {
 	PixelCard,
 	PixelCardContent,
@@ -49,7 +45,7 @@ function useWorkoutTimer(startDate: Date | null) {
 
 		function calculate() {
 			const now = new Date();
-			const start = new Date(startDate);
+			const start = new Date(startDate!);
 			const diffMs = now.getTime() - start.getTime();
 
 			if (diffMs < 0) {
@@ -317,7 +313,7 @@ export default function ActiveWorkout() {
 			(ex: any) => !completed.some((c: any) => c.exercise.name === ex.exercise.name),
 		);
 	}, [latestUncompletedEntry]);
-
+	const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 	const completedExercises = useMemo(() => {
 		if (!latestUncompletedEntry) return [];
 		return latestUncompletedEntry.completed_exercises || [];
@@ -352,6 +348,14 @@ export default function ActiveWorkout() {
 	}
 
 	async function completeExercise(entryId: string, ex: any, weight?: number, duration?: number) {
+		if (latestUncompletedEntry.plannedExercises.length === 1) {
+			toast.success('Workout completed');
+
+			setCompletedEntryId(entryId);
+			setShowWorkoutComplete(true);
+			setCelebrationExiting(false);
+			await sleep(3000);
+		}
 		const res = await fetch(`http://localhost:3000/api/entries/${entryId}/complete-exercise`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
@@ -376,9 +380,6 @@ export default function ActiveWorkout() {
 		// This is the most reliable indicator that all exercises are done
 		if (updatedEntry.completed === true && completedEntryId !== entryId) {
 			// Track completed entry and show celebration
-			setCompletedEntryId(entryId);
-			setShowWorkoutComplete(true);
-			setCelebrationExiting(false);
 		} else if (!updatedEntry.completed) {
 			// Show single exercise celebration
 			setShowCelebration(true);
