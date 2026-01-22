@@ -11,12 +11,12 @@ export default function DashboardArea() {
 	return (
 		<div className="h-full flex gap-4 overflow-hidden">
 			{/* Left Column - Active Workout (main focus, takes most space) */}
-			<div className="flex-1 min-w-0 lg:max-w-[50%]">
+			<div className="flex-1 max-h-[99%] min-w-0 lg:max-w-[50%]">
 				<ActiveWorkout />
 			</div>
 
 			{/* Middle Column - Character, Weekly Progress, Recent Activity */}
-			<div className="hidden md:flex flex-col gap-4 w-[280px] lg:w-[300px] shrink-0">
+			<div className="hidden md:flex flex-col gap-4 max-h-[99%] w-[280px] lg:w-[300px] shrink-0">
 				{/* Character */}
 				<div className="h-[220px] shrink-0">
 					<PixelCharacter />
@@ -34,7 +34,7 @@ export default function DashboardArea() {
 			</div>
 
 			{/* Right Column - Stats & Upcoming */}
-			<div className="hidden lg:flex flex-col gap-4 w-[240px] shrink-0">
+			<div className="hidden lg:flex flex-col gap-4 w-[200px] shrink-0">
 				{/* All Time Stats */}
 				<div className="h-[300px] shrink-0">
 					<QuickStats />

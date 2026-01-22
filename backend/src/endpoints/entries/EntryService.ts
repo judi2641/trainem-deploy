@@ -99,7 +99,9 @@ entry.completed_exercises.push({
   weight: weight ?? exObj.weight,
   duration: duration ?? exObj.duration,
 });
-
+if(entry.plannedExercises.length === 0){
+  entry.completed = true;
+}
 await entry.save();
 return entry;
   } catch (error) {

@@ -6,11 +6,16 @@ import {
 	PixelCardHeader,
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useMyContext } from '@/context/AppContext';
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { format, isAfter, startOfToday, isSameDay } from 'date-fns';
+import { toast } from 'sonner';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+// Storage key for today's completed habits
+const getStorageKey = (date: Date) => `completed_habits_${format(date, 'yyyy-MM-dd')}`;
 
 // Pixel icons
 function CalendarIcon({ className }: { className?: string }) {
@@ -42,14 +47,28 @@ function CheckIcon({ className }: { className?: string }) {
 
 export default function UpcomingWorkouts() {
 	const { entries, workouts, habits } = useMyContext();
-
 	const today = new Date();
 	const todayWeekday = today.getDay();
+
+	// Track completed habits for today using localStorage
+	const [completedHabitIds, setCompletedHabitIds] = useState<string[]>([]);
+
+	// Load completed habits from localStorage on mount
+	useEffect(() => {
+		const stored = localStorage.getItem(getStorageKey(today));
+		if (stored) {
+			try {
+				setCompletedHabitIds(JSON.parse(stored));
+			} catch {
+				setCompletedHabitIds([]);
+			}
+		}
+	}, []);
 
 	// Get today's habits
 	const todaysHabits = useMemo(() => {
 		if (!habits) return [];
-		return habits.filter((h: any) => h.type === 'daily' || h.weekday === todayWeekday).slice(0, 3);
+		return habits.filter((h: any) => h.type === 'daily' || h.weekday === todayWeekday).slice(0, 5);
 	}, [habits, todayWeekday]);
 
 	// Get upcoming workouts
@@ -73,7 +92,31 @@ export default function UpcomingWorkouts() {
 			});
 	}, [entries, workouts]);
 
+	const toggleHabitComplete = useCallback(
+		(habitId: string, habitName: string) => {
+			setCompletedHabitIds((prev) => {
+				const isCompleted = prev.includes(habitId);
+				const newList = isCompleted ? prev.filter((id) => id !== habitId) : [...prev, habitId];
+
+				// Save to localStorage
+				localStorage.setItem(getStorageKey(today), JSON.stringify(newList));
+
+				// Show toast
+				if (!isCompleted) {
+					toast.success(`${habitName} completed!`);
+				}
+
+				return newList;
+			});
+		},
+		[today],
+	);
+
 	const hasContent = upcomingEntries.length > 0 || todaysHabits.length > 0;
+	const completedHabitsCount = todaysHabits.filter((h: any) =>
+		completedHabitIds.includes(h._id),
+	).length;
+	const totalHabitsCount = todaysHabits.length;
 
 	return (
 		<PixelCard>
@@ -84,7 +127,7 @@ export default function UpcomingWorkouts() {
 				</div>
 			</PixelCardHeader>
 
-			<PixelCardContent>
+			<PixelCardContent scrollable>
 				{!hasContent ? (
 					<div className="h-full flex items-center justify-center">
 						<div className="text-center">
@@ -94,7 +137,7 @@ export default function UpcomingWorkouts() {
 					</div>
 				) : (
 					<div className="space-y-3">
-						{/* Today's Habits */}
+						{/* Today's Habits - with completion */}
 						{todaysHabits.length > 0 && (
 							<div>
 								<div className="flex items-center gap-1.5 mb-2">
@@ -102,20 +145,44 @@ export default function UpcomingWorkouts() {
 									<span className="text-[10px] font-bold text-black/50 uppercase">
 										Today's Habits
 									</span>
+									{totalHabitsCount > 0 && (
+										<span className="text-[10px] text-black/40 ml-auto">
+											{completedHabitsCount}/{totalHabitsCount}
+										</span>
+									)}
 								</div>
 								<div className="space-y-1.5">
-									{todaysHabits.map((habit: any) => (
-										<div
-											key={habit._id}
-											className="flex items-center gap-2 p-2 bg-gradient-to-r from-pink-50 to-white border-2 border-black/20"
-										>
-											<div className="h-2 w-2 bg-pink-400 border border-black" />
-											<span className="text-xs font-medium text-black truncate">{habit.name}</span>
-											<span className="ml-auto text-[10px] text-black/40">
-												{habit.type === 'daily' ? 'Daily' : WEEKDAYS[habit.weekday]}
-											</span>
-										</div>
-									))}
+									{todaysHabits.map((habit: any) => {
+										const isCompleted = completedHabitIds.includes(habit._id);
+										return (
+											<div
+												key={habit._id}
+												className={`flex items-center gap-2 p-2 border-2 transition-all ${
+													isCompleted
+														? 'bg-emerald-50 border-emerald-300'
+														: 'bg-gradient-to-r from-pink-50 to-white border-black/20 hover:border-black/30'
+												}`}
+											>
+												<Checkbox
+													checked={isCompleted}
+													onCheckedChange={() => toggleHabitComplete(habit._id, habit.name)}
+													className="shrink-0 border-2 border-black rounded-none data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 h-4 w-4"
+												/>
+												<span
+													className={`text-xs font-medium flex-1 truncate ${
+														isCompleted ? 'text-emerald-700 line-through' : 'text-black'
+													}`}
+												>
+													{habit.name}
+												</span>
+												<span
+													className={`text-[10px] shrink-0 ${isCompleted ? 'text-emerald-500' : 'text-black/40'}`}
+												>
+													{habit.type === 'daily' ? 'Daily' : WEEKDAYS[habit.weekday]?.slice(0, 3)}
+												</span>
+											</div>
+										);
+									})}
 								</div>
 							</div>
 						)}
@@ -133,7 +200,7 @@ export default function UpcomingWorkouts() {
 											key={entry._id}
 											className="flex items-center gap-2 p-2 bg-gradient-to-r from-violet-50 to-white border-2 border-black/20"
 										>
-											<div className="bg-violet-500 text-white text-[9px] font-bold px-1.5 py-0.5 border border-black">
+											<div className="bg-violet-500 text-white text-[9px] font-bold px-1.5 py-0.5 border border-black shrink-0">
 												{format(new Date(entry.date), 'MMM d')}
 											</div>
 											<span className="text-xs font-medium text-black truncate">

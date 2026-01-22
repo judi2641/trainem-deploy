@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import {
 	PixelCard,
 	PixelCardContent,
@@ -19,20 +21,193 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import ExerciseDetailDialog from '@/components/ExcersiseDetailDialog';
+import ExerciseDetailDialog from '@/components/ExerciseDetailDialog';
 import { toast } from 'sonner';
-import { useMemo, useState } from 'react';
-import { Plus, Dumbbell, Timer, X, ChevronRight } from 'lucide-react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import {
+	Plus,
+	Dumbbell,
+	Timer,
+	X,
+	ChevronRight,
+	ChevronDown,
+	ChevronUp,
+	Trophy,
+	Clock,
+} from 'lucide-react';
 import { useMyContext } from '@/context/AppContext';
 
-// Pixel celebration component
+// Workout duration timer hook
+function useWorkoutTimer(startDate: Date | null) {
+	const [elapsed, setElapsed] = useState<string>('00:00');
+
+	useEffect(() => {
+		if (!startDate) {
+			setElapsed('00:00');
+			return;
+		}
+
+		function calculate() {
+			const now = new Date();
+			const start = new Date(startDate);
+			const diffMs = now.getTime() - start.getTime();
+
+			if (diffMs < 0) {
+				setElapsed('00:00');
+				return;
+			}
+
+			const totalSeconds = Math.floor(diffMs / 1000);
+			const hours = Math.floor(totalSeconds / 3600);
+			const minutes = Math.floor((totalSeconds % 3600) / 60);
+			const seconds = totalSeconds % 60;
+
+			if (hours > 0) {
+				setElapsed(
+					`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+				);
+			} else {
+				setElapsed(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+			}
+		}
+
+		calculate();
+		const interval = setInterval(calculate, 1000);
+		return () => clearInterval(interval);
+	}, [startDate]);
+
+	return elapsed;
+}
+
+// Enhanced workout completion celebration with inline animations
+function WorkoutCompleteCelebration({
+	onFinish,
+	isExiting,
+}: {
+	onFinish: () => void;
+	isExiting: boolean;
+}) {
+	const [visible, setVisible] = useState(false);
+
+	// Trigger entrance animation
+	useEffect(() => {
+		const timer = setTimeout(() => setVisible(true), 50);
+		return () => clearTimeout(timer);
+	}, []);
+
+	// Auto-trigger finish after display time
+	useEffect(() => {
+		if (!isExiting) {
+			const timer = setTimeout(onFinish, 3000);
+			return () => clearTimeout(timer);
+		}
+	}, [onFinish, isExiting]);
+
+	// Generate confetti with burst directions
+	const confetti = useMemo(() => {
+		return [...Array(20)].map((_, i) => {
+			const angle = (i / 20) * 360;
+			const distance = 60 + Math.random() * 40;
+			return {
+				color: ['#10b981', '#f59e0b', '#ec4899', '#0ea5e9', '#8b5cf6'][i % 5],
+				angle,
+				distance,
+				delay: Math.random() * 300,
+				size: Math.random() > 0.5 ? 12 : 8,
+			};
+		});
+	}, []);
+
+	return (
+		<div
+			className="absolute inset-0 flex items-center justify-center z-50"
+			style={{
+				background:
+					'linear-gradient(135deg, rgba(236,253,245,0.98) 0%, rgba(254,249,195,0.98) 100%)',
+				opacity: isExiting ? 0 : visible ? 1 : 0,
+				transform: isExiting ? 'scale(0.9)' : visible ? 'scale(1)' : 'scale(0.8)',
+				transition: 'all 0.3s ease-out',
+			}}
+		>
+			{/* Confetti particles */}
+			{confetti.map((c, i) => {
+				const x = Math.cos((c.angle * Math.PI) / 180) * c.distance;
+				const y = Math.sin((c.angle * Math.PI) / 180) * c.distance;
+				return (
+					<div
+						key={i}
+						style={{
+							position: 'absolute',
+							width: c.size,
+							height: c.size,
+							backgroundColor: c.color,
+							border: '1px solid black',
+							opacity: visible ? 0 : 1,
+							transform: visible
+								? `translate(${x}px, ${y}px) scale(0)`
+								: 'translate(0, 0) scale(1)',
+							transition: `all 0.8s ease-out ${c.delay}ms`,
+						}}
+					/>
+				);
+			})}
+
+			{/* Trophy center */}
+			<div
+				className="relative"
+				style={{
+					transform: visible ? 'scale(1)' : 'scale(0)',
+					transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+				}}
+			>
+				{/* Glow effect */}
+				<div
+					className="absolute inset-0 bg-amber-300 blur-xl"
+					style={{
+						opacity: visible ? 0.5 : 0,
+						transform: 'scale(1.5)',
+						transition: 'opacity 0.5s ease-out',
+					}}
+				/>
+
+				{/* Trophy box */}
+				<div
+					className="relative bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 border-4 border-black p-8"
+					style={{
+						boxShadow: '6px 6px 0px rgba(0,0,0,0.3)',
+					}}
+				>
+					<Trophy className="h-16 w-16 text-black mx-auto" />
+				</div>
+
+				{/* Label */}
+				<div
+					className="absolute -bottom-10 left-1/2 whitespace-nowrap"
+					style={{
+						transform: `translateX(-50%) ${visible ? 'translateY(0)' : 'translateY(-10px)'}`,
+						opacity: visible ? 1 : 0,
+						transition: 'all 0.3s ease-out 0.2s',
+					}}
+				>
+					<p
+						className="font-pixel text-sm text-black bg-white px-4 py-2 border-2 border-black"
+						style={{ boxShadow: '3px 3px 0px rgba(0,0,0,0.2)' }}
+					>
+						WORKOUT COMPLETE!
+					</p>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+// Pixel celebration for exercise completion
 function PixelCelebration({ show, onComplete }: { show: boolean; onComplete: () => void }) {
 	if (!show) return null;
 
 	return (
 		<div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
 			<div className="relative">
-				{/* Pixel sparkles */}
 				{[...Array(8)].map((_, i) => {
 					const angle = i * 45 * (Math.PI / 180);
 					const distance = 60;
@@ -52,7 +227,6 @@ function PixelCelebration({ show, onComplete }: { show: boolean; onComplete: () 
 						/>
 					);
 				})}
-				{/* Inner sparkles */}
 				{[...Array(4)].map((_, i) => {
 					const angle = (i * 90 + 45) * (Math.PI / 180);
 					const distance = 30;
@@ -71,7 +245,6 @@ function PixelCelebration({ show, onComplete }: { show: boolean; onComplete: () 
 						/>
 					);
 				})}
-				{/* Center check */}
 				<div className="h-8 w-8 bg-emerald-500 border-2 border-black pixel-check-pop flex items-center justify-center">
 					<svg viewBox="0 0 16 16" className="h-5 w-5 text-white" fill="currentColor">
 						<rect x="3" y="8" width="2" height="2" />
@@ -112,14 +285,43 @@ export default function ActiveWorkout() {
 	const [durationInput, setDurationInput] = useState<string>('');
 	const [pendingExercise, setPendingExercise] = useState<any>(null);
 	const [showCelebration, setShowCelebration] = useState(false);
+	const [showWorkoutComplete, setShowWorkoutComplete] = useState(false);
+	const [celebrationExiting, setCelebrationExiting] = useState(false);
+	const [showCompleted, setShowCompleted] = useState(true);
+	const [isClosing, setIsClosing] = useState(false);
+	const [lastCompletedEntryId, setLastCompletedEntryId] = useState<string | null>(null);
+
+	// Track the entry ID that triggered completion to prevent re-triggering
+	const [completedEntryId, setCompletedEntryId] = useState<string | null>(null);
 
 	// Exercise detail dialog state
 	const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 	const [selectedExerciseForDetail, setSelectedExerciseForDetail] = useState<any>(null);
 
+	// Use completed_exercises length + plannedExercises length for total (since backend moves exercises)
 	const completedCount = latestUncompletedEntry?.completed_exercises?.length ?? 0;
-	const totalCount = latestUncompletedEntry?.plannedExercises?.length ?? 0;
+	const totalCount = completedCount + (latestUncompletedEntry?.plannedExercises?.length ?? 0);
 	const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+	// Active workout timer
+	const workoutStartDate = latestUncompletedEntry?.date
+		? new Date(latestUncompletedEntry.date)
+		: null;
+	const elapsedTime = useWorkoutTimer(workoutStartDate);
+
+	// Get remaining and completed exercises
+	const remainingExercises = useMemo(() => {
+		if (!latestUncompletedEntry) return [];
+		const completed = latestUncompletedEntry.completed_exercises || [];
+		return (latestUncompletedEntry.plannedExercises || []).filter(
+			(ex: any) => !completed.some((c: any) => c.exercise.name === ex.exercise.name),
+		);
+	}, [latestUncompletedEntry]);
+
+	const completedExercises = useMemo(() => {
+		if (!latestUncompletedEntry) return [];
+		return latestUncompletedEntry.completed_exercises || [];
+	}, [latestUncompletedEntry]);
 
 	async function scheduleWorkout() {
 		if (!auth0Id || !selectedWorkoutId) return;
@@ -142,6 +344,10 @@ export default function ActiveWorkout() {
 		const newEntry = await res.json();
 		setEntries((prev: any) => [...prev, newEntry]);
 		setSelectedWorkoutId('');
+		// Reset celebration states when scheduling new workout
+		setShowWorkoutComplete(false);
+		setCelebrationExiting(false);
+		setCompletedEntryId(null);
 		toast.success('Workout scheduled');
 	}
 
@@ -162,9 +368,22 @@ export default function ActiveWorkout() {
 		}
 
 		const updatedEntry = await res.json();
+
+		// Update entries state first
 		setEntries((prev: any) => prev.map((e: any) => (e._id === entryId ? updatedEntry : e)));
-		setShowCelebration(true);
-		toast.success('Exercise completed');
+
+		// ONLY trigger celebration when backend sets completed === true
+		// This is the most reliable indicator that all exercises are done
+		if (updatedEntry.completed === true && completedEntryId !== entryId) {
+			// Track completed entry and show celebration
+			setCompletedEntryId(entryId);
+			setShowWorkoutComplete(true);
+			setCelebrationExiting(false);
+		} else if (!updatedEntry.completed) {
+			// Show single exercise celebration
+			setShowCelebration(true);
+			toast.success('Exercise completed');
+		}
 	}
 
 	async function abortEntry(entryId: string) {
@@ -217,6 +436,10 @@ export default function ActiveWorkout() {
 		setPendingExercise(null);
 	}
 
+	const handleWorkoutCompleteFinish = useCallback(() => {
+		// Handle workout complete finish logic here
+	}, []);
+
 	if (!latestUncompletedEntry) {
 		return (
 			<PixelCard>
@@ -264,11 +487,21 @@ export default function ActiveWorkout() {
 		);
 	}
 
+	// Start exit animation for celebration
+	function startCelebrationExit() {
+		setCelebrationExiting(true);
+		// After exit animation, hide celebration and show toast
+		setTimeout(() => {
+			setShowWorkoutComplete(false);
+			setCelebrationExiting(false);
+			toast.success('Workout completed! Great job!');
+		}, 300);
+	}
+
 	return (
 		<>
 			<PixelCelebration show={showCelebration} onComplete={() => setShowCelebration(false)} />
 
-			{/* Exercise Detail Dialog */}
 			<ExerciseDetailDialog
 				exercise={
 					selectedExerciseForDetail?.exercise
@@ -289,165 +522,228 @@ export default function ActiveWorkout() {
 				onOpenChange={setDetailDialogOpen}
 			/>
 
-			<PixelCard>
+			<PixelCard className="relative overflow-hidden">
+				{/* Workout Complete Celebration Overlay */}
+				{showWorkoutComplete && (
+					<WorkoutCompleteCelebration
+						onFinish={startCelebrationExit}
+						isExiting={celebrationExiting}
+					/>
+				)}
+
 				<PixelCardHeader>
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2">
 							<div className="h-4 w-4 bg-emerald-500 border-2 border-black" />
 							<PixelCardTitle>Active Workout</PixelCardTitle>
 						</div>
-						<Button
-							variant="ghost"
-							size="sm"
-							className="h-8 w-8 p-0 text-black/50 hover:text-red-600 hover:bg-red-50"
-							onClick={() => abortEntry(latestUncompletedEntry._id)}
-						>
-							<X className="h-4 w-4" />
-						</Button>
+						{!showWorkoutComplete && (
+							<Button
+								variant="ghost"
+								size="sm"
+								className="h-8 w-8 p-0 text-black/50 hover:text-red-600 hover:bg-red-50"
+								onClick={() => abortEntry(latestUncompletedEntry._id)}
+							>
+								<X className="h-4 w-4" />
+							</Button>
+						)}
 					</div>
 					<div className="flex items-center justify-between mt-2">
 						<span className="text-sm font-medium text-black">{workout?.name ?? 'Workout'}</span>
-						<span className="text-xs text-black/60">
-							{completedCount}/{totalCount} exercises
-						</span>
+						<div className="flex items-center gap-3">
+							{/* Active workout timer */}
+							<div className="flex items-center gap-1 px-2 py-0.5 bg-black/5 border border-black/20">
+								<Clock className="h-3 w-3 text-black/60" />
+								<span className="text-xs font-mono font-medium text-black/80">{elapsedTime}</span>
+							</div>
+							<span className="text-xs text-black/60">
+								{completedCount}/{totalCount} exercises
+							</span>
+						</div>
 					</div>
 					{/* Progress bar */}
 					<div className="h-2 w-full bg-black/10 border border-black overflow-hidden mt-2">
 						<div
-							className="h-full bg-emerald-500 transition-all duration-300"
+							className="h-full bg-emerald-500 transition-all duration-500"
 							style={{ width: `${progressPercent}%` }}
 						/>
 					</div>
 				</PixelCardHeader>
 
-				<PixelCardContent className="overflow-auto">
-					<div className="space-y-2">
-						{(latestUncompletedEntry.plannedExercises ?? []).map((ex: any) => {
-							const done = latestUncompletedEntry.completed_exercises?.some(
-								(c: any) => c.exercise.name === ex.exercise.name,
-							);
-							const cardio = isCardio(ex);
-
-							return (
-								<div
-									key={ex.exercise.name}
-									className={`flex items-center gap-3 p-3 border-2 transition-all group ${
-										done
-											? 'bg-emerald-50 border-emerald-300'
-											: 'bg-white border-black/20 hover:border-black/40 hover:shadow-[2px_2px_0px_rgba(0,0,0,0.1)]'
-									}`}
-								>
-									{/* Checkbox */}
-									<Checkbox
-										checked={done}
-										disabled={done}
-										onCheckedChange={() => onCheckClick(ex)}
-										className="shrink-0 border-2 border-black rounded-none data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
-									/>
-
-									{/* Clickable exercise info */}
-									<button
-										type="button"
-										onClick={() => openExerciseDetail(ex)}
-										className="flex-1 text-left cursor-pointer"
-									>
-										<div className="flex items-center gap-2">
-											<div
-												className={`w-6 h-6 border-2 border-black flex items-center justify-center shrink-0 ${
-													cardio ? 'bg-sky-300' : 'bg-amber-300'
-												}`}
-											>
-												{cardio ? (
-													<Timer className="w-3 h-3 text-black" />
-												) : (
-													<Dumbbell className="w-3 h-3 text-black" />
-												)}
-											</div>
-											<div className="flex-1 min-w-0">
-												<div
-													className={`text-sm font-medium truncate ${done ? 'line-through text-black/40' : 'text-black'}`}
-												>
-													{ex.exercise.name}
-												</div>
-												<div className="flex items-center gap-2 text-xs text-black/50">
-													{cardio ? (
-														<span>{ex.duration}s</span>
-													) : (
-														<span>
-															{ex.sets}x{ex.reps}
-														</span>
-													)}
-													{ex.exercise.primaryMuscleGroups?.length > 0 && (
-														<span className="hidden sm:inline">
-															• {ex.exercise.primaryMuscleGroups.slice(0, 2).join(', ')}
-														</span>
-													)}
-												</div>
-											</div>
-										</div>
-									</button>
-
-									{/* Arrow indicator for clickable */}
-									<ChevronRight
-										className={`w-4 h-4 shrink-0 transition-all ${
-											done
-												? 'text-emerald-400'
-												: 'text-black/30 group-hover:text-black/60 group-hover:translate-x-0.5'
-										}`}
-									/>
-
-									{/* Weight/Duration input popover */}
-									<Popover
-										open={openForExerciseName === ex.exercise.name}
-										onOpenChange={(open) => setOpenForExerciseName(open ? ex.exercise.name : null)}
-									>
-										<PopoverTrigger asChild>
-											<span />
-										</PopoverTrigger>
-
-										<PopoverContent
-											className="w-64 border-2 border-black rounded-none"
-											side="left"
-											align="center"
-										>
-											<div className="space-y-3">
-												<div className="font-medium text-sm text-black">{ex.exercise.name}</div>
-												{cardio ? (
-													<div className="space-y-2">
-														<Label className="text-xs text-black/70">Duration (seconds)</Label>
-														<Input
-															value={durationInput}
-															onChange={(e) => setDurationInput(e.target.value)}
-															inputMode="numeric"
-															placeholder="e.g. 600"
-															className="h-9 border-2 border-black rounded-none"
-														/>
-													</div>
-												) : (
-													<div className="space-y-2">
-														<Label className="text-xs text-black/70">Weight (kg)</Label>
-														<Input
-															value={weightInput}
-															onChange={(e) => setWeightInput(e.target.value)}
-															inputMode="decimal"
-															placeholder="e.g. 40"
-															className="h-9 border-2 border-black rounded-none"
-														/>
-													</div>
-												)}
-												<Button
-													onClick={submitExerciseValue}
-													size="sm"
-													className="w-full pixel-btn bg-emerald-500 text-white hover:bg-emerald-600 border-2 border-black rounded-none"
-												>
-													Complete
-												</Button>
-											</div>
-										</PopoverContent>
-									</Popover>
+				<PixelCardContent scrollable>
+					<div className="space-y-3">
+						{/* Remaining Exercises Section */}
+						{remainingExercises.length > 0 && (
+							<div>
+								<div className="flex items-center gap-2 mb-2">
+									<div className="h-2 w-2 bg-amber-400 border border-black" />
+									<span className="text-[10px] font-bold text-black/50 uppercase">
+										Remaining ({remainingExercises.length})
+									</span>
 								</div>
-							);
-						})}
+								<div className="space-y-2">
+									{remainingExercises.map((ex: any) => {
+										const cardio = isCardio(ex);
+										return (
+											<div
+												key={ex.exercise.name}
+												className="flex items-center gap-3 p-3 border-2 bg-white border-black/20 hover:border-black/40 hover:shadow-[2px_2px_0px_rgba(0,0,0,0.1)] transition-all group"
+											>
+												<Checkbox
+													checked={false}
+													onCheckedChange={() => onCheckClick(ex)}
+													className="shrink-0 border-2 border-black rounded-none"
+												/>
+												<button
+													type="button"
+													onClick={() => openExerciseDetail(ex)}
+													className="flex-1 text-left cursor-pointer"
+												>
+													<div className="flex items-center gap-2">
+														<div
+															className={`w-6 h-6 border-2 border-black flex items-center justify-center shrink-0 ${
+																cardio ? 'bg-sky-300' : 'bg-amber-300'
+															}`}
+														>
+															{cardio ? (
+																<Timer className="w-3 h-3 text-black" />
+															) : (
+																<Dumbbell className="w-3 h-3 text-black" />
+															)}
+														</div>
+														<div className="flex-1 min-w-0">
+															<div className="text-sm font-medium text-black truncate">
+																{ex.exercise.name}
+															</div>
+															<div className="text-xs text-black/50">
+																{cardio ? `${ex.duration}s` : `${ex.sets}x${ex.reps}`}
+															</div>
+														</div>
+													</div>
+												</button>
+												<ChevronRight className="w-4 h-4 text-black/30 group-hover:text-black/60 shrink-0 transition-all" />
+
+												<Popover
+													open={openForExerciseName === ex.exercise.name}
+													onOpenChange={(open) =>
+														setOpenForExerciseName(open ? ex.exercise.name : null)
+													}
+												>
+													<PopoverTrigger asChild>
+														<span />
+													</PopoverTrigger>
+													<PopoverContent
+														className="w-64 border-2 border-black rounded-none"
+														side="left"
+														align="center"
+													>
+														<div className="space-y-3">
+															<div className="font-medium text-sm text-black">
+																{ex.exercise.name}
+															</div>
+															{cardio ? (
+																<div className="space-y-2">
+																	<Label className="text-xs text-black/70">
+																		Duration (seconds)
+																	</Label>
+																	<Input
+																		value={durationInput}
+																		onChange={(e) => setDurationInput(e.target.value)}
+																		inputMode="numeric"
+																		placeholder="e.g. 600"
+																		className="h-9 border-2 border-black rounded-none"
+																	/>
+																</div>
+															) : (
+																<div className="space-y-2">
+																	<Label className="text-xs text-black/70">Weight (kg)</Label>
+																	<Input
+																		value={weightInput}
+																		onChange={(e) => setWeightInput(e.target.value)}
+																		inputMode="decimal"
+																		placeholder="e.g. 40"
+																		className="h-9 border-2 border-black rounded-none"
+																	/>
+																</div>
+															)}
+															<Button
+																onClick={submitExerciseValue}
+																size="sm"
+																className="w-full pixel-btn bg-emerald-500 text-white hover:bg-emerald-600 border-2 border-black rounded-none"
+															>
+																Complete
+															</Button>
+														</div>
+													</PopoverContent>
+												</Popover>
+											</div>
+										);
+									})}
+								</div>
+							</div>
+						)}
+
+						{/* Completed Exercises Section */}
+						{completedExercises.length > 0 && (
+							<div>
+								<button
+									type="button"
+									onClick={() => setShowCompleted(!showCompleted)}
+									className="flex items-center gap-2 mb-2 w-full text-left cursor-pointer hover:opacity-80"
+								>
+									<div className="h-2 w-2 bg-emerald-500 border border-black" />
+									<span className="text-[10px] font-bold text-black/50 uppercase">
+										Completed ({completedExercises.length})
+									</span>
+									{showCompleted ? (
+										<ChevronUp className="w-3 h-3 text-black/40 ml-auto" />
+									) : (
+										<ChevronDown className="w-3 h-3 text-black/40 ml-auto" />
+									)}
+								</button>
+
+								{showCompleted && (
+									<div className="space-y-2">
+										{completedExercises.map((ex: any) => {
+											const cardio = ex.exercise?.type === 'cardio';
+											return (
+												<div
+													key={ex.exercise?.name}
+													className="flex items-center gap-3 p-3 border-2 bg-emerald-50 border-emerald-300"
+												>
+													<div className="w-5 h-5 bg-emerald-500 border-2 border-emerald-600 flex items-center justify-center shrink-0">
+														<svg
+															viewBox="0 0 16 16"
+															className="h-3 w-3 text-white"
+															fill="currentColor"
+														>
+															<rect x="3" y="8" width="2" height="2" />
+															<rect x="5" y="10" width="2" height="2" />
+															<rect x="7" y="8" width="2" height="2" />
+															<rect x="9" y="6" width="2" height="2" />
+															<rect x="11" y="4" width="2" height="2" />
+														</svg>
+													</div>
+													<button
+														type="button"
+														onClick={() => openExerciseDetail(ex)}
+														className="flex-1 text-left cursor-pointer"
+													>
+														<div className="text-sm font-medium text-emerald-700 line-through truncate">
+															{ex.exercise?.name}
+														</div>
+														<div className="text-xs text-emerald-600/70">
+															{ex.weight ? `${ex.weight}kg` : ''}
+															{ex.duration ? `${ex.duration}s` : ''}
+														</div>
+													</button>
+												</div>
+											);
+										})}
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				</PixelCardContent>
 			</PixelCard>

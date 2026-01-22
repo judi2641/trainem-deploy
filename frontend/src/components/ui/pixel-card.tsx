@@ -14,7 +14,7 @@ const PixelCard = React.forwardRef<HTMLDivElement, PixelCardProps>(
 				{/* Shadow layer */}
 				<div className="absolute left-1.5 top-1.5 h-full w-full border-3 border-black bg-black/10" />
 				{/* Main card */}
-				<div className="relative h-full bg-white/90 backdrop-blur border-3 border-black p-4 flex flex-col">
+				<div className="relative h-full bg-white/90 backdrop-blur border-3 border-black p-4 flex flex-col overflow-hidden">
 					{children}
 				</div>
 			</div>

@@ -15,7 +15,7 @@ import {
 	ChevronRight,
 	Info,
 } from 'lucide-react';
-import ExerciseDetailDialog from '@/components/ExcersiseDetailDialog';
+import ExerciseDetailDialog from '@/components/ExerciseDetailDialog';
 import { Button } from '@/components/ui/button';
 import {
 	PixelCard,
@@ -260,21 +260,18 @@ export default function WorkoutsArea() {
 	}, [auth0Id, setWorkouts]);
 
 	return (
-		<div className="flex flex-col gap-6">
-			{/* Header */}
-			<div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+		<div className="h-full flex flex-col overflow-hidden">
+			{/* Header - Fixed */}
+			<div className="flex items-center justify-between gap-4 shrink-0 mb-4">
 				<div>
-					<div className="flex items-center gap-3 mb-2">
-						<div className="w-8 h-8 bg-amber-400 border-2 border-black flex items-center justify-center">
-							<Dumbbell className="w-4 h-4 text-black" />
-						</div>
-						<h1 className="font-pixel text-2xl text-black">Workouts</h1>
-					</div>
-					<p className="text-black/60">Create, manage, and schedule your workout routines.</p>
+					<h1 className="font-pixel text-xl text-black">Workouts</h1>
+					<p className="text-sm text-black/60 mt-1">Manage your workout routines and exercises</p>
 				</div>
-
 				<button
-					onClick={() => setCreateOpen(true)}
+					onClick={() => {
+						resetForm();
+						setCreateOpen(true);
+					}}
 					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
 				>
 					<Plus className="w-4 h-4" />
@@ -294,131 +291,133 @@ export default function WorkoutsArea() {
 				</PixelCard>
 			)}
 
-			{/* Workouts Grid */}
-			{workouts.length === 0 ? (
-				<PixelCard>
-					<PixelCardContent className="py-12 text-center">
-						<div className="w-16 h-16 bg-emerald-100 border-2 border-black mx-auto mb-4 flex items-center justify-center">
-							<Dumbbell className="w-8 h-8 text-emerald-600" />
-						</div>
-						<h3 className="font-pixel text-lg text-black mb-2">No Workouts Yet</h3>
-						<p className="text-black/60 mb-4">Create your first workout to get started.</p>
-						<button
-							onClick={() => setCreateOpen(true)}
-							className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
-						>
-							<Plus className="w-4 h-4" />
-							Create Workout
-						</button>
-					</PixelCardContent>
-				</PixelCard>
-			) : (
-				<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-					{workouts.map((w: any) => (
-						<PixelCard key={w._id}>
-							<PixelCardHeader className="flex flex-row items-start justify-between gap-2">
-								<div className="min-w-0 flex-1">
-									<div className="flex items-center gap-2 mb-1">
-										<div className="w-6 h-6 bg-emerald-400 border-2 border-black flex items-center justify-center shrink-0">
-											<Dumbbell className="w-3 h-3 text-black" />
-										</div>
-										<PixelCardTitle className="truncate">{w.name}</PixelCardTitle>
-									</div>
-									<p className="text-xs text-black/60 line-clamp-1">
-										{w.description || 'No description'}
-									</p>
-								</div>
-
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-											<MoreVertical className="h-4 w-4" />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent align="end" className="border-2 border-black">
-										<DropdownMenuItem onClick={() => openEdit(w)} className="gap-2">
-											<Edit3 className="w-4 h-4" />
-											Edit
-										</DropdownMenuItem>
-										<DropdownMenuItem onClick={() => openSchedule(w)} className="gap-2">
-											<Calendar className="w-4 h-4" />
-											Schedule
-										</DropdownMenuItem>
-										<DropdownMenuItem
-											onClick={() => deleteWorkout(w._id)}
-											className="gap-2 text-red-600"
-										>
-											<Trash2 className="w-4 h-4" />
-											Delete
-										</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-							</PixelCardHeader>
-
-							<PixelCardContent>
-								{/* Exercise list preview - clickable */}
-								<div className="space-y-2 mb-4">
-									{(w.exercises || []).slice(0, 3).map((ex: any, i: number) => (
-										<button
-											key={i}
-											type="button"
-											onClick={() => openExerciseDetail(ex)}
-											className="w-full flex items-center gap-2 text-sm p-2 -mx-2 rounded hover:bg-gray-50 transition-colors group cursor-pointer text-left"
-										>
-											<div
-												className={`w-5 h-5 border-2 border-black flex items-center justify-center shrink-0 ${
-													ex.exercise?.type === 'cardio' ? 'bg-sky-300' : 'bg-amber-300'
-												}`}
-											>
-												{ex.exercise?.type === 'cardio' ? (
-													<Timer className="w-3 h-3 text-black" />
-												) : (
-													<Dumbbell className="w-3 h-3 text-black" />
-												)}
+			{/* Workouts Grid - Scrollable */}
+			<div className="flex-1 overflow-y-auto min-h-0">
+				{workouts.length === 0 ? (
+					<PixelCard>
+						<PixelCardContent className="py-12 text-center">
+							<div className="w-16 h-16 bg-emerald-100 border-2 border-black mx-auto mb-4 flex items-center justify-center">
+								<Dumbbell className="w-8 h-8 text-emerald-600" />
+							</div>
+							<h3 className="font-pixel text-lg text-black mb-2">No Workouts Yet</h3>
+							<p className="text-black/60 mb-4">Create your first workout to get started.</p>
+							<button
+								onClick={() => setCreateOpen(true)}
+								className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
+							>
+								<Plus className="w-4 h-4" />
+								Create Workout
+							</button>
+						</PixelCardContent>
+					</PixelCard>
+				) : (
+					<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 pb-4">
+						{workouts.map((w: any) => (
+							<PixelCard key={w._id}>
+								<PixelCardHeader className="flex flex-row items-start justify-between gap-2">
+									<div className="min-w-0 flex-1">
+										<div className="flex items-center gap-2 mb-1">
+											<div className="w-6 h-6 bg-emerald-400 border-2 border-black flex items-center justify-center shrink-0">
+												<Dumbbell className="w-3 h-3 text-black" />
 											</div>
-											<span className="truncate text-black/80 flex-1">
-												{ex.exercise?.name || 'Unknown'}
-											</span>
-											<span className="text-xs text-black/50 shrink-0">
-												{ex.sets && ex.reps
-													? `${ex.sets}x${ex.reps}`
-													: ex.duration
-														? `${ex.duration}s`
-														: ''}
-											</span>
-											<ChevronRight className="w-3 h-3 text-black/30 group-hover:text-black/60 shrink-0 transition-colors" />
-										</button>
-									))}
-									{(w.exercises?.length || 0) > 3 && (
-										<p className="text-xs text-black/50 pl-2">+{w.exercises.length - 3} more</p>
-									)}
-									{(!w.exercises || w.exercises.length === 0) && (
-										<p className="text-xs text-black/50 italic">No exercises added yet</p>
-									)}
-								</div>
+											<PixelCardTitle className="truncate">{w.name}</PixelCardTitle>
+										</div>
+										<p className="text-xs text-black/60 line-clamp-1">
+											{w.description || 'No description'}
+										</p>
+									</div>
 
-								{/* Actions */}
-								<div className="flex gap-2 pt-3 border-t-2 border-black/10">
-									<button
-										onClick={() => openEdit(w)}
-										className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
-									>
-										<Edit3 className="w-3 h-3" />
-										Edit
-									</button>
-									<button
-										onClick={() => openSchedule(w)}
-										className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-emerald-400 border-2 border-black text-black hover:bg-emerald-500 transition-colors"
-									>
-										<Calendar className="w-3 h-3" />
-										Schedule
-									</button>
-								</div>
-							</PixelCardContent>
-						</PixelCard>
-					))}
-				</div>
-			)}
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+												<MoreVertical className="h-4 w-4" />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end" className="border-2 border-black">
+											<DropdownMenuItem onClick={() => openEdit(w)} className="gap-2">
+												<Edit3 className="w-4 h-4" />
+												Edit
+											</DropdownMenuItem>
+											<DropdownMenuItem onClick={() => openSchedule(w)} className="gap-2">
+												<Calendar className="w-4 h-4" />
+												Schedule
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() => deleteWorkout(w._id)}
+												className="gap-2 text-red-600"
+											>
+												<Trash2 className="w-4 h-4" />
+												Delete
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</PixelCardHeader>
+
+								<PixelCardContent>
+									{/* Exercise list preview - clickable */}
+									<div className="space-y-2 mb-4">
+										{(w.exercises || []).slice(0, 3).map((ex: any, i: number) => (
+											<button
+												key={i}
+												type="button"
+												onClick={() => openExerciseDetail(ex)}
+												className="w-full flex items-center gap-2 text-sm p-2 -mx-2 rounded hover:bg-gray-50 transition-colors group cursor-pointer text-left"
+											>
+												<div
+													className={`w-5 h-5 border-2 border-black flex items-center justify-center shrink-0 ${
+														ex.exercise?.type === 'cardio' ? 'bg-sky-300' : 'bg-amber-300'
+													}`}
+												>
+													{ex.exercise?.type === 'cardio' ? (
+														<Timer className="w-3 h-3 text-black" />
+													) : (
+														<Dumbbell className="w-3 h-3 text-black" />
+													)}
+												</div>
+												<span className="truncate text-black/80 flex-1">
+													{ex.exercise?.name || 'Unknown'}
+												</span>
+												<span className="text-xs text-black/50 shrink-0">
+													{ex.sets && ex.reps
+														? `${ex.sets}x${ex.reps}`
+														: ex.duration
+															? `${ex.duration}s`
+															: ''}
+												</span>
+												<ChevronRight className="w-3 h-3 text-black/30 group-hover:text-black/60 shrink-0 transition-colors" />
+											</button>
+										))}
+										{(w.exercises?.length || 0) > 3 && (
+											<p className="text-xs text-black/50 pl-2">+{w.exercises.length - 3} more</p>
+										)}
+										{(!w.exercises || w.exercises.length === 0) && (
+											<p className="text-xs text-black/50 italic">No exercises added yet</p>
+										)}
+									</div>
+
+									{/* Actions */}
+									<div className="flex gap-2 pt-3 border-t-2 border-black/10">
+										<button
+											onClick={() => openEdit(w)}
+											className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
+										>
+											<Edit3 className="w-3 h-3" />
+											Edit
+										</button>
+										<button
+											onClick={() => openSchedule(w)}
+											className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-emerald-400 border-2 border-black text-black hover:bg-emerald-500 transition-colors"
+										>
+											<Calendar className="w-3 h-3" />
+											Schedule
+										</button>
+									</div>
+								</PixelCardContent>
+							</PixelCard>
+						))}
+					</div>
+				)}
+			</div>
 
 			{/* Create Workout Dialog */}
 			<Dialog
