@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createEntry, getAllEntriesFromUser, updateEntry } from './EntryService';
+import { abortEntry, createEntry, getAllEntriesFromUser, updateEntry } from './EntryService';
 
 const router = express.Router();
 
@@ -40,4 +40,12 @@ router.patch('/:entryId/complete-exercise', async (req: Request, res: Response) 
   }
 });
 
+router.patch('/:entryId/abort', async (req: Request, res: Response) => {
+  try {
+    const entry = await abortEntry(req.params.entryId);
+    res.json(entry);
+  } catch (err) {
+    sendError(res, err);
+  }
+});
 export default router;

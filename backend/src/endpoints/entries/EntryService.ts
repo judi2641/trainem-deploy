@@ -75,7 +75,8 @@ export async function getAllEntriesFromUser(auth0Id: string) {
 export async function updateEntry(
   entryId: string,
   exerciseName: string,
-  weight?: number
+  weight?: number,
+  duration?:number
 ) {
   try {
     const entry = await EntryModel.findById(entryId);
@@ -87,24 +88,41 @@ export async function updateEntry(
     if (idx === -1) throw new HttpError(400, 'exercise not found in plannedExercises');
 
     const ex = entry.plannedExercises[idx];
-    entry.plannedExercises.splice(idx, 1);
 
-    entry.completed_exercises.push({
-      ...ex,
-      weight: weight ?? ex.weight
-    });
+// wichtig: plain object
+const exObj = (ex as any).toObject ? (ex as any).toObject() : ex;
 
-    entry.score = entry.completed_exercises.length;
+entry.plannedExercises.splice(idx, 1);
 
-    if (entry.workoutId && entry.plannedExercises.length === 0) {
-      entry.completed = true;
-    }
+entry.completed_exercises.push({
+  ...exObj,
+  weight: weight ?? exObj.weight,
+  duration: duration ?? exObj.duration,
+});
 
-    await entry.save();
-    return entry;
+await entry.save();
+return entry;
   } catch (error) {
     logger.error('updateEntryByExerciseName failed', error);
     if (error instanceof HttpError) throw error;
     throw new HttpError(500, 'failed to update entry');
+  }
+}
+export async function abortEntry(entryId: string) {
+  try {
+    const entry = await EntryModel.findByIdAndUpdate(
+      entryId,
+      {
+        $set: { completed: true },
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!entry) throw new HttpError(404, 'entry not found');
+    return entry;
+  } catch (error) {
+    logger.error('abortEntry failed', error);
+    if (error instanceof HttpError) throw error;
+    throw new HttpError(500, 'failed to abort entry');
   }
 }

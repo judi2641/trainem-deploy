@@ -1,4 +1,3 @@
-// src/context/UserContext.tsx
 import React, { createContext, useContext, useState } from 'react';
 
 const AppContext = createContext<any>(null);
@@ -7,6 +6,8 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [workouts, setWorkouts] = useState<any[]>([]);
 	const [entries, setEntries] = useState<any[]>([]);
 	const [exercises, setExercises] = useState<any[]>([]);
+	const [habits, setHabits] = useState<any[]>([]);
+	const [pixelArt, setPixelArt] = useState<any>(null);
 	return (
 		<AppContext.Provider
 			value={{
@@ -18,6 +19,10 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				setEntries,
 				exercises,
 				setExercises,
+				habits,
+				setHabits,
+				pixelArt,
+				setPixelArt,
 			}}
 		>
 			{children}

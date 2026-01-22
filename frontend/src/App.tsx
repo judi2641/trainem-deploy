@@ -15,14 +15,15 @@ import Intro from './pages/OnboardingSteps/Intro';
 import { useAuth0 } from '@auth0/auth0-react';
 import Callback from './pages/Callback';
 import { OnboardingProvider } from './context/OnboardingContext';
-import Statistiken from './pages/Statistiken';
-import Gruppe from './pages/Gruppe';
+
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 import { ContextProvider } from './context/AppContext';
 import Workouts from './pages/Workouts';
-import Calendar from './pages/Calendar';
+
 import PixelArt from './pages/PixelArt';
+import Statistics from './pages/Statistics';
+import Habits from './pages/Habits';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -54,14 +55,7 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
-					<Route
-						path="/calendar"
-						element={
-							<ProtectedRoute>
-								<Calendar />
-							</ProtectedRoute>
-						}
-					/>
+
 					<Route
 						path="/workouts"
 						element={
@@ -70,22 +64,9 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
-					<Route
-						path="/statistiken"
-						element={
-							<ProtectedRoute>
-								<Statistiken />
-							</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/gruppe"
-						element={
-							<ProtectedRoute>
-								<Gruppe />
-							</ProtectedRoute>
-						}
-					/>
+
+					<Route path="/habits" element={<Habits />} />
+					<Route path="/statistics" element={<Statistics />} />
 					<Route
 						path="/settings"
 						element={

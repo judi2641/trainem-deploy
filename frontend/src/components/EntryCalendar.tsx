@@ -45,8 +45,10 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 
 	async function onExerciseChecked(entryId: string, exercise: any, weight?: number) {
 		try {
+			console.log(entryId);
+			console.log(exercise);
 			const res = await fetch(`http://localhost:3000/api/entries/${entryId}/complete-exercise`, {
-				method: 'POST',
+				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					exerciseName: exercise.exercise.name,
