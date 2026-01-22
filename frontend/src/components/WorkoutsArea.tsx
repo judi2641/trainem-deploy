@@ -260,9 +260,9 @@ export default function WorkoutsArea() {
 	}, [auth0Id, setWorkouts]);
 
 	return (
-		<div className="h-full flex flex-col overflow-hidden">
+		<div className="h-full flex flex-col overflow-hidden ">
 			{/* Header - Fixed */}
-			<div className="flex items-center justify-between gap-4 shrink-0 mb-4">
+			<div className="flex items-center justify-between gap-4 shrink-0 mb-4 mr-4">
 				<div>
 					<h1 className="font-pixel text-xl text-black">Workouts</h1>
 					<p className="text-sm text-black/60 mt-1">Manage your workout routines and exercises</p>
@@ -292,10 +292,10 @@ export default function WorkoutsArea() {
 			)}
 
 			{/* Workouts Grid - Scrollable */}
-			<div className="flex-1 overflow-y-auto min-h-0">
+			<div className="flex-1 overflow-hidden pr-3 min-h-0">
 				{workouts.length === 0 ? (
-					<PixelCard>
-						<PixelCardContent className="py-12 text-center">
+					<PixelCard className="max-h-[50%]">
+						<PixelCardContent className="py-12 text-center ">
 							<div className="w-16 h-16 bg-emerald-100 border-2 border-black mx-auto mb-4 flex items-center justify-center">
 								<Dumbbell className="w-8 h-8 text-emerald-600" />
 							</div>

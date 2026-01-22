@@ -149,7 +149,7 @@ export default function PixelArt() {
 			<Sidebar />
 
 			{/* Main content */}
-			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden p-4 pr-6">
+			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden p-4 pr-6 ">
 				<main className="flex-1 overflow-y-auto">
 					{/* Card with shadow */}
 					<div className="relative max-w-4xl">
@@ -157,7 +157,7 @@ export default function PixelArt() {
 						<div className="absolute left-2 top-2 h-full w-full border-4 border-black bg-black/10" />
 
 						{/* Main card */}
-						<div className="relative bg-white/90 backdrop-blur border-4 border-black p-6">
+						<div className="relative bg-white/90 backdrop-blur border-4 border-black p-6 w-full">
 							{/* Header */}
 							<div className="flex items-center gap-3 mb-6">
 								<div className="h-5 w-5 bg-amber-400 border-2 border-black" />
