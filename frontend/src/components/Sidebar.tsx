@@ -151,33 +151,9 @@ function PixelLogoutIcon({ className }: { className?: string }) {
 }
 
 export default function Sidebar() {
-	const { myUser, workouts, entries, setEntries } = useMyContext();
+	const { myUser, pixelArt } = useMyContext();
 	const { user, logout } = useAuth0();
-	const { pixelArt } = useMyContext();
-	const [backendUser, setBackendUser] = useState<any>(null);
 	const [pixelAvatarUrl, setPixelAvatarUrl] = useState<string | null>(null);
-
-	useEffect(() => {
-		let isMounted = true;
-
-		async function loadUser() {
-			if (!user?.sub) return;
-			try {
-				const res = await fetch(`http://localhost:3000/api/user/${user.sub}`);
-				const data = await res.json();
-				if (isMounted) {
-					setBackendUser(data);
-				}
-			} catch (err) {
-				console.error('Fehler beim Laden des Users', err);
-			}
-		}
-		loadUser();
-
-		return () => {
-			isMounted = false;
-		};
-	}, [user]);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -226,7 +202,7 @@ export default function Sidebar() {
 		}
 	};
 
-	const totalScore = backendUser?.points ?? backendUser?.score ?? 0;
+	const totalScore = myUser?.points ?? myUser?.score ?? 0;
 	const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
 	const xpPercent = nextLevelXp > 0 ? (currentXp / nextLevelXp) * 100 : 0;
 
@@ -251,9 +227,9 @@ export default function Sidebar() {
 				{/* User Profile */}
 				<div className="flex items-center gap-4 mb-8 p-3 bg-gradient-to-r from-emerald-50 to-amber-50 border-2 border-black">
 					<Avatar className="h-16 w-16 border-2 border-black rounded-none">
-						{pixelAvatarUrl || backendUser?.img ? (
+						{pixelAvatarUrl || myUser?.img ? (
 							<AvatarImage
-								src={pixelAvatarUrl || backendUser?.img}
+								src={pixelAvatarUrl || myUser?.img}
 								alt="Avatar"
 								className="object-contain pixelated"
 							/>
@@ -263,7 +239,7 @@ export default function Sidebar() {
 						</AvatarFallback>
 					</Avatar>
 					<div className="flex-1 min-w-0">
-						<p className="font-medium text-black truncate">{backendUser?.firstName ?? 'User'}</p>
+						<p className="font-medium text-black truncate">{myUser?.firstName ?? 'User'}</p>
 						<p className="text-xs text-black/60">Level {level}</p>
 						<div className="mt-2 h-2 w-full bg-black/10 border border-black overflow-hidden">
 							<div
