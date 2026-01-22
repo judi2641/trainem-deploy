@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import { Progress } from './ui/progress';
 import { useMyContext } from '@/context/AppContext';
+import { getLevelFromScore } from '@/util/level';
 import {
 	Select,
 	SelectContent,
@@ -32,7 +33,7 @@ function isoDateOnly(d: Date) {
 }
 
 export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps) {
-	const { myUser, workouts, entries, setEntries } = useMyContext();
+	const { myUser, workouts, entries, setEntries, setMyUser } = useMyContext();
 	const auth0Id = myUser?.auth0Id;
 
 	const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
@@ -60,6 +61,11 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 				const updatedEntry = await res.json();
 
 				setEntries((prev: any) => prev.map((e: any) => (e._id === entryId ? updatedEntry : e)));
+				setMyUser((prev: any) => {
+					if (!prev) return prev;
+					const nextScore = (prev.points ?? prev.score ?? 0) + 67;
+					return { ...prev, points: nextScore, score: nextScore };
+				});
 
 				toast.custom(
 					() => (
@@ -69,10 +75,19 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 								<span className="font-medium">Exercise completed!</span>
 							</div>
 							<div className="flex flex-col gap-1">
+								{(() => {
+									const totalScore = myUser?.points ?? myUser?.score ?? 0;
+									const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
+
+									return (
+										<>
 								<span className="text-sm text-muted-foreground">
-									Level {Math.floor((myUser?.score ?? 0) / 100) + 1}
+											Level {level}
 								</span>
-								<Progress value={(myUser?.score ?? 0) % 100} className="h-2" />
+										<Progress value={(currentXp / nextLevelXp) * 100} className="h-2" />
+										</>
+									);
+								})()}
 							</div>
 						</div>
 					),

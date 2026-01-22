@@ -260,7 +260,7 @@ function isCardio(ex: any) {
 }
 
 export default function ActiveWorkout() {
-	const { myUser, workouts, entries, setEntries } = useMyContext();
+	const { myUser, workouts, entries, setEntries, setMyUser } = useMyContext();
 	const auth0Id = myUser?.auth0Id;
 
 	const latestUncompletedEntry = useMemo(() => {
@@ -375,6 +375,11 @@ export default function ActiveWorkout() {
 
 		// Update entries state first
 		setEntries((prev: any) => prev.map((e: any) => (e._id === entryId ? updatedEntry : e)));
+		setMyUser((prev: any) => {
+			if (!prev) return prev;
+			const nextScore = (prev.points ?? prev.score ?? 0) + 67;
+			return { ...prev, points: nextScore, score: nextScore };
+		});
 
 		// ONLY trigger celebration when backend sets completed === true
 		// This is the most reliable indicator that all exercises are done

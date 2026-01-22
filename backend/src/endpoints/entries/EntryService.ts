@@ -3,6 +3,7 @@ import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
 import type { Entry, WorkoutExercise } from '../../../../shared/sharedTypes';
 import WorkoutModel from '../workouts/WorkoutModel';
+import UserModel from '../users/UserModel';
 /**
  *
  * @param entryId
@@ -102,7 +103,16 @@ entry.completed_exercises.push({
 if(entry.plannedExercises.length === 0){
   entry.completed = true;
 }
+entry.score = (entry.score ?? 0) + 67;
 await entry.save();
+
+const user = await UserModel.findOneAndUpdate(
+  { auth0Id: entry.auth0Id },
+  { $inc: { points: 67 } },
+  { new: true }
+);
+if (!user) throw new HttpError(404, 'user not found');
+
 return entry;
   } catch (error) {
     logger.error('updateEntryByExerciseName failed', error);

@@ -7,6 +7,7 @@ import PixelBackground from '@/components/pixel/PixelBackground';
 import { Button } from '@/components/ui/button';
 import { useMyContext } from '@/context/AppContext';
 import { toast } from 'sonner';
+import { getLevelFromScore } from '@/util/level';
 
 // Pixel icons
 function SaveIcon({ className }: { className?: string }) {
@@ -37,17 +38,17 @@ function SparkleIcon({ className }: { className?: string }) {
 }
 
 export default function PixelArt() {
-	const { myUser, pixelArt, setPixelArt, entries } = useMyContext();
+	const { myUser, setPixelArt } = useMyContext();
 	const [pixelImage, setPixelImage] = useState<string | null>(null);
 	const [pixels, setPixels] = useState<PixelData[]>([]);
 	const [gridSize, setGridSize] = useState(64);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
-	// Calculate level based on completed entries
-	const completedEntries = entries?.filter((e: any) => e.completed)?.length ?? 0;
-	const level = Math.floor(completedEntries / 5); // Level up every 5 completed workouts
-	const unlockedPixels = 12 + level * 4; // Start with 12, unlock 4 more per level
+	const totalScore = myUser?.points ?? myUser?.score ?? 0;
+
+	const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
+	const unlockedPixels = 12 + (level - 1) * 3;
 
 	useEffect(() => {
 		let isMounted = true;
@@ -172,11 +173,11 @@ export default function PixelArt() {
 								<div className="h-2 w-full bg-black/10 border border-black overflow-hidden">
 									<div
 										className="h-full bg-emerald-500 transition-all duration-300"
-										style={{ width: `${((completedEntries % 5) / 5) * 100}%` }}
+										style={{ width: `${(currentXp / nextLevelXp) * 100}%` }}
 									/>
 								</div>
 								<p className="text-xs text-black/50 mt-2">
-									Complete {5 - (completedEntries % 5)} more workouts to unlock 4 additional pixels!
+									{nextLevelXp - currentXp} XP to reach level {level + 1}.
 								</p>
 							</div>
 

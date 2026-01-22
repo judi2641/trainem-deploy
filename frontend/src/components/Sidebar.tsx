@@ -2,7 +2,45 @@ import { NavLink } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
+import { getLevelFromScore } from '@/util/level';
 import { useMyContext } from '@/context/AppContext';
+
+type PixelArtPixel = {
+	x: number;
+	y: number;
+	color: string;
+};
+
+function pixelArtToDataUrl(pixels: PixelArtPixel[], gridSize: number) {
+	if (typeof document === 'undefined') return null;
+
+	const canvas = document.createElement('canvas');
+	canvas.width = gridSize;
+	canvas.height = gridSize;
+
+	const ctx = canvas.getContext('2d');
+	if (!ctx) return null;
+
+	ctx.fillStyle = '#ffffff';
+	ctx.fillRect(0, 0, gridSize, gridSize);
+
+	pixels.forEach((pixel) => {
+		if (
+			typeof pixel.x !== 'number' ||
+			typeof pixel.y !== 'number' ||
+			typeof pixel.color !== 'string'
+		) {
+			return;
+		}
+		if (pixel.x < 0 || pixel.y < 0 || pixel.x >= gridSize || pixel.y >= gridSize) {
+			return;
+		}
+		ctx.fillStyle = pixel.color;
+		ctx.fillRect(pixel.x, pixel.y, 1, 1);
+	});
+
+	return canvas.toDataURL('image/png');
+}
 
 // Pixel-style icon components
 function PixelDashboardIcon({ className }: { className?: string }) {
@@ -115,29 +153,82 @@ function PixelLogoutIcon({ className }: { className?: string }) {
 export default function Sidebar() {
 	const { myUser, workouts, entries, setEntries } = useMyContext();
 	const { user, logout } = useAuth0();
+	const { pixelArt } = useMyContext();
 	const [backendUser, setBackendUser] = useState<any>(null);
-	const completedWorkouts = entries.filter((e: any) => e.completed).length;
-	const level = Math.floor(completedWorkouts / 5) + 1;
+	const [pixelAvatarUrl, setPixelAvatarUrl] = useState<string | null>(null);
 
 	useEffect(() => {
+		let isMounted = true;
+
 		async function loadUser() {
 			if (!user?.sub) return;
 			try {
 				const res = await fetch(`http://localhost:3000/api/user/${user.sub}`);
 				const data = await res.json();
-				setBackendUser(data);
+				if (isMounted) {
+					setBackendUser(data);
+				}
 			} catch (err) {
 				console.error('Fehler beim Laden des Users', err);
 			}
 		}
 		loadUser();
+
+		return () => {
+			isMounted = false;
+		};
 	}, [user]);
+
+	useEffect(() => {
+		let isMounted = true;
+
+		async function loadPixelArt() {
+			if (!user?.sub) return;
+			try {
+				const res = await fetch(`http://localhost:3000/api/pixel-art/${user.sub}`);
+				if (res.status === 404) {
+					if (isMounted) {
+						setPixelAvatarUrl(null);
+					}
+					return;
+				}
+				if (!res.ok) {
+					throw new Error('Failed to load pixel art');
+				}
+				const data = await res.json();
+				if (!isMounted) return;
+
+				const gridSize = typeof data.gridSize === 'number' ? data.gridSize : 16;
+				const pixels = Array.isArray(data.pixels) ? data.pixels : [];
+				setPixelAvatarUrl(pixelArtToDataUrl(pixels, gridSize));
+			} catch (err) {
+				console.error('Fehler beim Laden des Pixel Avatars', err);
+			}
+		}
+
+		loadPixelArt();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [user?.sub]);
+
+	useEffect(() => {
+		if (!pixelArt) return;
+		const gridSize = typeof pixelArt.gridSize === 'number' ? pixelArt.gridSize : 16;
+		const pixels = Array.isArray(pixelArt.pixels) ? pixelArt.pixels : [];
+		setPixelAvatarUrl(pixelArtToDataUrl(pixels, gridSize));
+	}, [pixelArt]);
 
 	const handleLogout = () => {
 		if (window.confirm('Willst du dich ausloggen?')) {
 			logout();
 		}
 	};
+
+	const totalScore = backendUser?.points ?? backendUser?.score ?? 0;
+	const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
+	const xpPercent = nextLevelXp > 0 ? (currentXp / nextLevelXp) * 100 : 0;
 
 	const activeVisuals =
 		'flex items-center gap-3 px-3 py-2.5 bg-emerald-500 text-white font-medium border-2 border-black';
@@ -159,12 +250,12 @@ export default function Sidebar() {
 
 				{/* User Profile */}
 				<div className="flex items-center gap-4 mb-8 p-3 bg-gradient-to-r from-emerald-50 to-amber-50 border-2 border-black">
-					<Avatar className="h-12 w-12 border-2 border-black">
-						{backendUser?.img ? (
+					<Avatar className="h-16 w-16 border-2 border-black rounded-none">
+						{pixelAvatarUrl || backendUser?.img ? (
 							<AvatarImage
-								src={backendUser.img || '/placeholder.svg'}
+								src={pixelAvatarUrl || backendUser?.img}
 								alt="Avatar"
-								className="object-cover object-top"
+								className="object-contain pixelated"
 							/>
 						) : null}
 						<AvatarFallback className="bg-amber-400 text-black font-pixel text-xs">
@@ -172,8 +263,17 @@ export default function Sidebar() {
 						</AvatarFallback>
 					</Avatar>
 					<div className="flex-1 min-w-0">
-						<p className="font-medium text-black truncate">{myUser?.firstName ?? 'User'}</p>
+						<p className="font-medium text-black truncate">{backendUser?.firstName ?? 'User'}</p>
 						<p className="text-xs text-black/60">Level {level}</p>
+						<div className="mt-2 h-2 w-full bg-black/10 border border-black overflow-hidden">
+							<div
+								className="h-full bg-emerald-500 transition-all duration-300"
+								style={{ width: `${xpPercent}%` }}
+							/>
+						</div>
+						<p className="text-[10px] text-black/50 mt-1">
+							{nextLevelXp - currentXp} XP to next level
+						</p>
 					</div>
 				</div>
 

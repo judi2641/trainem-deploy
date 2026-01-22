@@ -10,25 +10,23 @@ import { useMyContext } from '@/context/AppContext';
 import { useMemo } from 'react';
 import { Star, Zap } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { getLevelFromScore } from '@/util/level';
 
 export default function PixelCharacter() {
-	const { entries, myUser } = useMyContext();
+	const { myUser } = useMyContext();
 
 	const characterData = useMemo(() => {
-		const completedWorkouts = entries.filter((e: any) => e.completed).length;
-		const level = Math.floor(completedWorkouts / 5) + 1;
-		const xpInCurrentLevel = completedWorkouts % 5;
-		const xpToNextLevel = 5;
-		const xpPercent = (xpInCurrentLevel / xpToNextLevel) * 100;
+		const totalScore = myUser?.points ?? myUser?.score ?? 0;
+		const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
+		const xpPercent = (currentXp / nextLevelXp) * 100;
 
 		return {
 			level,
-			xpInCurrentLevel,
-			xpToNextLevel,
+			xpInCurrentLevel: currentXp,
+			xpToNextLevel: nextLevelXp,
 			xpPercent,
-			completedWorkouts,
 		};
-	}, [entries]);
+	}, [myUser?.points, myUser?.score]);
 
 	const characterColor = myUser?.characterColor ?? '#10B981';
 
