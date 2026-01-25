@@ -7,7 +7,7 @@ import CreateGroupModal from './groups/CreateGroupModal';
 import type { Group } from '../../../shared/sharedTypes';
 
 export default function GroupsArea() {
-	const { user, getAccessTokenSilently } = useAuth0();
+	const { user } = useAuth0();
 	const [myGroups, setMyGroups] = useState<Group[]>([]);
 	const [publicGroups, setPublicGroups] = useState<Group[]>([]);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -21,21 +21,15 @@ export default function GroupsArea() {
 
 	const fetchGroups = async () => {
 		try {
-			const token = await getAccessTokenSilently();
-
 			// Fetch user's groups
-			const myGroupsRes = await fetch(`http://localhost:3000/api/groups/user/${user?.sub}`, {
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const myGroupsRes = await fetch(`http://localhost:3000/api/groups/user/${user?.sub}`);
 			if (myGroupsRes.ok) {
 				const data = await myGroupsRes.json();
 				setMyGroups(data);
 			}
 
 			// Fetch public groups
-			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=20`, {
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=20`);
 			if (publicRes.ok) {
 				const data = await publicRes.json();
 				setPublicGroups(data.filter((g: Group) => !myGroups.find(mg => mg._id === g._id)));
@@ -54,13 +48,9 @@ export default function GroupsArea() {
 		isPublic: boolean;
 	}) => {
 		try {
-			const token = await getAccessTokenSilently();
 			const res = await fetch('http://localhost:3000/api/groups', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					...groupData,
 					ownerId: user?.sub
@@ -69,7 +59,7 @@ export default function GroupsArea() {
 
 			if (res.ok) {
 				setIsCreateModalOpen(false);
-				fetchGroups(); // Refresh groups
+				fetchGroups();
 			}
 		} catch (error) {
 			console.error('Failed to create group:', error);
@@ -78,18 +68,14 @@ export default function GroupsArea() {
 
 	const handleJoinGroup = async (groupId: string) => {
 		try {
-			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/groups/${groupId}/join`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ userId: user?.sub })
 			});
 
 			if (res.ok) {
-				fetchGroups(); // Refresh groups
+				fetchGroups();
 			}
 		} catch (error) {
 			console.error('Failed to join group:', error);
@@ -98,18 +84,14 @@ export default function GroupsArea() {
 
 	const handleLeaveGroup = async (groupId: string) => {
 		try {
-			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/groups/${groupId}/leave`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ userId: user?.sub })
 			});
 
 			if (res.ok) {
-				fetchGroups(); // Refresh groups
+				fetchGroups();
 			}
 		} catch (error) {
 			console.error('Failed to leave group:', error);

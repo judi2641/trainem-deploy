@@ -10,7 +10,7 @@ interface PixelBoardProps {
 
 export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBoardProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { getAccessTokenSilently } = useAuth0();
+	const { user } = useAuth0();
 	const [board, setBoard] = useState<IPixelBoard | null>(null);
 	const [season, setSeason] = useState<Season | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -31,14 +31,10 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 	const fetchBoardData = async () => {
 		try {
-			const token = await getAccessTokenSilently();
-
 			// Fetch active season if no seasonId provided
 			let activeSeasonId = seasonId;
 			if (!activeSeasonId) {
-				const seasonRes = await fetch('http://localhost:3000/api/pixelwar/seasons/active', {
-					headers: { Authorization: `Bearer ${token}` }
-				});
+				const seasonRes = await fetch('http://localhost:3000/api/pixelwar/seasons/active');
 				if (seasonRes.ok) {
 					const seasonData = await seasonRes.json();
 					setSeason(seasonData);
@@ -48,9 +44,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 			if (activeSeasonId) {
 				// Fetch pixel board
-				const boardRes = await fetch(`http://localhost:3000/api/pixelwar/seasons/${activeSeasonId}/board`, {
-					headers: { Authorization: `Bearer ${token}` }
-				});
+				const boardRes = await fetch(`http://localhost:3000/api/pixelwar/seasons/${activeSeasonId}/board`);
 				if (boardRes.ok) {
 					const boardData = await boardRes.json();
 					setBoard(boardData);
@@ -129,22 +123,18 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 		if (x >= 0 && x < board.gridWidth && y >= 0 && y < board.gridHeight) {
 			try {
-				const token = await getAccessTokenSilently();
 				const res = await fetch(`http://localhost:3000/api/pixelwar/seasons/${season._id}/pixels`, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						groupId,
-						userId: 'user-id', // TODO: Get from auth
+						userId: user?.sub,
 						coordinates: [{ x, y }]
 					})
 				});
 
 				if (res.ok) {
-					fetchBoardData(); // Refresh board
+					fetchBoardData();
 					onPixelPlaced?.();
 				}
 			} catch (error) {
