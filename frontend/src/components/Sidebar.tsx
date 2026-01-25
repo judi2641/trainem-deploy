@@ -105,6 +105,42 @@ function PixelChartIcon({ className }: { className?: string }) {
 	);
 }
 
+function PixelGroupsIcon({ className }: { className?: string }) {
+	return (
+		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
+			{/* Left person */}
+			<rect x="1" y="3" width="2" height="2" />
+			<rect x="0" y="5" width="4" height="4" />
+			{/* Center person */}
+			<rect x="7" y="1" width="2" height="2" />
+			<rect x="6" y="3" width="4" height="5" />
+			{/* Right person */}
+			<rect x="13" y="3" width="2" height="2" />
+			<rect x="12" y="5" width="4" height="4" />
+		</svg>
+	);
+}
+
+function PixelWarIcon({ className }: { className?: string }) {
+	return (
+		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
+			{/* Crossed swords */}
+			<rect x="1" y="1" width="2" height="2" />
+			<rect x="3" y="3" width="2" height="2" />
+			<rect x="5" y="5" width="2" height="2" />
+			<rect x="7" y="7" width="2" height="2" />
+			<rect x="9" y="5" width="2" height="2" />
+			<rect x="11" y="3" width="2" height="2" />
+			<rect x="13" y="1" width="2" height="2" />
+			{/* Bottom */}
+			<rect x="5" y="9" width="2" height="2" />
+			<rect x="9" y="9" width="2" height="2" />
+			<rect x="3" y="11" width="2" height="2" />
+			<rect x="11" y="11" width="2" height="2" />
+		</svg>
+	);
+}
+
 function PixelSettingsIcon({ className }: { className?: string }) {
 	return (
 		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
@@ -304,6 +340,24 @@ export default function Sidebar() {
 								>
 									<PixelChartIcon className="h-5 w-5 shrink-0" />
 									<span>Statistics</span>
+								</NavLink>
+							</li>
+							<li>
+								<NavLink
+									to="/groups"
+									className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
+								>
+									<PixelGroupsIcon className="h-5 w-5 shrink-0" />
+									<span>Groups</span>
+								</NavLink>
+							</li>
+							<li>
+								<NavLink
+									to="/pixel-wars"
+									className={({ isActive }) => (isActive ? activeVisuals : nonActiveVisuals)}
+								>
+									<PixelWarIcon className="h-5 w-5 shrink-0" />
+									<span>Pixel Wars</span>
 								</NavLink>
 							</li>
 						</ul>

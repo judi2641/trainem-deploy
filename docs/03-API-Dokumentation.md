@@ -14,6 +14,9 @@
 - [Entry Endpoints](#entry-endpoints)
 - [Exercise Endpoints](#exercise-endpoints)
 - [PixelArt Endpoints](#pixelart-endpoints)
+- [Group Endpoints](#group-endpoints)
+- [PixelWar Endpoints](#pixelwar-endpoints)
+- [Battle Endpoints (Pixel Wars 1v1)](#-battle-endpoints-pixel-wars-1v1)
 - [Error Handling](#error-handling)
 
 ---
@@ -628,6 +631,571 @@ POST /api/pixel-art/:auth0ID
 
 ---
 
+## 👥 Group Endpoints
+
+### 1. Gruppe erstellen
+
+```http
+POST /api/groups
+```
+
+**Request Body**:
+```json
+{
+  "name": "Team Awesome",
+  "description": "Best training group ever",
+  "color": "#FF6B6B",
+  "ownerId": "auth0|123",
+  "isPublic": true,
+  "maxMembers": 20
+}
+```
+
+**Response** (201 Created):
+```json
+{
+  "_id": "group123",
+  "name": "Team Awesome",
+  "description": "Best training group ever",
+  "color": "#FF6B6B",
+  "members": [
+    {
+      "userId": "auth0|123",
+      "role": "owner",
+      "joinedAt": "2026-01-24T10:00:00.000Z",
+      "contributedXP": 0
+    }
+  ],
+  "isPublic": true,
+  "maxMembers": 20,
+  "totalXP": 0,
+  "currentSeasonXP": 0,
+  "createdAt": "2026-01-24T10:00:00.000Z"
+}
+```
+
+---
+
+### 2. Öffentliche Gruppen abrufen
+
+```http
+GET /api/groups/public?limit=50&skip=0
+```
+
+**Query Parameters**:
+- `limit` (optional): Anzahl der Gruppen (default: 50)
+- `skip` (optional): Offset für Pagination (default: 0)
+
+**Response** (200 OK):
+```json
+[
+  {
+    "_id": "group123",
+    "name": "Team Awesome",
+    "color": "#FF6B6B",
+    "members": [...],
+    "totalXP": 15000,
+    "currentSeasonXP": 5000
+  }
+]
+```
+
+---
+
+### 3. Gruppen eines Users
+
+```http
+GET /api/groups/user/:userId
+```
+
+**Response** (200 OK): Array von Gruppen
+
+---
+
+### 4. Gruppe nach ID
+
+```http
+GET /api/groups/:groupId
+```
+
+---
+
+### 5. Gruppe beitreten
+
+```http
+POST /api/groups/:groupId/join
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|456"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: User ist bereits Mitglied oder Gruppe ist voll
+- `403 Forbidden`: Gruppe ist privat
+
+---
+
+### 6. Gruppe verlassen
+
+```http
+POST /api/groups/:groupId/leave
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|456"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Owner kann Gruppe nicht verlassen
+
+---
+
+### 7. Gruppe löschen
+
+```http
+DELETE /api/groups/:groupId
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|123"
+}
+```
+
+**Errors**:
+- `403 Forbidden`: Nur Owner kann Gruppe löschen
+
+---
+
+### 8. Member-Rolle ändern
+
+```http
+PATCH /api/groups/:groupId/members/:targetUserId/role
+```
+
+**Request Body**:
+```json
+{
+  "requesterId": "auth0|123",
+  "newRole": "admin"
+}
+```
+
+**Allowed roles**: `admin`, `member`
+
+---
+
+## 🎮 PixelWar Endpoints
+
+### 1. Season erstellen
+
+```http
+POST /api/pixelwar/seasons
+```
+
+**Request Body**:
+```json
+{
+  "name": "Winter Championship 2026",
+  "description": "First pixel war season",
+  "mode": "territory_control",
+  "startDate": "2026-02-01T00:00:00.000Z",
+  "endDate": "2026-03-01T00:00:00.000Z",
+  "gridWidth": 200,
+  "gridHeight": 200
+}
+```
+
+**Modes**:
+- `territory_control`: Pixel-Besitz zählt
+- `xp_battle`: Nur XP zählt
+- `hybrid`: Beides kombiniert
+
+**Response** (201 Created):
+```json
+{
+  "_id": "season123",
+  "name": "Winter Championship 2026",
+  "mode": "territory_control",
+  "status": "upcoming",
+  "participatingGroups": [],
+  "leaderboard": [],
+  "gridWidth": 200,
+  "gridHeight": 200
+}
+```
+
+---
+
+### 2. Aktive Season abrufen
+
+```http
+GET /api/pixelwar/seasons/active
+```
+
+**Response** (200 OK): Season Object
+
+**Errors**:
+- `404 Not Found`: Keine aktive Season
+
+---
+
+### 3. Season nach ID
+
+```http
+GET /api/pixelwar/seasons/:seasonId
+```
+
+---
+
+### 4. Season beitreten
+
+```http
+POST /api/pixelwar/seasons/:seasonId/join
+```
+
+**Request Body**:
+```json
+{
+  "groupId": "group123"
+}
+```
+
+---
+
+### 5. PixelBoard abrufen
+
+```http
+GET /api/pixelwar/seasons/:seasonId/board
+```
+
+**Response** (200 OK):
+```json
+{
+  "_id": "board123",
+  "seasonId": "season123",
+  "gridWidth": 200,
+  "gridHeight": 200,
+  "pixels": [
+    {
+      "x": 10,
+      "y": 15,
+      "color": "#FF6B6B",
+      "groupId": "group123",
+      "lastUpdatedBy": "auth0|123",
+      "lastUpdatedAt": "2026-01-24T10:00:00.000Z",
+      "conquestCount": 1
+    }
+  ]
+}
+```
+
+---
+
+### 6. Pixel setzen
+
+```http
+POST /api/pixelwar/seasons/:seasonId/pixels
+```
+
+**Request Body**:
+```json
+{
+  "groupId": "group123",
+  "userId": "auth0|123",
+  "coordinates": [
+    { "x": 10, "y": 15 },
+    { "x": 11, "y": 15 }
+  ]
+}
+```
+
+**Logic**:
+- User muss Mitglied der Gruppe sein
+- Season muss aktiv sein
+- Prüft Cooldown und tägliche Limits
+- Updated Leaderboard automatisch
+
+---
+
+### 7. Leaderboard abrufen
+
+```http
+GET /api/pixelwar/seasons/:seasonId/leaderboard
+```
+
+**Response** (200 OK):
+```json
+[
+  {
+    "groupId": "group123",
+    "groupName": "Team Awesome",
+    "score": 1500,
+    "pixelCount": 250
+  }
+]
+```
+
+---
+
+### 8. Season beenden
+
+```http
+POST /api/pixelwar/seasons/:seasonId/complete
+```
+
+**Response** (200 OK): Updated Season mit `status: "completed"`
+
+---
+
+## ⚔️ Battle Endpoints (Pixel Wars 1v1)
+
+Battles sind 1v1 Duelle zwischen zwei Gruppen auf einem geteilten Canvas.
+
+### 1. Challenge erstellen
+
+```http
+POST /api/pixelwar/battles
+```
+
+**Request Body**:
+```json
+{
+  "challengerGroupId": "group123",
+  "opponentGroupId": "group456",
+  "challengerUserId": "auth0|123",
+  "name": "Epic Battle",
+  "settings": {
+    "duration": 1440,
+    "gridSize": 50,
+    "winCondition": "pixels"
+  }
+}
+```
+
+**Settings**:
+- `duration`: Dauer in Minuten (60-10080)
+- `gridSize`: Canvas-Größe (20-200)
+- `winCondition`: `pixels` | `xp` | `hybrid`
+
+**Response** (201 Created):
+```json
+{
+  "_id": "battle123",
+  "name": "Epic Battle",
+  "challenger": {
+    "groupId": "group123",
+    "groupName": "Team A",
+    "color": "#FF6B6B",
+    "pixelsOwned": 0,
+    "totalXP": 0
+  },
+  "opponent": {
+    "groupId": "group456",
+    "groupName": "Team B",
+    "color": "#4ECDC4",
+    "pixelsOwned": 0,
+    "totalXP": 0
+  },
+  "status": "pending",
+  "settings": {...}
+}
+```
+
+---
+
+### 2. Battles eines Users abrufen
+
+```http
+GET /api/pixelwar/battles?userId=auth0|123
+```
+
+**Response** (200 OK): Array von Battles
+
+---
+
+### 3. Aktive Battles
+
+```http
+GET /api/pixelwar/battles/active?userId=auth0|123
+```
+
+---
+
+### 4. Ausstehende Challenges
+
+```http
+GET /api/pixelwar/battles/pending?userId=auth0|123
+```
+
+Gibt Challenges zurück, wo Gruppen des Users Opponent sind.
+
+---
+
+### 5. Battle Details
+
+```http
+GET /api/pixelwar/battles/:battleId
+```
+
+---
+
+### 6. Challenge annehmen
+
+```http
+POST /api/pixelwar/battles/:battleId/accept
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|456"
+}
+```
+
+**Logic**:
+- Erstellt PixelBoard für das Battle
+- Setzt Status auf `active`
+- Berechnet `endDate` basierend auf `duration`
+
+---
+
+### 7. Challenge ablehnen
+
+```http
+POST /api/pixelwar/battles/:battleId/decline
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|456"
+}
+```
+
+---
+
+### 8. Challenge abbrechen
+
+```http
+POST /api/pixelwar/battles/:battleId/cancel
+```
+
+Nur vom Challenger vor Accept möglich.
+
+---
+
+### 9. Aufgeben (Surrender)
+
+```http
+POST /api/pixelwar/battles/:battleId/surrender
+```
+
+**Request Body**:
+```json
+{
+  "groupId": "group123",
+  "userId": "auth0|123"
+}
+```
+
+---
+
+### 10. Battle PixelBoard abrufen
+
+```http
+GET /api/pixelwar/battles/:battleId/board
+```
+
+**Response** (200 OK):
+```json
+{
+  "_id": "board456",
+  "gridWidth": 50,
+  "gridHeight": 50,
+  "pixels": [
+    {
+      "x": 10,
+      "y": 15,
+      "color": "#FF6B6B",
+      "groupId": "group123",
+      "conquestCount": 3
+    }
+  ]
+}
+```
+
+---
+
+### 11. Pixel im Battle setzen
+
+```http
+POST /api/pixelwar/battles/:battleId/pixels
+```
+
+**Request Body**:
+```json
+{
+  "groupId": "group123",
+  "userId": "auth0|123",
+  "coordinates": [
+    { "x": 10, "y": 15 },
+    { "x": 11, "y": 15 }
+  ]
+}
+```
+
+**Logic**:
+- Battle muss aktiv sein
+- User muss Mitglied der Gruppe sein
+- Pixel können überschrieben werden (wenn `allowOverwrite: true`)
+
+---
+
+### 12. Live-Score abrufen
+
+```http
+GET /api/pixelwar/battles/:battleId/score
+```
+
+**Response** (200 OK):
+```json
+{
+  "challenger": {
+    "pixels": 150,
+    "xp": 2010,
+    "percentage": 45.5
+  },
+  "opponent": {
+    "pixels": 180,
+    "xp": 1870,
+    "percentage": 54.5
+  },
+  "timeRemaining": 3600,
+  "status": "active"
+}
+```
+
+---
+
+### 13. Battle manuell beenden
+
+```http
+POST /api/pixelwar/battles/:battleId/end
+```
+
+**Response** (200 OK): Battle mit `status: "completed"` und `winnerId`
+
+---
+
 ## ⚠️ Error Handling
 
 ### Standard Error Response
@@ -715,10 +1283,11 @@ curl -X GET http://localhost:3000/api/exercises
 
 | Version | Datum | Änderungen |
 |---------|-------|-----------|
+| **1.1** | 2026-01-25 | Pixel Wars Battle Endpoints hinzugefügt (1v1 Duelle) |
 | **1.0** | 2026-01-24 | Initial API Release |
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-24
+**Letzte Aktualisierung**: 2026-01-25
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Architektur & Design →](04-Architektur-Design.md)

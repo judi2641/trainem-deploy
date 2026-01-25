@@ -4,6 +4,9 @@ import { HttpError } from '../../errors/HttpError';
 import type { Entry, WorkoutExercise } from '../../../../shared/sharedTypes';
 import WorkoutModel from '../workouts/WorkoutModel';
 import UserModel from '../users/UserModel';
+import { PixelWarService } from '../pixelwar/PixelWarService';
+import { GroupService } from '../groups/GroupService';
+import { BattleService } from '../pixelwar/BattleService';
 /**
  *
  * @param entryId
@@ -37,7 +40,7 @@ export async function createEntry(
       } as Entry);
     }
 
-    return await EntryModel.create({
+    const entry = await EntryModel.create({
       auth0Id,
       date,
       habitId,
@@ -46,6 +49,26 @@ export async function createEntry(
       completed: true,
       score: 10
     } as Entry);
+
+    // Grant pixel rights and add XP to user's groups
+    try {
+      const groups = await GroupService.getUserGroups(auth0Id);
+      for (const group of groups) {
+        const groupIdStr = String(group._id);
+        await PixelWarService.grantPixelRights(groupIdStr, auth0Id, 10);
+        await GroupService.addGroupXP(groupIdStr, auth0Id, 10);
+
+        // Add XP to active battles
+        const activeBattles = await BattleService.getActiveBattlesForGroup(groupIdStr);
+        for (const battle of activeBattles) {
+          await BattleService.addBattleXP(String(battle._id), groupIdStr, auth0Id, 10);
+        }
+      }
+    } catch (error) {
+      logger.error('Failed to process group XP/pixels for habit completion', error);
+    }
+
+    return entry;
   } catch (error) {
     logger.error('createEntry failed', error);
     if (error instanceof HttpError) throw error;
@@ -112,6 +135,26 @@ const user = await UserModel.findOneAndUpdate(
   { new: true }
 );
 if (!user) throw new HttpError(404, 'user not found');
+
+// Grant pixel rights and add XP to user's groups
+try {
+  if (entry.auth0Id) {
+    const groups = await GroupService.getUserGroups(entry.auth0Id);
+    for (const group of groups) {
+      const groupIdStr = String(group._id);
+      await PixelWarService.grantPixelRights(groupIdStr, entry.auth0Id, 67);
+      await GroupService.addGroupXP(groupIdStr, entry.auth0Id, 67);
+
+      // Add XP to active battles
+      const activeBattles = await BattleService.getActiveBattlesForGroup(groupIdStr);
+      for (const battle of activeBattles) {
+        await BattleService.addBattleXP(String(battle._id), groupIdStr, entry.auth0Id, 67);
+      }
+    }
+  }
+} catch (error) {
+  logger.error('Failed to process group XP/pixels for exercise completion', error);
+}
 
 return entry;
   } catch (error) {

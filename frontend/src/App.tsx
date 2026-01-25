@@ -24,6 +24,8 @@ import Workouts from './pages/Workouts';
 import PixelArt from './pages/PixelArt';
 import Statistics from './pages/Statistics';
 import Habits from './pages/Habits';
+import Groups from './pages/Groups';
+import PixelWars from './pages/PixelWars';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -89,6 +91,24 @@ function App() {
 						element={
 							<ProtectedRoute>
 								<PixelArt />
+							</ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path="/groups"
+						element={
+							<ProtectedRoute>
+								<Groups />
+							</ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path="/pixel-wars"
+						element={
+							<ProtectedRoute>
+								<PixelWars />
 							</ProtectedRoute>
 						}
 					/>

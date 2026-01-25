@@ -90,3 +90,142 @@ export interface Habit {
   createdAt: string;
   updatedAt: string;
 }
+
+// Group Member
+export interface GroupMember {
+  userId: string;
+  role: 'owner' | 'admin' | 'member';
+  joinedAt: string;
+  contributedXP: number;
+}
+
+// Group
+export interface Group {
+  _id: string;
+  name: string;
+  description?: string;
+  color: string;
+  members: GroupMember[];
+  isPublic: boolean;
+  maxMembers: number;
+  totalXP: number;
+  currentSeasonXP: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// PixelBoard Pixel
+export interface PixelBoardPixel {
+  x: number;
+  y: number;
+  color: string;
+  groupId: string;
+  lastUpdatedBy: string;
+  lastUpdatedAt: string;
+  conquestCount: number;
+}
+
+// PixelBoard
+export interface PixelBoard {
+  _id: string;
+  seasonId: string;
+  gridWidth: number;
+  gridHeight: number;
+  pixels: PixelBoardPixel[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Season Leaderboard Entry
+export interface SeasonLeaderboardEntry {
+  groupId: string;
+  groupName: string;
+  score: number;
+  pixelCount: number;
+}
+
+// Season
+export interface Season {
+  _id: string;
+  name: string;
+  description?: string;
+  mode: 'territory_control' | 'xp_battle' | 'hybrid';
+  startDate: string;
+  endDate: string;
+  status: 'upcoming' | 'active' | 'completed';
+  participatingGroups: string[];
+  leaderboard: SeasonLeaderboardEntry[];
+  rules: {
+    pixelsPerAction: number;
+    xpPerPixel: number;
+    cooldownMinutes: number;
+    maxPixelsPerUser: number;
+  };
+  gridWidth: number;
+  gridHeight: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Battle Member (tracks individual contributions)
+export interface BattleMember {
+  userId: string;
+  contributedXP: number;
+  pixelsPlaced: number;
+}
+
+// Battle Participant (a team in the battle)
+export interface BattleParticipant {
+  groupId: string;
+  groupName: string;
+  color: string;
+  pixelsOwned: number;
+  totalXP: number;
+  members: BattleMember[];
+}
+
+// Battle Settings
+export interface BattleSettings {
+  duration: number;
+  gridSize: number;
+  winCondition: 'pixels' | 'xp' | 'hybrid';
+  xpPerPixel: number;
+  pixelsPerAction: number;
+  allowOverwrite: boolean;
+}
+
+// Battle
+export interface Battle {
+  _id: string;
+  name: string;
+  description?: string;
+  challenger: BattleParticipant;
+  opponent: BattleParticipant;
+  status: 'pending' | 'accepted' | 'active' | 'completed' | 'declined' | 'cancelled';
+  challengedAt: string;
+  acceptedAt?: string;
+  startDate?: string;
+  endDate?: string;
+  actualEndDate?: string;
+  settings: BattleSettings;
+  winnerId?: string;
+  pixelBoardId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Battle Live Score
+export interface BattleLiveScore {
+  challenger: {
+    pixels: number;
+    xp: number;
+    percentage: number;
+  };
+  opponent: {
+    pixels: number;
+    xp: number;
+    percentage: number;
+  };
+  timeRemaining: number;
+  status: string;
+}

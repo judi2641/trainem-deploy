@@ -6,11 +6,14 @@ import { initDB } from './database/db';
 import UserRoute from './endpoints/users/UserRoute';
 // import TrainingsplanRoute from './endpoints/routes/TrainingsPlanRoute';
 // import CompletedTaskRoute from './endpoints/routes/CompletedTaskRoute';
-import WorkoutRoute from './endpoints/workouts/WorkoutRoute'
-import HabitRoute from './endpoints/habits/HabitRoute'
-import EntryRoute from './endpoints/entries/EntryRoute'
-import ExerciseRoute from './endpoints/exercises/ExerciseRoute'
-import PixelArtRoute from './endpoints/pixelArt/PixelArtRoute'
+import WorkoutRoute from './endpoints/workouts/WorkoutRoute';
+import HabitRoute from './endpoints/habits/HabitRoute';
+import EntryRoute from './endpoints/entries/EntryRoute';
+import ExerciseRoute from './endpoints/exercises/ExerciseRoute';
+import PixelArtRoute from './endpoints/pixelArt/PixelArtRoute';
+import GroupRoute from './endpoints/groups/GroupRoute';
+import PixelWarRoute from './endpoints/pixelwar/PixelWarRoute';
+import BattleRoute from './endpoints/pixelwar/BattleRoute';
 
 const app = express();
 
@@ -26,6 +29,9 @@ app.use('/api/habits', HabitRoute);
 app.use('/api/entries', EntryRoute);
 app.use('/api/exercises', ExerciseRoute);
 app.use('/api/pixel-art', PixelArtRoute);
+app.use('/api/groups', GroupRoute);
+app.use('/api/pixelwar', PixelWarRoute);
+app.use('/api/pixelwar/battles', BattleRoute);
 
 async function startServer() {
 	try {
