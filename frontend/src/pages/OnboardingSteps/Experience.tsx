@@ -14,13 +14,49 @@ export default function Experience() {
 	const [selectedExperience, setSelectedExperience] = useState<TrainingsExperience | null>(
 		planData.experience ?? null,
 	);
-
 	const [weight, setWeight] = useState(planData.weight ?? '');
 	const [height, setHeight] = useState(planData.height ?? '');
+	const [equipment, setEquipment] = useState<string | null>(planData.equipment ?? null);
+	const [preferredSplit, setPreferredSplit] = useState<string | null>(planData.preferredSplit ?? null);
+	const initialLimitations = planData.limitations === 'None' ? '' : (planData.limitations ?? '');
+	const [limitations, setLimitations] = useState(initialLimitations);
+	const [noLimitations, setNoLimitations] = useState(planData.limitations === 'None');
+	const [storedLimitations, setStoredLimitations] = useState(initialLimitations);
+
+	const levels = [
+		{ key: 'beginner', label: 'Beginner (<6 months)' },
+		{ key: 'intermediate', label: 'Intermediate (6-24 months)' },
+		{ key: 'experienced', label: 'Experienced (2+ years)' },
+	];
+
+	const equipmentOptions = [
+		'Home (no equipment)',
+		'Dumbbells',
+		'Barbell + Rack',
+		'Gym',
+		'Calisthenics (bar/rings)',
+	];
+
+	const splitOptions = ['Full Body', 'Upper/Lower', 'Push-Pull-Legs', 'No preference'];
 
 	const handleNext = () => {
 		if (!selectedExperience) {
-			alert('Bitte wähle ein Erfahrungslevel aus.');
+			alert('Please choose your experience level.');
+			return;
+		}
+
+		if (!equipment) {
+			alert('Please choose your equipment setup.');
+			return;
+		}
+
+		if (!preferredSplit) {
+			alert('Please choose a training split (or No preference).');
+			return;
+		}
+
+		if (!noLimitations && !limitations.trim()) {
+			alert('Please add limitations or check "No limitations".');
 			return;
 		}
 
@@ -28,22 +64,19 @@ export default function Experience() {
 			experience: selectedExperience,
 			weight: weight ? Number(weight) : undefined,
 			height: height ? Number(height) : undefined,
+			equipment,
+			preferredSplit,
+			limitations: noLimitations ? 'None' : limitations.trim(),
 		});
 
 		navigate('/onboarding/goals');
 	};
 
-	const levels = [
-		{ key: 'starter', label: 'Starter' },
-		{ key: 'intermediate', label: 'Intermediate' },
-		{ key: 'pro', label: 'Pro' },
-	];
-
 	return (
 		<div className="space-y-8">
 			{/* Bodytype Info */}
 			<div>
-				<h2 className="text-xl font-bold mb-4">Bodytype Info</h2>
+				<h2 className="text-xl font-bold mb-4">Body Info</h2>
 
 				{/* Weight */}
 				<div className="mb-4">
@@ -79,25 +112,111 @@ export default function Experience() {
 				<h2 className="text-xl font-bold mb-2">Your Experience</h2>
 				<p className="text-gray-600 mb-10">How much training experience do you have?</p>
 
-				<div className="flex gap-4 justify-center mt-4">
+				<div className="flex flex-wrap gap-4 justify-center mt-4">
 					{levels.map((lvl) => (
 						<Button
 							key={lvl.key}
 							variant={selectedExperience === lvl.key ? 'default' : 'outline'}
 							onClick={() => setSelectedExperience(lvl.key as TrainingsExperience)}
-							className={`
-              px-8 py-3 text-lg rounded-lg transition
-              ${
+							className={`px-6 py-3 text-lg rounded-lg transition ${
 								selectedExperience === lvl.key
 									? 'bg-indigo-600 text-white border-indigo-600'
 									: 'border-gray-300'
-							}
-            `}
+							}`}
 						>
 							{lvl.label}
 						</Button>
 					))}
 				</div>
+			</div>
+
+			{/* Equipment */}
+			<div>
+				<h2 className="text-xl font-bold mb-2">Equipment</h2>
+					<p className="text-gray-600 mb-4">What equipment do you have access to?</p>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+					{equipmentOptions.map((option) => {
+						const isSelected = equipment === option;
+
+						return (
+							<Button
+								key={option}
+								variant="outline"
+								onClick={() => setEquipment(option)}
+								className={`justify-start h-auto py-3 px-4 ${
+									isSelected ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300'
+								}`}
+							>
+								{option}
+							</Button>
+						);
+					})}
+				</div>
+			</div>
+
+			{/* Preferred Split */}
+			<div>
+				<h2 className="text-xl font-bold mb-2">Preferred Training Split</h2>
+				<p className="text-gray-600 mb-4">Optional but helpful (or No preference).</p>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+					{splitOptions.map((option) => {
+						const isSelected = preferredSplit === option;
+
+						return (
+							<Button
+								key={option}
+								variant="outline"
+								onClick={() => setPreferredSplit(option)}
+								className={`justify-start h-auto py-3 px-4 ${
+									isSelected ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300'
+								}`}
+							>
+								{option}
+							</Button>
+						);
+					})}
+				</div>
+			</div>
+
+			{/* Limitations */}
+			<div>
+				<h2 className="text-xl font-bold mb-2">Limitations</h2>
+				<p className="text-gray-600 mb-4">
+					Injuries or pain, and what you cannot do.
+				</p>
+
+				<label className="flex items-center gap-2 text-sm text-gray-700 mb-3">
+					<input
+						type="checkbox"
+						checked={noLimitations}
+						onChange={(e) => {
+							const checked = e.target.checked;
+							setNoLimitations(checked);
+
+							if (checked) {
+								setStoredLimitations(limitations);
+								setLimitations('None');
+							} else {
+								setLimitations(storedLimitations);
+							}
+						}}
+					/>
+					No limitations
+				</label>
+
+				<textarea
+					value={noLimitations ? '' : limitations}
+					onChange={(e) => setLimitations(e.target.value)}
+					placeholder='e.g. "no squats", "no overhead pressing"'
+					disabled={noLimitations}
+					className={`w-full min-h-[96px] rounded-md border p-3 text-sm ${
+						noLimitations
+							? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+							: 'border-gray-300'
+					}`}
+				/>
 			</div>
 
 			{/* Navigation */}
