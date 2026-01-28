@@ -11,40 +11,62 @@ export default function Goals() {
 	const { planData, updatePlanData } = useOnboarding();
 
 	const [selected, setSelected] = useState<TrainingsGoals | null>(planData.goal || null);
+	const [priorities, setPriorities] = useState<string[]>(planData.priorities ?? []);
 
-	const options: { key: TrainingsGoals; label: string; desc: string }[] = [
-		{
-			key: 'Muskelaufbau: Gewicht senken',
-			label: 'Lose Weight',
-			desc: 'Reduce your body weight sustainably.',
-		},
-		{
-			key: 'Muskelaufbau: Gewicht halten',
-			label: 'Maintain Weight',
-			desc: 'Stay balanced and maintain your progress.',
-		},
-		{
-			key: 'Muskelaufbau: Gewicht erhöhen',
-			label: 'Build Muscle',
-			desc: 'Increase strength and gain muscle mass.',
-		},
+	const options: { key: TrainingsGoals; label: string }[] = [
+		{ key: 'Muskelaufbau', label: 'Muscle Gain' },
+		{ key: 'Kraft', label: 'Strength' },
+		{ key: 'Abnehmen', label: 'Weight Loss' },
+		{ key: 'Ausdauer', label: 'Endurance' },
+		{ key: 'Allround-Fitness', label: 'All-round Fitness' },
 	];
 
+	const priorityOptions = ['Legs + Glutes', 'Back', 'Chest', 'Core', 'Conditioning'];
+
+	const togglePriority = (option: string) => {
+		if (priorities.includes(option)) {
+			const next = priorities.filter((item) => item !== option);
+			setPriorities(next);
+			updatePlanData({ priorities: next });
+			return;
+		}
+
+		if (priorities.length >= 2) {
+			alert('Please choose at most 2 priorities.');
+			return;
+		}
+
+		const next = [...priorities, option];
+		setPriorities(next);
+		updatePlanData({ priorities: next });
+	};
+
 	const handleNext = () => {
-		if (!selected) return;
-		updatePlanData({ goal: selected });
+		if (!selected) {
+			alert('Please choose a goal.');
+			return;
+		}
+
+		if (priorities.length < 1) {
+			alert('Please choose 1-2 priorities.');
+			return;
+		}
+
+		updatePlanData({ goal: selected, priorities });
 		navigate('/onboarding/schedule');
 	};
 
 	return (
-		<div>
+		<div className="space-y-6">
 			{/* TITLE */}
-			<h2 className="text-lg font-semibold mb-2">What is your main goal?</h2>
-			<p className="text-sm text-gray-600 mb-4">Select one primary fitness goal.</p>
+			<div>
+				<h2 className="text-lg font-semibold mb-2">Your Goal (choose one)</h2>
+				<p className="text-sm text-gray-600">Select your primary training goal.</p>
+			</div>
 
 			{/* GOAL BUTTONS */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-				{options.map((o, index) => {
+				{options.map((o) => {
 					const isSelected = o.key === selected;
 
 					return (
@@ -55,17 +77,41 @@ export default function Goals() {
 								setSelected(o.key);
 								updatePlanData({ goal: o.key });
 							}}
-							className={`
-              p-4 rounded-xl text-left flex flex-col gap-1
-              border h-auto
-              ${isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300 hover:bg-gray-50'}
-              ${index === 2 ? 'md:col-span-2 md:mx-auto md:w-1/2' : ''}
-            `}
+							className={`p-4 rounded-xl text-left border h-auto ${
+								isSelected ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300 hover:bg-gray-50'
+							}`}
 						>
 							<span className="font-semibold text-gray-900">{o.label}</span>
 						</Button>
 					);
 				})}
+			</div>
+
+			{/* PRIORITIES */}
+			<div>
+				<h3 className="text-md font-semibold mb-2">Priorities (1-2 areas)</h3>
+				<p className="text-sm text-gray-600 mb-4">
+					Choose 1-2 body areas or skills that matter most to you.
+				</p>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+					{priorityOptions.map((option) => {
+						const isSelected = priorities.includes(option);
+
+						return (
+							<Button
+								key={option}
+								variant="outline"
+								onClick={() => togglePriority(option)}
+								className={`justify-start h-auto py-3 px-4 ${
+									isSelected ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300'
+								}`}
+							>
+								{option}
+							</Button>
+						);
+					})}
+				</div>
 			</div>
 
 			{/* NAVIGATION */}

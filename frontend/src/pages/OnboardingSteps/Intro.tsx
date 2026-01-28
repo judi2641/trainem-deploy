@@ -20,32 +20,22 @@ export default function OnboardingSummary() {
 					</p>
 				</div>
 
-				{/* Daily Tasks */}
-				<div className="p-4 bg-white shadow rounded-lg">
-					<h2 className="text-xl font-semibold">Daily Tasks</h2>
-					<p className="text-gray-600">
-						Every day you receive new tasks based on your goals such as workouts, steps,
-						stretching, or small challenges.
-					</p>
-				</div>
-
 				{/* Points System */}
 				<div className="p-4 bg-white shadow rounded-lg">
 					<h2 className="text-xl font-semibold">Points and Rewards</h2>
 
 					<p className="text-gray-600">
-						Each completed task gives you points. You earn points by checking off the tasks you
-						complete.
+						You can create your own workout from exercises and train at your own pace.
 					</p>
 
-					<p className="text-gray-600 mt-2 font-semibold">These points allow you to:</p>
+					<p className="text-gray-600 mt-2 font-semibold">Level up by:</p>
 					<ul className="list-disc ml-6 text-gray-600 mt-1">
-						<li>Level up your profile</li>
-						<li>Unlock more pixels for your avatar</li>
+						<li>Finishing a workout</li>
+						<li>Completing single exercises during a workout</li>
 					</ul>
 
 					<p className="text-gray-600 mt-2">
-						It is simple: <strong>More consistency = more points = more pixels!</strong>
+						Each level up unlocks more pixels for your avatar.
 					</p>
 				</div>
 
@@ -60,7 +50,7 @@ export default function OnboardingSummary() {
 			</div>
 
 			<div className="flex gap-4 mt-6 justify-center">
-				<Button variant="outline" onClick={() => navigate('/onboarding/CharacterColor')}>
+				<Button variant="outline" onClick={() => navigate('/onboarding/schedule')}>
 					Back
 				</Button>
 

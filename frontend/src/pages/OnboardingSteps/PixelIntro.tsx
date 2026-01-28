@@ -13,7 +13,7 @@ export default function PixelIntro() {
 				</p>
 				<h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Paint your own pixel avatar</h2>
 				<p className="text-gray-600 max-w-xl mx-auto">
-					This is your personal pixel board. The more consistent you are, the more detail you can add.
+					This is your personal pixel board. The more you train, the more detail you can add.
 				</p>
 			</div>
 
@@ -26,9 +26,9 @@ export default function PixelIntro() {
 					</p>
 				</div>
 				<div className="p-5 bg-white shadow-md rounded-xl border border-emerald-100">
-					<h3 className="text-lg font-semibold mb-2 text-slate-900">Complete Tasks</h3>
+					<h3 className="text-lg font-semibold mb-2 text-slate-900">Level Up with Workouts</h3>
 					<p className="text-gray-600">
-						Every completed task gives you points and levels. Each new level unlocks +1 pixel.
+						Finish workouts or complete exercises to level up. Each level unlocks +1 pixel.
 					</p>
 				</div>
 				<div className="p-5 bg-white shadow-md rounded-xl border border-emerald-100">
@@ -50,7 +50,7 @@ export default function PixelIntro() {
 				</Button>
 
 				<Button
-					onClick={() => navigate('/onboarding/CharacterColor')}
+					onClick={() => navigate('/onboarding/intro')}
 					className="h-11 w-11 p-0 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white"
 				>
 					<ArrowRight className="h-5 w-5" />

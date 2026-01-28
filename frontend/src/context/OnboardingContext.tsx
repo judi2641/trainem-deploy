@@ -23,6 +23,12 @@ export interface IPlanInfo {
 	trainingDays: TrainingDays[];
 	weight?: number | null;
 	height?: number | null;
+	daysPerWeek?: number | null;
+	minutesPerSession?: number | null;
+	equipment?: string | null;
+	limitations?: string | null;
+	preferredSplit?: string | null;
+	priorities?: string[];
 }
 
 interface OnboardingContextType {
@@ -64,6 +70,12 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		trainingDays: [],
 		weight: null,
 		height: null,
+		daysPerWeek: null,
+		minutesPerSession: null,
+		equipment: null,
+		limitations: '',
+		preferredSplit: null,
+		priorities: [],
 	});
 
 	const updateUserData = (patch: Partial<IUserInfo>) => {
@@ -144,6 +156,12 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 						trainingDays: planData.trainingDays,
 						weight: planData.weight,
 						height: planData.height,
+						daysPerWeek: planData.daysPerWeek,
+						minutesPerSession: planData.minutesPerSession,
+						equipment: planData.equipment,
+						limitations: planData.limitations,
+						preferredSplit: planData.preferredSplit,
+						priorities: planData.priorities,
 					},
 				}),
 			});
