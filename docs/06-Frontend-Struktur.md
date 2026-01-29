@@ -27,11 +27,24 @@ frontend/src/
 │   ├── statistiken/          # Charts & Analytics
 │   ├── trainingsplan/        # Workout Components
 │   ├── pixel/                # Pixel-Art Components
+│   ├── groups/              # Groups Components
+│   │   ├── GroupList.tsx
+│   │   └── CreateGroupModal.tsx
+│   ├── pixelwar/            # Pixel Wars Components
+│   │   ├── PixelWarsArea.tsx
+│   │   ├── PixelBoard.tsx
+│   │   └── battles/
+│   │       ├── BattleList.tsx
+│   │       ├── BattleCard.tsx
+│   │       ├── BattleArena.tsx
+│   │       ├── ChallengeModal.tsx
+│   │       └── PendingChallenges.tsx
 │   ├── Header.tsx
 │   ├── Sidebar.tsx
 │   ├── EntryArea.tsx         # Workout Execution
 │   ├── WorkoutsArea.tsx
 │   ├── HabitsArea.tsx
+│   ├── GroupsArea.tsx        # Gruppen-Übersicht
 │   └── ...
 ├── pages/
 │   ├── OnboardingSteps/      # 7 Onboarding Steps
@@ -42,6 +55,8 @@ frontend/src/
 │   ├── PixelArt.tsx
 │   ├── Calendar.tsx
 │   ├── Settings.tsx
+│   ├── Groups.tsx            # Gruppen-Verwaltung
+│   ├── PixelWars.tsx         # Pixel Wars Battles
 │   ├── LandingPage.tsx
 │   └── Onboarding.tsx
 ├── context/
@@ -115,6 +130,8 @@ frontend/src/
   <Route path="/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
   <Route path="/pixel-art" element={<ProtectedRoute><PixelArt /></ProtectedRoute>} />
+  <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
+  <Route path="/pixel-wars" element={<ProtectedRoute><PixelWars /></ProtectedRoute>} />
   
   {/* Onboarding (Nested Routes) */}
   <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>}>
@@ -301,6 +318,6 @@ export const useToast = () => {
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-24
+**Letzte Aktualisierung**: 2026-01-29
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu User-Dokumentation →](07-User-Dokumentation.md)

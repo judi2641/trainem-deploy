@@ -267,16 +267,9 @@ POST /api/workouts/:workoutId/exercises
 **Request Body**:
 ```json
 {
-  "exercise": {
-    "name": "Push-Ups",
-    "type": "strength",
-    "primaryMuscleGroups": ["chest", "triceps"],
-    "executionInstructions": "...",
-    "videoUrl": "https://youtube.com/..."
-  },
+  "exerciseName": "Push-Ups",
   "sets": 3,
   "reps": 15,
-  "weight": 0,
   "duration": 0
 }
 ```
@@ -293,6 +286,71 @@ POST /api/workouts/:workoutId/exercises
 
 **Errors**:
 - `404 Not Found` - Workout existiert nicht
+
+---
+
+### 5. Workout aktualisieren
+
+```http
+PUT /api/workouts/:workoutId
+```
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123",
+  "name": "Neuer Name",
+  "description": "Neue Beschreibung"
+}
+```
+
+**Response** (200 OK): Aktualisiertes Workout
+
+**Errors**:
+- `403 Forbidden` - Nicht autorisiert
+- `404 Not Found` - Workout existiert nicht
+
+---
+
+### 6. Workout löschen
+
+```http
+DELETE /api/workouts/:workoutId
+```
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123"
+}
+```
+
+**Response** (204 No Content)
+
+**Errors**:
+- `403 Forbidden` - Nicht autorisiert
+- `404 Not Found` - Workout existiert nicht
+
+---
+
+### 7. Übung aus Workout entfernen
+
+```http
+DELETE /api/workouts/:workoutId/exercises/:exerciseIndex
+```
+
+**Path Parameters**:
+- `workoutId` - Workout MongoDB ObjectId
+- `exerciseIndex` - Index der Übung (0-basiert)
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123"
+}
+```
+
+**Response** (200 OK): Aktualisiertes Workout
 
 ---
 
@@ -370,6 +428,52 @@ POST /api/habits
 **Validation**:
 - `type` muss `daily` oder `weekly` sein
 - `weekday` nur bei `type: "weekly"` (0-6)
+
+---
+
+### 3. Habit aktualisieren
+
+```http
+PUT /api/habits/:habitId
+```
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123",
+  "name": "Neuer Name",
+  "description": "Neue Beschreibung",
+  "type": "weekly",
+  "weekday": 2
+}
+```
+
+**Response** (200 OK): Aktualisiertes Habit
+
+**Errors**:
+- `403 Forbidden` - Nicht autorisiert
+- `404 Not Found` - Habit existiert nicht
+
+---
+
+### 4. Habit löschen
+
+```http
+DELETE /api/habits/:habitId
+```
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123"
+}
+```
+
+**Response** (204 No Content)
+
+**Errors**:
+- `403 Forbidden` - Nicht autorisiert
+- `404 Not Found` - Habit existiert nicht
 
 ---
 
@@ -524,6 +628,27 @@ PATCH /api/entries/:entryId/abort
 **Logic**:
 - Entry wird als abgebrochen markiert
 - Bereits verdiente XP bleiben erhalten
+
+---
+
+### 5. Entry löschen
+
+```http
+DELETE /api/entries/:entryId
+```
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123"
+}
+```
+
+**Response** (204 No Content)
+
+**Errors**:
+- `403 Forbidden` - Nicht autorisiert
+- `404 Not Found` - Entry existiert nicht
 
 ---
 
@@ -1283,11 +1408,12 @@ curl -X GET http://localhost:3000/api/exercises
 
 | Version | Datum | Änderungen |
 |---------|-------|-----------|
+| **1.2** | 2026-01-29 | CRUD-Operationen für Habits/Workouts/Entries, Gruppen-XP |
 | **1.1** | 2026-01-25 | Pixel Wars Battle Endpoints hinzugefügt (1v1 Duelle) |
 | **1.0** | 2026-01-24 | Initial API Release |
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-25
+**Letzte Aktualisierung**: 2026-01-29
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Architektur & Design →](04-Architektur-Design.md)
