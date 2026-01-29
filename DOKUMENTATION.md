@@ -653,11 +653,19 @@ NODE_ENV=production node dist/Server.js
 **Battle** (Pixel Wars 1v1)
 ```typescript
 {
-  challenger: { groupId, groupName, pixelsOwned, totalXP },
-  opponent: { groupId, groupName, pixelsOwned, totalXP },
+  challenger: { groupId, groupName, color, pixelsOwned, totalXP, members },
+  opponent: { groupId, groupName, color, pixelsOwned, totalXP, members },
   status: 'pending' | 'active' | 'completed',
-  settings: { duration, gridSize, winCondition }
+  settings: {
+    duration: 10080,  // 7 Tage (in Minuten)
+    gridSize: 15,     // 15x15 Pixel
+    winCondition: 'pixels',
+    allowOverwrite: true
+  }
 }
+
+// BattleMember: { userId, contributedXP, pixelsPlaced, pixelsAvailable }
+// 1 Übung = 1 Pixel verdient, 1 Habit = 1 Pixel verdient
 ```
 
 Detaillierte Datenmodelle: [docs/05-Datenmodelle.md](docs/05-Datenmodelle.md)
@@ -771,13 +779,15 @@ Nach erfolgreicher Registrierung wirst du durch den Wizard geführt:
 - Workout starten → Übungen abhaken → XP verdienen
 
 **XP-System**:
-- Jede abgeschlossene Übung: **+67 XP**
+- Jede abgeschlossene Übung: **+67 XP** + **1 Pixel** (falls in aktivem Battle)
 - User-Points werden erhöht
 - Gruppen-XP wird aktualisiert (falls in Gruppe)
+- Battle-Pixel werden freigeschaltet (falls in aktivem Battle)
 
 #### Habits
 - Tägliche oder wöchentliche Habits erstellen
-- Habit abschließen: **+10 XP**
+- Checkbox anklicken um Habit als erledigt zu markieren
+- Habit abschließen: **+10 XP** + **1 Pixel** (falls in aktivem Battle)
 
 #### Gruppen
 - Öffentliche Gruppen durchsuchen und beitreten
@@ -786,10 +796,12 @@ Nach erfolgreicher Registrierung wirst du durch den Wizard geführt:
 - Rollen: Owner, Admin, Member
 
 #### Pixel Wars
-- Gruppe A fordert Gruppe B heraus
-- Beide Teams platzieren Pixel auf geteiltem Canvas
-- Pixel können überschrieben werden
-- Gewinner: Meiste Pixel oder höchster XP nach Zeitablauf
+- Gruppe A fordert Gruppe B heraus (Admin/Owner)
+- Beide Teams platzieren Pixel auf geteiltem Canvas (Default: 15x15)
+- **Pixel verdienen**: Pro abgeschlossener Übung = 1 Pixel, Pro Habit = 1 Pixel
+- Pixel können überschrieben werden (je nach Einstellung)
+- **Gewinner**: Meiste Pixel nach Zeitablauf (Default: 7 Tage)
+- Jedes Team hat seine eigene Farbe (Gruppenfarbe)
 
 ---
 
@@ -818,7 +830,7 @@ A: Übungen abschließen (67 XP) oder Habits (10 XP).
 A: Level 1 = 0-99 XP, Level 2 = 100-109 XP, Level 3 = 110-119 XP, etc.
 
 **Q: Wie funktionieren Pixel Wars?**
-A: Deine Gruppe fordert eine andere heraus. Beide platzieren Pixel auf einem Canvas. Nach Ablauf gewinnt das Team mit mehr Pixeln oder XP.
+A: Deine Gruppe fordert eine andere heraus. Pro abgeschlossener Übung/Habit verdienst du 1 Pixel. Diese Pixel platzierst du auf dem Canvas. Nach 7 Tagen gewinnt das Team mit mehr Pixeln.
 
 **Q: Mein Avatar aktualisiert sich nicht**
 A: Seite neu laden (F5).
@@ -906,6 +918,7 @@ A: Seite neu laden (F5).
 
 | Version | Datum | Änderungen |
 |---------|-------|------------|
+| 2.1 | 2026-01-29 | Pixel Wars: Training = Pixel System, Habits Checkbox Fix |
 | 2.0 | 2026-01-29 | Komplett überarbeitet: Workouts, Habits, Entries, Groups, Pixel Wars |
 | 1.0 | 2025-01-21 | Initiale Dokumentation |
 

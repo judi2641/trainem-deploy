@@ -106,7 +106,7 @@ function TrashIcon({ className }: { className?: string }) {
 }
 
 export default function HabitsArea() {
-	const { myUser, habits, setHabits } = useMyContext();
+	const { myUser, habits, setHabits, entries, setEntries } = useMyContext();
 	const auth0Id = myUser?.auth0Id;
 
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -118,6 +118,44 @@ export default function HabitsArea() {
 
 	const dailyHabits = useMemo(() => habits.filter((h: any) => h.type === 'daily'), [habits]);
 	const weeklyHabits = useMemo(() => habits.filter((h: any) => h.type === 'weekly'), [habits]);
+
+	// Check which habits are completed today
+	const todayStr = new Date().toISOString().split('T')[0];
+	const completedHabitIds = useMemo(() => {
+		return entries
+			.filter((e: any) => e.habitId && e.date?.startsWith(todayStr) && e.completed)
+			.map((e: any) => e.habitId);
+	}, [entries, todayStr]);
+
+	async function completeHabit(habitId: string) {
+		if (!auth0Id) return;
+
+		try {
+			const res = await fetch('http://localhost:3000/api/entries', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					auth0Id,
+					habitId,
+					date: new Date().toISOString(),
+					plannedExercises: [],
+					completed_exercises: [],
+					completed: true,
+					score: 1,
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to complete habit');
+			}
+
+			const newEntry = await res.json();
+			setEntries((prev: any[]) => [...prev, newEntry]);
+			toast.success('Habit completed! +10 XP');
+		} catch (err) {
+			toast.error('Failed to complete habit');
+		}
+	}
 
 	async function createHabit() {
 		if (!auth0Id || !newHabitName.trim()) {
@@ -320,7 +358,9 @@ export default function HabitsArea() {
 										key={habit._id}
 										habit={habit}
 										onDelete={() => deleteHabit(habit._id)}
+										onComplete={() => completeHabit(habit._id)}
 										isToday={true}
+										isCompleted={completedHabitIds.includes(habit._id)}
 									/>
 								))}
 							</div>
@@ -358,7 +398,9 @@ export default function HabitsArea() {
 										key={habit._id}
 										habit={habit}
 										onDelete={() => deleteHabit(habit._id)}
+										onComplete={() => completeHabit(habit._id)}
 										isToday={habit.weekday === today}
+										isCompleted={completedHabitIds.includes(habit._id)}
 									/>
 								))}
 							</div>
@@ -396,22 +438,39 @@ export default function HabitsArea() {
 
 							return (
 								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-									{todaysHabits.map((habit: any) => (
-										<div
-											key={habit._id}
-											className="flex items-center gap-3 p-3 bg-gradient-to-r from-emerald-50 to-white border-2 border-black/20"
-										>
-											<Checkbox className="h-5 w-5 border-2 border-black rounded-none" />
-											<div className="flex-1 min-w-0">
-												<div className="text-sm font-medium text-black truncate">{habit.name}</div>
-												<div className="text-xs text-black/50">
-													{habit.type === 'daily'
-														? 'Daily'
-														: WEEKDAYS.find((d) => d.value === habit.weekday)?.label}
+									{todaysHabits.map((habit: any) => {
+										const isDone = completedHabitIds.includes(habit._id);
+										return (
+											<div
+												key={habit._id}
+												className={`flex items-center gap-3 p-3 border-2 ${
+													isDone
+														? 'bg-gradient-to-r from-emerald-100 to-emerald-50 border-emerald-400'
+														: 'bg-gradient-to-r from-emerald-50 to-white border-black/20'
+												}`}
+											>
+												<Checkbox
+													className="h-5 w-5 border-2 border-black rounded-none"
+													checked={isDone}
+													disabled={isDone}
+													onCheckedChange={() => !isDone && completeHabit(habit._id)}
+												/>
+												<div className="flex-1 min-w-0">
+													<div className={`text-sm font-medium truncate ${isDone ? 'text-emerald-700 line-through' : 'text-black'}`}>
+														{habit.name}
+													</div>
+													<div className="text-xs text-black/50">
+														{habit.type === 'daily'
+															? 'Daily'
+															: WEEKDAYS.find((d) => d.value === habit.weekday)?.label}
+													</div>
 												</div>
+												{isDone && (
+													<span className="text-emerald-600 text-xs font-bold">+10 XP</span>
+												)}
 											</div>
-										</div>
-									))}
+										);
+									})}
 								</div>
 							);
 						})()}
@@ -425,26 +484,43 @@ export default function HabitsArea() {
 function HabitItem({
 	habit,
 	onDelete,
+	onComplete,
 	isToday,
+	isCompleted,
 }: {
 	habit: any;
 	onDelete: () => void;
+	onComplete: () => void;
 	isToday: boolean;
+	isCompleted: boolean;
 }) {
 	return (
 		<div
 			className={`flex items-center gap-3 p-3 border-2 transition-colors ${
-				isToday
-					? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-300'
-					: 'bg-white/50 border-black/20'
+				isCompleted
+					? 'bg-gradient-to-r from-emerald-100 to-emerald-50 border-emerald-400'
+					: isToday
+						? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-300'
+						: 'bg-white/50 border-black/20'
 			}`}
 		>
-			<Checkbox className="h-5 w-5 border-2 border-black rounded-none" disabled={!isToday} />
+			<Checkbox
+				className="h-5 w-5 border-2 border-black rounded-none"
+				disabled={!isToday || isCompleted}
+				checked={isCompleted}
+				onCheckedChange={() => !isCompleted && onComplete()}
+			/>
 			<div className="flex-1 min-w-0">
 				<div className="flex items-center gap-2">
-					<span className="text-sm font-medium text-black truncate">{habit.name}</span>
-					{isToday && (
+					<span className={`text-sm font-medium truncate ${isCompleted ? 'text-emerald-700 line-through' : 'text-black'}`}>
+						{habit.name}
+					</span>
+					{isCompleted ? (
 						<span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[10px] font-bold border border-black">
+							DONE
+						</span>
+					) : isToday && (
+						<span className="px-1.5 py-0.5 bg-amber-400 text-black text-[10px] font-bold border border-black">
 							TODAY
 						</span>
 					)}
