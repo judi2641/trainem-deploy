@@ -197,7 +197,7 @@ export default function Sidebar() {
 		async function loadPixelArt() {
 			if (!user?.sub) return;
 			try {
-				const res = await fetch(`http://localhost:3000/api/pixel-art/${user.sub}`);
+				const res = await fetch(`http://localhost:3000/api/pixel-art/${encodeURIComponent(user.sub)}`);
 				if (res.status === 404) {
 					if (isMounted) {
 						setPixelAvatarUrl(null);

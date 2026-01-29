@@ -28,21 +28,21 @@ export default function PixelWarsArea() {
 	const fetchData = async () => {
 		try {
 			// Fetch user's battles
-			const battlesRes = await fetch(`http://localhost:3000/api/pixelwar/battles?userId=${user?.sub}`);
+			const battlesRes = await fetch(`http://localhost:3000/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`);
 			if (battlesRes.ok) {
 				const data = await battlesRes.json();
 				setBattles(data);
 			}
 
 			// Fetch pending challenges
-			const pendingRes = await fetch(`http://localhost:3000/api/pixelwar/battles/pending?userId=${user?.sub}`);
+			const pendingRes = await fetch(`http://localhost:3000/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`);
 			if (pendingRes.ok) {
 				const data = await pendingRes.json();
 				setPendingChallenges(data);
 			}
 
 			// Fetch user's groups
-			const groupsRes = await fetch(`http://localhost:3000/api/groups/user/${user?.sub}`);
+			const groupsRes = await fetch(`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`);
 			if (groupsRes.ok) {
 				const data = await groupsRes.json();
 				setMyGroups(data);

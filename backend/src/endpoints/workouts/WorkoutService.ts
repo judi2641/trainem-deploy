@@ -80,3 +80,96 @@ try {
 	throw new HttpError(500, 'failed to get workouts');
   }
 }
+
+/**
+ * Update a workout
+ * @param workoutId
+ * @param auth0Id - for authorization check
+ * @param updates - fields to update
+ * @returns updated workout
+ */
+export async function updateWorkout(
+	workoutId: string,
+	auth0Id: string,
+	updates: { name?: string; description?: string }
+) {
+	try {
+		const workout = await WorkoutModel.findById(workoutId);
+		if (!workout) {
+			throw new HttpError(404, 'Workout not found');
+		}
+		if (workout.auth0Id !== auth0Id) {
+			throw new HttpError(403, 'Not authorized to update this workout');
+		}
+
+		const updatedWorkout = await WorkoutModel.findByIdAndUpdate(
+			workoutId,
+			{ $set: updates },
+			{ new: true }
+		);
+		logger.info(`updated workout ${workoutId}`);
+		return updatedWorkout;
+	} catch (error) {
+		logger.error('updateWorkout failed', error);
+		if (error instanceof HttpError) throw error;
+		throw new HttpError(500, 'failed to update workout');
+	}
+}
+
+/**
+ * Delete a workout
+ * @param workoutId
+ * @param auth0Id - for authorization check
+ */
+export async function deleteWorkout(workoutId: string, auth0Id: string) {
+	try {
+		const workout = await WorkoutModel.findById(workoutId);
+		if (!workout) {
+			throw new HttpError(404, 'Workout not found');
+		}
+		if (workout.auth0Id !== auth0Id) {
+			throw new HttpError(403, 'Not authorized to delete this workout');
+		}
+
+		await WorkoutModel.findByIdAndDelete(workoutId);
+		logger.info(`deleted workout ${workoutId}`);
+	} catch (error) {
+		logger.error('deleteWorkout failed', error);
+		if (error instanceof HttpError) throw error;
+		throw new HttpError(500, 'failed to delete workout');
+	}
+}
+
+/**
+ * Remove exercise from workout
+ * @param workoutId
+ * @param auth0Id
+ * @param exerciseIndex - index of exercise to remove
+ */
+export async function removeExerciseFromWorkout(
+	workoutId: string,
+	auth0Id: string,
+	exerciseIndex: number
+) {
+	try {
+		const workout = await WorkoutModel.findById(workoutId);
+		if (!workout) {
+			throw new HttpError(404, 'Workout not found');
+		}
+		if (workout.auth0Id !== auth0Id) {
+			throw new HttpError(403, 'Not authorized to modify this workout');
+		}
+		if (exerciseIndex < 0 || exerciseIndex >= workout.exercises.length) {
+			throw new HttpError(400, 'Invalid exercise index');
+		}
+
+		workout.exercises.splice(exerciseIndex, 1);
+		await workout.save();
+		logger.info(`removed exercise at index ${exerciseIndex} from workout ${workoutId}`);
+		return workout;
+	} catch (error) {
+		logger.error('removeExerciseFromWorkout failed', error);
+		if (error instanceof HttpError) throw error;
+		throw new HttpError(500, 'failed to remove exercise from workout');
+	}
+}

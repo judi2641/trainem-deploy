@@ -22,7 +22,7 @@ export default function GroupsArea() {
 	const fetchGroups = async () => {
 		try {
 			// Fetch user's groups
-			const myGroupsRes = await fetch(`http://localhost:3000/api/groups/user/${user?.sub}`);
+			const myGroupsRes = await fetch(`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`);
 			if (myGroupsRes.ok) {
 				const data = await myGroupsRes.json();
 				setMyGroups(data);

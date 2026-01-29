@@ -87,7 +87,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/user/${user.sub}/basic`, {
+			const res = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}/basic`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/trainingsplan/${user.sub}`, {
+			const res = await fetch(`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

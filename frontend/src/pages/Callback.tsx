@@ -51,7 +51,7 @@ export default function Callback() {
 	async function setEntriesData() {
 		if (!isLoading && user) {
 			if (user.sub) {
-				const res_entries = await fetch(`http://localhost:3000/api/entries/${user.sub}`, {
+				const res_entries = await fetch(`http://localhost:3000/api/entries/${encodeURIComponent(user.sub)}`, {
 					headers: {
 						'Content-Type': 'application/json',
 					},
@@ -71,7 +71,7 @@ export default function Callback() {
 	async function setWorkoutsData() {
 		if (!isLoading && user) {
 			if (user.sub) {
-				const res_workouts = await fetch(`http://localhost:3000/api/workouts/${user.sub}`, {
+				const res_workouts = await fetch(`http://localhost:3000/api/workouts/${encodeURIComponent(user.sub)}`, {
 					headers: {
 						'Content-Type': 'application/json',
 					},

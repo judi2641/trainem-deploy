@@ -165,6 +165,8 @@ export default function HabitsArea() {
 		try {
 			const res = await fetch(`http://localhost:3000/api/habits/${habitId}`, {
 				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ auth0Id }),
 			});
 
 			if (!res.ok) {

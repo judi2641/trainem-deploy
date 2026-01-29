@@ -163,12 +163,15 @@ export default function WorkoutsArea() {
 		}
 	}
 
-	async function removeExerciseFromWorkout(workoutId: string, exerciseName: string) {
+	async function removeExerciseFromWorkout(workoutId: string, exerciseIndex: number) {
+		if (!auth0Id) return;
 		try {
 			const res = await fetch(
-				`http://localhost:3000/api/workouts/${workoutId}/exercises/${encodeURIComponent(exerciseName)}`,
+				`http://localhost:3000/api/workouts/${workoutId}/exercises/${exerciseIndex}`,
 				{
 					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ auth0Id }),
 				},
 			);
 			if (!res.ok) throw new Error('Exercise could not be removed');
@@ -201,12 +204,12 @@ export default function WorkoutsArea() {
 	}
 
 	async function saveWorkoutEdits() {
-		if (!activeWorkout) return;
+		if (!activeWorkout || !auth0Id) return;
 		try {
 			const res = await fetch(`http://localhost:3000/api/workouts/${activeWorkout._id}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, description }),
+				body: JSON.stringify({ auth0Id, name, description }),
 			});
 
 			if (res.ok) {
@@ -215,26 +218,23 @@ export default function WorkoutsArea() {
 					prev.map((w: any) => (w._id === activeWorkout._id ? updated : w)),
 				);
 			} else {
-				// Fallback to local update if API doesn't exist yet
-				setWorkouts((prev: any) =>
-					prev.map((w: any) => (w._id === activeWorkout._id ? { ...w, name, description } : w)),
-				);
+				throw new Error('Failed to update workout');
 			}
-		} catch {
-			// Fallback to local update
-			setWorkouts((prev: any) =>
-				prev.map((w: any) => (w._id === activeWorkout._id ? { ...w, name, description } : w)),
-			);
+		} catch (e: any) {
+			setError(e?.message ?? 'Failed to update workout');
 		}
 		setEditOpen(false);
 		resetForm();
 	}
 
 	async function deleteWorkout(workoutId: string) {
+		if (!auth0Id) return;
 		if (!confirm('Are you sure you want to delete this workout?')) return;
 		try {
 			const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
 				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ auth0Id }),
 			});
 			if (!res.ok) throw new Error('Workout could not be deleted');
 			setWorkouts((prev: any) => prev.filter((w: any) => w._id !== workoutId));
@@ -572,7 +572,7 @@ export default function WorkoutsArea() {
 										<button
 											onClick={() =>
 												activeWorkout &&
-												removeExerciseFromWorkout(activeWorkout._id, ex.exercise?.name)
+												removeExerciseFromWorkout(activeWorkout._id, i)
 											}
 											className="p-1.5 text-red-500 hover:bg-red-50 border-2 border-transparent hover:border-red-200 shrink-0"
 										>

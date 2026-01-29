@@ -67,8 +67,22 @@ function App() {
 						}
 					/>
 
-					<Route path="/habits" element={<Habits />} />
-					<Route path="/statistics" element={<Statistics />} />
+					<Route
+						path="/habits"
+						element={
+							<ProtectedRoute>
+								<Habits />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/statistics"
+						element={
+							<ProtectedRoute>
+								<Statistics />
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="/settings"
 						element={
