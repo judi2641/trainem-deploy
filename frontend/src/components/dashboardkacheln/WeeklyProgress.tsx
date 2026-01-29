@@ -29,6 +29,7 @@ export default function WeeklyProgress() {
 		let streak = 0;
 		const sortedEntries = [...entries]
 			.filter((e: any) => e.completed)
+
 			.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 		if (sortedEntries.length > 0) {
@@ -109,7 +110,7 @@ export default function WeeklyProgress() {
 				<div className="grid grid-cols-2 gap-3">
 					<div className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-black p-3 text-center">
 						<div className="text-2xl font-bold text-black">{weekData.completedWorkouts}</div>
-						<div className="text-xs text-black/60">Workouts</div>
+						<div className="text-xs text-black/60">Workouts/Habits</div>
 					</div>
 					<div className="bg-gradient-to-br from-amber-50 to-amber-100 border-2 border-black p-3 text-center">
 						<div className="text-2xl font-bold text-black flex items-center justify-center gap-1">

@@ -7,13 +7,56 @@ import {
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
 import { useMyContext } from '@/context/AppContext';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Star, Zap } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { getLevelFromScore } from '@/util/level';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+type PixelArtPixel = {
+	x: number;
+	y: number;
+	color: string;
+};
 
 export default function PixelCharacter() {
-	const { myUser } = useMyContext();
+	const { myUser, pixelArt } = useMyContext();
+	const [pixelAvatarUrl, setPixelAvatarUrl] = useState<string | null>(null);
+	function pixelArtToDataUrl(pixels: PixelArtPixel[], gridSize: number) {
+		if (typeof document === 'undefined') return null;
+
+		const canvas = document.createElement('canvas');
+		canvas.width = gridSize;
+		canvas.height = gridSize;
+
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return null;
+
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(0, 0, gridSize, gridSize);
+
+		pixels.forEach((pixel) => {
+			if (
+				typeof pixel.x !== 'number' ||
+				typeof pixel.y !== 'number' ||
+				typeof pixel.color !== 'string'
+			) {
+				return;
+			}
+			if (pixel.x < 0 || pixel.y < 0 || pixel.x >= gridSize || pixel.y >= gridSize) {
+				return;
+			}
+			ctx.fillStyle = pixel.color;
+			ctx.fillRect(pixel.x, pixel.y, 1, 1);
+		});
+
+		return canvas.toDataURL('image/png');
+	}
+	useEffect(() => {
+		if (!pixelArt) return;
+		const gridSize = typeof pixelArt.gridSize === 'number' ? pixelArt.gridSize : 16;
+		const pixels = Array.isArray(pixelArt.pixels) ? pixelArt.pixels : [];
+		setPixelAvatarUrl(pixelArtToDataUrl(pixels, gridSize));
+	}, [pixelArt]);
 
 	const characterData = useMemo(() => {
 		const totalScore = myUser?.points ?? myUser?.score ?? 0;
@@ -35,30 +78,25 @@ export default function PixelCharacter() {
 			<PixelCardHeader>
 				<div className="flex items-center gap-2">
 					<div className="h-4 w-4 bg-amber-400 border-2 border-black" />
-					<PixelCardTitle>Your Character</PixelCardTitle>
+					<PixelCardTitle>Your Pixelart</PixelCardTitle>
 				</div>
 			</PixelCardHeader>
 
 			<PixelCardContent className="flex flex-col items-center justify-center gap-3">
 				{/* Pixel avatar */}
 				<NavLink to="/pixel-art" className="group">
-					<div className="relative">
-						<div
-							className="w-16 h-16 border-3 border-black transition-transform group-hover:scale-105"
-							style={{ backgroundColor: characterColor }}
-						>
-							{/* Simple pixel face */}
-							<div className="absolute inset-0 flex items-center justify-center">
-								<div className="flex gap-2">
-									<div className="w-2 h-2 bg-black" />
-									<div className="w-2 h-2 bg-black" />
-								</div>
-							</div>
-							<div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-4 h-1 bg-black" />
-						</div>
-						{/* Shadow */}
-						<div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-14 h-2 bg-black/20 blur-sm" />
-					</div>
+					<Avatar className="h-16 w-16 border-2 border-black rounded-none">
+						{pixelAvatarUrl || myUser?.img ? (
+							<AvatarImage
+								src={pixelAvatarUrl || myUser?.img}
+								alt="Avatar"
+								className="object-contain pixelated"
+							/>
+						) : null}
+						<AvatarFallback className="bg-amber-400 text-black font-pixel text-xs">
+							{myUser?.firstName?.[0] ?? '?'}
+						</AvatarFallback>
+					</Avatar>
 				</NavLink>
 
 				{/* Level badge */}

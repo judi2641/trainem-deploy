@@ -4,10 +4,15 @@ import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import PixelCanvas, { type PixelData } from '@/components/PixelCanvas';
 import PixelBackground from '@/components/pixel/PixelBackground';
+import {
+	PixelCard,
+	PixelCardHeader,
+	PixelCardTitle,
+	PixelCardContent,
+} from '@/components/ui/pixel-card';
 import { Button } from '@/components/ui/button';
 import { useMyContext } from '@/context/AppContext';
 import { toast } from 'sonner';
-import { getLevelFromScore } from '@/util/level';
 
 // Pixel icons
 function SaveIcon({ className }: { className?: string }) {
@@ -37,18 +42,31 @@ function SparkleIcon({ className }: { className?: string }) {
 	);
 }
 
+function PaletteIcon({ className }: { className?: string }) {
+	return (
+		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
+			<rect x="2" y="2" width="12" height="12" />
+			<rect x="4" y="4" width="3" height="3" fill="#ef4444" />
+			<rect x="9" y="4" width="3" height="3" fill="#3b82f6" />
+			<rect x="4" y="9" width="3" height="3" fill="#22c55e" />
+			<rect x="9" y="9" width="3" height="3" fill="#eab308" />
+		</svg>
+	);
+}
+
 export default function PixelArt() {
-	const { myUser, setPixelArt } = useMyContext();
+	const { myUser, setPixelArt, entries } = useMyContext();
 	const [pixelImage, setPixelImage] = useState<string | null>(null);
 	const [pixels, setPixels] = useState<PixelData[]>([]);
 	const [gridSize, setGridSize] = useState(64);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const totalScore = myUser?.points ?? myUser?.score ?? 0;
-
-	const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
-	const unlockedPixels = 12 + (level - 1) * 3;
+	// Calculate level based on completed entries
+	const completedEntries = entries?.filter((e: any) => e.completed)?.length ?? 0;
+	const level = Math.floor(completedEntries / 5);
+	const unlockedPixels = 12 + level * 4;
+	const progressToNext = ((completedEntries % 5) / 5) * 100;
 
 	useEffect(() => {
 		let isMounted = true;
@@ -148,99 +166,65 @@ export default function PixelArt() {
 			{/* Sidebar */}
 			<Sidebar />
 
-			{/* Main content */}
-			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden p-4 pr-6 ">
-				<main className="flex-1 overflow-y-auto">
-					{/* Card with shadow */}
-					<div className="relative max-w-4xl">
-						{/* Shadow layer */}
-						<div className="absolute left-2 top-2 h-full w-full border-4 border-black bg-black/10" />
-
-						{/* Main card */}
-						<div className="relative bg-white/90 backdrop-blur border-4 border-black p-6 ">
-							{/* Header */}
-							<div className="flex items-center gap-3 mb-6">
-								<div className="h-5 w-5 bg-amber-400 border-2 border-black" />
-								<h1 className="font-pixel text-xl text-black">Pixel Studio</h1>
-							</div>
-
-							{/* Level info */}
-							<div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-amber-50 border-2 border-black">
-								<div className="flex items-center justify-between mb-2">
-									<span className="text-sm font-medium text-black">Level {level}</span>
-									<span className="text-xs text-black/60">{unlockedPixels} pixels unlocked</span>
+			{/* Main content - flex layout, no scrolling */}
+			<div className="flex-1 z-10 flex h-full overflow-hidden p-4 gap-4">
+				{/* Main Canvas Card */}
+				<div className="flex-1 min-w-0">
+					<PixelCard>
+						<PixelCardHeader>
+							<div className="flex items-center justify-between">
+								<div className="flex items-center gap-2">
+									<div className="h-4 w-4 bg-amber-400 border-2 border-black" />
+									<PixelCardTitle className="text-base">Pixel Studio</PixelCardTitle>
 								</div>
-								<div className="h-2 w-full bg-black/10 border border-black overflow-hidden">
-									<div
-										className="h-full bg-emerald-500 transition-all duration-300"
-										style={{ width: `${(currentXp / nextLevelXp) * 100}%` }}
-									/>
-								</div>
-								<p className="text-xs text-black/50 mt-2">
-									{nextLevelXp - currentXp} XP to reach level {level + 1}.
-								</p>
+								<Button
+									type="button"
+									onClick={handleSave}
+									disabled={isSaving}
+									className="pixel-btn bg-emerald-500 hover:bg-emerald-600 text-white border-2 border-black rounded-none px-4 py-2 font-pixel text-xs h-auto"
+								>
+									<SaveIcon className="h-3 w-3 mr-1.5" />
+									{isSaving ? 'SAVING...' : 'SAVE'}
+								</Button>
 							</div>
-
+						</PixelCardHeader>
+						<PixelCardContent>
 							{isLoading ? (
-								<div className="flex items-center justify-center py-12">
+								<div className="flex items-center justify-center h-full">
 									<div className="flex items-center gap-3">
 										<div className="h-4 w-4 bg-emerald-500 border border-black animate-pulse" />
 										<span className="text-sm text-black/50">Loading pixel art...</span>
 									</div>
 								</div>
 							) : (
-								<div className="space-y-6">
-									{/* Canvas area */}
-									<div className="bg-gradient-to-br from-emerald-50 to-amber-50 border-2 border-black p-4">
-										<PixelCanvas
-											gridSize={gridSize}
-											maxPixels={unlockedPixels}
-											initialPixels={pixels}
-											onChange={(dataUrl, _count, pixelData, size) => {
-												setPixelImage(dataUrl || null);
-												setPixels(pixelData);
-												setGridSize(size);
-											}}
-										/>
-									</div>
-
-									{/* Preview and save section */}
-									<div className="flex items-center gap-6">
-										<div className="flex items-center gap-4">
-											<div className="h-20 w-20 bg-white border-3 border-black flex items-center justify-center">
-												{pixelImage ? (
-													<img
-														src={pixelImage || '/placeholder.svg'}
-														alt="Pixel avatar preview"
-														className="w-full h-full object-contain pixelated"
+								<div className="h-full flex flex-col">
+									{/* Canvas container with enhanced styling */}
+									<div className="flex-1 min-h-0 flex items-center justify-center">
+										<div className="relative">
+											{/* Canvas glow effect */}
+											<div className="absolute -inset-3 bg-gradient-to-br from-emerald-200/40 to-amber-200/40 blur-lg" />
+											{/* Canvas border frame */}
+											<div className="relative bg-gradient-to-br from-slate-100 to-slate-400 p-1.5 border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,0.25)]">
+												<div className="bg-white/5 p-0.5">
+													<PixelCanvas
+														gridSize={gridSize}
+														maxPixels={unlockedPixels}
+														initialPixels={pixels}
+														onChange={(dataUrl, _count, pixelData, size) => {
+															setPixelImage(dataUrl || null);
+															setPixels(pixelData);
+															setGridSize(size);
+														}}
 													/>
-												) : (
-													<SparkleIcon className="h-8 w-8 text-black/20" />
-												)}
-											</div>
-											<div>
-												<p className="text-sm font-medium text-black">Preview</p>
-												<p className="text-xs text-black/50">Your current pixel avatar</p>
+												</div>
 											</div>
 										</div>
-
-										<div className="flex-1" />
-
-										<Button
-											type="button"
-											onClick={handleSave}
-											disabled={isSaving}
-											className="pixel-btn bg-emerald-500 hover:bg-emerald-600 text-white border-2 border-black rounded-none px-6 py-5 font-pixel text-xs"
-										>
-											<SaveIcon className="h-4 w-4 mr-2" />
-											{isSaving ? 'SAVING...' : 'SAVE'}
-										</Button>
 									</div>
 								</div>
 							)}
-						</div>
-					</div>
-				</main>
+						</PixelCardContent>
+					</PixelCard>
+				</div>
 			</div>
 		</div>
 	);

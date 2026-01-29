@@ -182,7 +182,7 @@ export default function HabitsArea() {
 	const today = new Date().getDay();
 
 	return (
-		<div className="h-full overflow-auto p-1">
+		<div className="h-full">
 			{/* Header */}
 			<div className="flex items-center justify-between mb-6">
 				<div className="flex items-center gap-3">
@@ -194,7 +194,7 @@ export default function HabitsArea() {
 
 				<Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
 					<DialogTrigger asChild>
-						<button className="pixel-btn flex items-center gap-2">
+						<button className="pixel-btn flex items-center gap-2 p-2">
 							<PlusIcon className="h-4 w-4" />
 							<span>New Habit</span>
 						</button>
@@ -278,7 +278,7 @@ export default function HabitsArea() {
 							<button
 								onClick={createHabit}
 								disabled={isSubmitting || !newHabitName.trim()}
-								className="pixel-btn w-full"
+								className="pixel-btn w-full p-2"
 							>
 								{isSubmitting ? 'Creating...' : 'Create Habit'}
 							</button>
@@ -365,58 +365,6 @@ export default function HabitsArea() {
 					</PixelCardContent>
 				</PixelCard>
 			</div>
-
-			{/* Today's Habits Overview */}
-			<div className="mt-6">
-				<PixelCard>
-					<PixelCardHeader>
-						<div className="flex items-center gap-2">
-							<div className="h-5 w-5 bg-emerald-400 border-2 border-black flex items-center justify-center">
-								<CheckIcon className="h-3 w-3 text-black" />
-							</div>
-							<PixelCardTitle>Today's Habits</PixelCardTitle>
-						</div>
-					</PixelCardHeader>
-
-					<PixelCardContent>
-						{(() => {
-							const todaysHabits = [
-								...dailyHabits,
-								...weeklyHabits.filter((h: any) => h.weekday === today),
-							];
-
-							if (todaysHabits.length === 0) {
-								return (
-									<div className="h-24 flex items-center justify-center">
-										<p className="text-sm text-black/50">No habits scheduled for today</p>
-									</div>
-								);
-							}
-
-							return (
-								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-									{todaysHabits.map((habit: any) => (
-										<div
-											key={habit._id}
-											className="flex items-center gap-3 p-3 bg-gradient-to-r from-emerald-50 to-white border-2 border-black/20"
-										>
-											<Checkbox className="h-5 w-5 border-2 border-black rounded-none" />
-											<div className="flex-1 min-w-0">
-												<div className="text-sm font-medium text-black truncate">{habit.name}</div>
-												<div className="text-xs text-black/50">
-													{habit.type === 'daily'
-														? 'Daily'
-														: WEEKDAYS.find((d) => d.value === habit.weekday)?.label}
-												</div>
-											</div>
-										</div>
-									))}
-								</div>
-							);
-						})()}
-					</PixelCardContent>
-				</PixelCard>
-			</div>
 		</div>
 	);
 }
@@ -438,15 +386,9 @@ function HabitItem({
 					: 'bg-white/50 border-black/20'
 			}`}
 		>
-			<Checkbox className="h-5 w-5 border-2 border-black rounded-none" disabled={!isToday} />
 			<div className="flex-1 min-w-0">
 				<div className="flex items-center gap-2">
 					<span className="text-sm font-medium text-black truncate">{habit.name}</span>
-					{isToday && (
-						<span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[10px] font-bold border border-black">
-							TODAY
-						</span>
-					)}
 				</div>
 				{habit.description && (
 					<p className="text-xs text-black/50 truncate mt-0.5">{habit.description}</p>

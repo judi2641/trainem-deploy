@@ -40,17 +40,19 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		async function loadAppData() {
 			try {
 				// Parallel fetchen ist schneller als nacheinander
-				const [workoutsRes, entriesRes, habitsRes, exercisesRes] = await Promise.all([
+				const [workoutsRes, entriesRes, habitsRes, exercisesRes, pixelArtRes] = await Promise.all([
 					fetch(`http://localhost:3000/api/workouts/${user!.sub}`),
 					fetch(`http://localhost:3000/api/entries/${user!.sub}`),
 					fetch(`http://localhost:3000/api/habits/${user!.sub}`),
 					fetch(`http://localhost:3000/api/exercises`),
+					fetch(`http://localhost:3000/api/pixel-art/${user!.sub}`),
 				]);
 
 				if (workoutsRes.ok) setWorkouts(await workoutsRes.json());
 				if (entriesRes.ok) setEntries(await entriesRes.json());
 				if (habitsRes.ok) setHabits(await habitsRes.json());
 				if (exercisesRes.ok) setExercises(await exercisesRes.json());
+				if (pixelArtRes.ok) setPixelArt(await pixelArtRes.json());
 			} catch (error) {
 				console.error('Fehler beim Laden der App-Daten:', error);
 			}

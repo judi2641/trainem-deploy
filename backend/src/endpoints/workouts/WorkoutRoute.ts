@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createEmptyWorkout, addExerciseToWorkout, getAllWorkoutsFromUser } from './WorkoutService';
+import { createEmptyWorkout, addExerciseToWorkout, getAllWorkoutsFromUser, deleteWorkout } from './WorkoutService';
 
 const router = express.Router();
 
@@ -50,5 +50,15 @@ router.post('/:workoutId/exercises', async (req: Request, res: Response) => {
     sendError(res, err);
   }
 });
+router.delete('/:workoutId', async (req: Request, res: Response) => {
+  try {
+    const workoutId = req.params.workoutId;
+    await deleteWorkout(workoutId);
+    res.status(204).send();
+    }
+    catch (err) {
+    sendError(res, err);
+  }
+  })
 
 export default router;

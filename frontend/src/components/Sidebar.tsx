@@ -54,7 +54,7 @@ function PixelDashboardIcon({ className }: { className?: string }) {
 	);
 }
 
-function PixelDumbbellIcon({ className }: { className?: string }) {
+export function PixelDumbbellIcon({ className }: { className?: string }) {
 	return (
 		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
 			<rect x="0" y="5" width="2" height="6" />
@@ -190,40 +190,6 @@ export default function Sidebar() {
 	const { myUser, pixelArt } = useMyContext();
 	const { user, logout } = useAuth0();
 	const [pixelAvatarUrl, setPixelAvatarUrl] = useState<string | null>(null);
-
-	useEffect(() => {
-		let isMounted = true;
-
-		async function loadPixelArt() {
-			if (!user?.sub) return;
-			try {
-				const res = await fetch(`http://localhost:3000/api/pixel-art/${user.sub}`);
-				if (res.status === 404) {
-					if (isMounted) {
-						setPixelAvatarUrl(null);
-					}
-					return;
-				}
-				if (!res.ok) {
-					throw new Error('Failed to load pixel art');
-				}
-				const data = await res.json();
-				if (!isMounted) return;
-
-				const gridSize = typeof data.gridSize === 'number' ? data.gridSize : 16;
-				const pixels = Array.isArray(data.pixels) ? data.pixels : [];
-				setPixelAvatarUrl(pixelArtToDataUrl(pixels, gridSize));
-			} catch (err) {
-				console.error('Fehler beim Laden des Pixel Avatars', err);
-			}
-		}
-
-		loadPixelArt();
-
-		return () => {
-			isMounted = false;
-		};
-	}, [user?.sub]);
 
 	useEffect(() => {
 		if (!pixelArt) return;
@@ -364,7 +330,7 @@ export default function Sidebar() {
 					</div>
 
 					{/* General Section */}
-					<div>
+					{/* <div>
 						<h3 className="font-pixel text-[10px] text-black/50 uppercase mb-3 tracking-wider">
 							General
 						</h3>
@@ -388,7 +354,7 @@ export default function Sidebar() {
 								</NavLink>
 							</li>
 						</ul>
-					</div>
+					</div> */}
 				</nav>
 
 				{/* Logout Button */}

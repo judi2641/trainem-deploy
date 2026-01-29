@@ -53,7 +53,7 @@ export default function QuickStats() {
 
 	const statItems = [
 		{
-			label: 'Workouts',
+			label: 'Workouts/Habits',
 			value: stats.totalWorkouts,
 			icon: Target,
 			bgColor: 'bg-emerald-100',

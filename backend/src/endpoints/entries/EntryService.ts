@@ -181,3 +181,13 @@ export async function abortEntry(entryId: string) {
     throw new HttpError(500, 'failed to abort entry');
   }
 }
+export async function deleteEntry(id:string){
+  try{
+    EntryModel.findByIdAndDelete(id);
+  }
+   catch (error) {
+  logger.error('deleteEntrys failed', error);
+  if (error instanceof HttpError) throw error;
+  throw new HttpError(500, 'failed delete Entry');
+  }
+}

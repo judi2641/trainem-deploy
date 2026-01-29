@@ -80,3 +80,13 @@ try {
 	throw new HttpError(500, 'failed to get workouts');
   }
 }
+export async function deleteWorkout(id:string){
+	try{
+		WorkoutModel.findByIdAndDelete(id);
+	}
+	 catch (error) {
+	logger.error('deleteWorkouts failed', error);
+	if (error instanceof HttpError) throw error;
+	throw new HttpError(500, 'failed delete Workout');
+  }
+}

@@ -3,13 +3,13 @@
 import ActiveWorkout from './dashboardkacheln/ActiveWorkout';
 import WeeklyProgress from './dashboardkacheln/WeeklyProgress';
 import QuickStats from './dashboardkacheln/QuickStats';
-import UpcomingWorkouts from './dashboardkacheln/UpcomingWorkouts';
 import RecentActivity from './dashboardkacheln/RecentActivity';
 import PixelCharacter from './dashboardkacheln/PixelCharacter';
+import UpcomingHabits from './dashboardkacheln/UpcomingHabits';
 
 export default function DashboardArea() {
 	return (
-		<div className="h-full flex gap-4 overflow-hidden">
+		<div className="h-full flex gap-4 overflow-hidden pr-2">
 			{/* Left Column - Active Workout (main focus, takes most space) */}
 			<div className="flex-1 max-h-[99%] min-w-0 lg:max-w-[50%]">
 				<ActiveWorkout />
@@ -36,13 +36,13 @@ export default function DashboardArea() {
 			{/* Right Column - Stats & Upcoming */}
 			<div className="hidden lg:flex flex-col gap-4 w-[200px] shrink-0">
 				{/* All Time Stats */}
-				<div className="h-[300px] shrink-0">
+				<div className="max-h-[70%] shrink-0">
 					<QuickStats />
 				</div>
 
 				{/* Upcoming */}
-				<div className="max-h-200 min-h-0">
-					<UpcomingWorkouts />
+				<div className="max-h-[59%] min-h-[59%]">
+					<UpcomingHabits />
 				</div>
 			</div>
 		</div>

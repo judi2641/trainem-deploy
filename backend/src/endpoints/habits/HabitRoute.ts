@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createHabit, getAllHabitsFromUser } from './HabitService';
+import { createHabit, deleteHabit, getAllHabitsFromUser } from './HabitService';
 
 const router = express.Router();
 
@@ -29,5 +29,15 @@ router.post('/', async (req: Request, res: Response) => {
     sendError(res, err);
   }
 });
+router.delete('/:habitId', async (req: Request, res: Response) => {
+  try {
+    const habitId = req.params.habitId;
+    await deleteHabit(habitId);
+    res.status(204).send();
+    }
+    catch (err) {
+    sendError(res, err);
+  }
+  })
 
 export default router;

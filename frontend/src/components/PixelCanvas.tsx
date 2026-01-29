@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -16,16 +18,17 @@ interface PixelCanvasProps {
 	onChange?: (dataUrl: string, usedPixels: number, pixels: PixelData[], gridSize: number) => void;
 }
 
+// Bright, playful colors that match the app's aesthetic
 const DEFAULT_COLORS = [
-	'#0f172a',
-	'#1d4ed8',
-	'#16a34a',
-	'#eab308',
-	'#f97316',
-	'#ef4444',
-	'#db2777',
-	'#9333ea',
-	'#f8fafc',
+	'#10b981', // emerald
+	'#22c55e', // green
+	'#3b82f6', // blue
+	'#8b5cf6', // violet
+	'#ec4899', // pink
+	'#f59e0b', // amber
+	'#ef4444', // red
+	'#0f172a', // dark
+	'#f8fafc', // white
 ];
 
 function createGrid(size: number): Pixel[][] {
@@ -83,6 +86,7 @@ export default function PixelCanvas({
 	const [grid, setGrid] = useState<Pixel[][]>(() => createGrid(gridSize));
 	const [selectedColor, setSelectedColor] = useState(DEFAULT_COLORS[0]);
 	const [zoom, setZoom] = useState(1);
+	const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
 	const baseCellSize = 5;
 	const cellSize = baseCellSize * zoom;
 	const onChangeRef = useRef(onChange);
@@ -90,6 +94,7 @@ export default function PixelCanvas({
 
 	const usedPixels = useMemo(() => countColored(grid), [grid]);
 	const remainingPixels = Math.max(maxPixels - usedPixels, 0);
+	const progressPercent = maxPixels > 0 ? (usedPixels / maxPixels) * 100 : 0;
 
 	useEffect(() => {
 		onChangeRef.current = onChange;
@@ -148,88 +153,143 @@ export default function PixelCanvas({
 	};
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between text-sm text-slate-600">
-				<span>
-					Unlocked pixels: {usedPixels}/{maxPixels}
-				</span>
-				<span>{remainingPixels} remaining</span>
-			</div>
-
-			<div className="flex items-center gap-3 text-sm text-slate-600">
-				<span className="font-medium">Zoom</span>
-				<Button variant="outline" onClick={() => setZoom((prev) => Math.max(0.5, prev - 0.1))}>
-					-
-				</Button>
-				<input
-					type="range"
-					min={0.5}
-					max={2}
-					step={0.1}
-					value={zoom}
-					onChange={(event) => setZoom(Number(event.target.value))}
-					className="w-40"
-					aria-label="Zoom level"
-				/>
-				<Button variant="outline" onClick={() => setZoom((prev) => Math.min(2, prev + 0.1))}>
-					+
-				</Button>
-				<span>{Math.round(zoom * 100)}%</span>
-			</div>
-
-			<div className="bg-slate-200 p-1 rounded-md w-72 h-72 sm:w-96 sm:h-96 overflow-auto">
-				<div
-					className="inline-grid gap-[0.5px]"
-					style={{
-						gridTemplateColumns: `repeat(${gridSize}, ${cellSize}px)`,
-						gridAutoRows: `${cellSize}px`,
-					}}
+		<div className="flex flex-col gap-3">
+			{/* Pixel Counter */}
+			<div className="flex items-center justify-between">
+				<div className="flex items-center gap-2">
+					<div
+						className="h-3 w-3 border-2 border-black"
+						style={{ backgroundColor: selectedColor }}
+					/>
+					<span className="text-xs font-medium text-black/70">
+						<span className="font-bold text-emerald-600">{usedPixels}</span>
+						<span className="text-black/40">/{maxPixels} pixels</span>
+					</span>
+				</div>
+				<span
+					className={`text-xs font-bold ${remainingPixels > 0 ? 'text-amber-600' : 'text-red-500'}`}
 				>
-					{grid.map((row, rowIndex) =>
-						row.map((pixel, colIndex) => (
-							<button
-								key={`${rowIndex}-${colIndex}`}
-								type="button"
-								onClick={() => handlePixelClick(rowIndex, colIndex)}
-								className="w-full h-full border border-slate-100"
-								style={{ backgroundColor: pixel ?? '#ffffff' }}
-								aria-label={`Pixel ${rowIndex + 1}, ${colIndex + 1}`}
-							/>
-						)),
-					)}
+					{remainingPixels} left
+				</span>
+			</div>
+
+			{/* Progress Bar */}
+			<div className="h-2 bg-emerald-100 border-2 border-black overflow-hidden">
+				<div
+					className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-300"
+					style={{ width: `${progressPercent}%` }}
+				/>
+			</div>
+
+			{/* Canvas Area */}
+			<div className="relative">
+				{/* Canvas frame - light themed */}
+				<div className="bg-gradient-to-br from-emerald-100 to-amber-50 border-3 border-black p-2 shadow-[3px_3px_0px_rgba(0,0,0,0.15)]">
+					{/* Grid container */}
+					<div className="bg-white border-2 border-black/30 w-64 h-64 sm:w-72 sm:h-72 overflow-auto">
+						<div
+							className="inline-grid"
+							style={{
+								gridTemplateColumns: `repeat(${gridSize}, ${cellSize}px)`,
+								gridAutoRows: `${cellSize}px`,
+							}}
+						>
+							{grid.map((row, rowIndex) =>
+								row.map((pixel, colIndex) => {
+									const isHovered = hoveredCell?.row === rowIndex && hoveredCell?.col === colIndex;
+									return (
+										<button
+											key={`${rowIndex}-${colIndex}`}
+											type="button"
+											onClick={() => handlePixelClick(rowIndex, colIndex)}
+											onMouseEnter={() => setHoveredCell({ row: rowIndex, col: colIndex })}
+											onMouseLeave={() => setHoveredCell(null)}
+											className="transition-all duration-75"
+											style={{
+												backgroundColor: pixel ?? '#ffffff',
+												boxShadow: isHovered
+													? `inset 0 0 0 2px ${selectedColor}`
+													: 'inset 0 0 0 0.5px rgba(0,0,0,0.08)',
+												transform: isHovered ? 'scale(1.15)' : 'scale(1)',
+												zIndex: isHovered ? 10 : 1,
+											}}
+											aria-label={`Pixel ${rowIndex + 1}, ${colIndex + 1}`}
+										/>
+									);
+								}),
+							)}
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div className="flex flex-wrap items-center gap-2">
-				{DEFAULT_COLORS.map((color) => (
-					<button
-						key={color}
-						type="button"
-						onClick={() => setSelectedColor(color)}
-						className={`h-8 w-8 rounded border ${
-							selectedColor === color
-								? 'ring-2 ring-slate-900 border-slate-900'
-								: 'border-slate-300'
-						}`}
-						style={{ backgroundColor: color }}
-						aria-label={`Select color ${color}`}
-					/>
-				))}
-				<label className="flex items-center gap-2 text-sm text-slate-600">
-					<span className="sr-only">Pick a custom color</span>
-					<input
-						type="color"
-						value={selectedColor}
-						onChange={(event) => setSelectedColor(event.target.value)}
-						className="h-8 w-8 cursor-pointer rounded border border-slate-300 bg-transparent"
-						aria-label="Custom color"
-					/>
-					<span>Spectrum</span>
-				</label>
-				<Button variant="outline" onClick={handleClear} className="h-8 px-3">
-					Clear
+			{/* Zoom Controls */}
+			<div className="flex items-center gap-2">
+				<span className="text-[10px] font-bold text-black/50 uppercase">Zoom</span>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => setZoom((prev) => Math.max(0.5, prev - 0.1))}
+					className="h-6 w-6 p-0 border-2 border-black bg-white hover:bg-emerald-50 font-bold text-xs"
+				>
+					-
 				</Button>
+				<div className="flex-1 h-1.5 bg-black/10 border border-black/20 relative">
+					<div
+						className="absolute top-0 left-0 h-full bg-emerald-400"
+						style={{ width: `${((zoom - 0.5) / 1.5) * 100}%` }}
+					/>
+				</div>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => setZoom((prev) => Math.min(2, prev + 0.1))}
+					className="h-6 w-6 p-0 border-2 border-black bg-white hover:bg-emerald-50 font-bold text-xs"
+				>
+					+
+				</Button>
+				<span className="text-[10px] font-bold text-black/50 w-8">{Math.round(zoom * 100)}%</span>
 			</div>
+
+			{/* Color Palette */}
+			<div className="space-y-2">
+				<div className="text-[10px] font-bold text-black/50 uppercase">Colors</div>
+				<div className="flex flex-wrap items-center gap-1.5">
+					{DEFAULT_COLORS.map((color) => (
+						<button
+							key={color}
+							type="button"
+							onClick={() => setSelectedColor(color)}
+							className={`h-6 w-6 border-2 transition-all ${
+								selectedColor === color
+									? 'border-white scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]'
+									: 'border-white/30 hover:border-white hover:scale-105'
+							}`}
+							style={{ backgroundColor: color }}
+							aria-label={`Select color ${color}`}
+						/>
+					))}
+					<div className="h-5 w-px bg-white/20 mx-0.5" />
+					<label className="flex items-center">
+						<input
+							type="color"
+							value={selectedColor}
+							onChange={(event) => setSelectedColor(event.target.value)}
+							className="h-6 w-6 cursor-pointer border-2 border-white/30 hover:border-white bg-transparent p-0"
+							aria-label="Custom color"
+						/>
+					</label>
+				</div>
+			</div>
+
+			{/* Clear Button */}
+			<Button
+				variant="outline"
+				onClick={handleClear}
+				className="w-full h-7 border-2 border-black bg-white hover:bg-red-50 hover:text-red-600 hover:border-red-400 text-[10px] font-bold uppercase"
+			>
+				Clear Canvas
+			</Button>
 		</div>
 	);
 }

@@ -38,6 +38,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { PixelDumbbellIcon } from './Sidebar';
 
 type Workout = {
 	_id: string;
@@ -260,12 +261,15 @@ export default function WorkoutsArea() {
 	}, [auth0Id, setWorkouts]);
 
 	return (
-		<div className="h-full flex flex-col overflow-hidden ">
+		<div className="h-full  w-full flex flex-col ">
 			{/* Header - Fixed */}
+
 			<div className="flex items-center justify-between gap-4 shrink-0 mb-4 mr-4">
-				<div>
-					<h1 className="font-pixel text-xl text-black">Workouts</h1>
-					<p className="text-sm text-black/60 mt-1">Manage your workout routines and exercises</p>
+				<div className="flex items-center gap-3">
+					<div className="h-8 w-8 bg-blue-400 border-3 border-black flex items-center justify-center">
+						<PixelDumbbellIcon className="h-5 w-5 text-white" />
+					</div>
+					<h1 className="font-pixel text-2xl text-black">Workouts</h1>
 				</div>
 				<button
 					onClick={() => {
@@ -338,10 +342,7 @@ export default function WorkoutsArea() {
 												<Edit3 className="w-4 h-4" />
 												Edit
 											</DropdownMenuItem>
-											<DropdownMenuItem onClick={() => openSchedule(w)} className="gap-2">
-												<Calendar className="w-4 h-4" />
-												Schedule
-											</DropdownMenuItem>
+
 											<DropdownMenuItem
 												onClick={() => deleteWorkout(w._id)}
 												className="gap-2 text-red-600"
@@ -399,17 +400,10 @@ export default function WorkoutsArea() {
 									<div className="flex gap-2 pt-3 border-t-2 border-black/10">
 										<button
 											onClick={() => openEdit(w)}
-											className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
+											className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-primary border-2 border-black hover:bg-gray-50 transition-colors"
 										>
 											<Edit3 className="w-3 h-3" />
 											Edit
-										</button>
-										<button
-											onClick={() => openSchedule(w)}
-											className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-emerald-400 border-2 border-black text-black hover:bg-emerald-500 transition-colors"
-										>
-											<Calendar className="w-3 h-3" />
-											Schedule
 										</button>
 									</div>
 								</PixelCardContent>

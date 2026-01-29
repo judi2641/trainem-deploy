@@ -40,3 +40,13 @@ try {
 	throw new HttpError(500, 'failed to get habits');
   }
 }
+export async function deleteHabit(id:string){
+	try{
+		HabitModel.findByIdAndDelete(id);
+	}
+	 catch (error) {
+	logger.error('deleteHabits failed', error);
+	if (error instanceof HttpError) throw error;
+	throw new HttpError(500, 'failed delete Habit');
+  }
+}

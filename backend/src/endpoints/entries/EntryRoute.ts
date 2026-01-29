@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { abortEntry, createEntry, getAllEntriesFromUser, updateEntry } from './EntryService';
+import { abortEntry, createEntry, deleteEntry, getAllEntriesFromUser, updateEntry } from './EntryService';
 
 const router = express.Router();
 
@@ -48,4 +48,14 @@ router.patch('/:entryId/abort', async (req: Request, res: Response) => {
     sendError(res, err);
   }
 });
+router.delete('/:entryId', async (req: Request, res: Response) => {
+  try {
+    const entryId = req.params.entryId;
+    await deleteEntry(entryId);
+    res.status(204).send();
+    }
+    catch (err) {
+    sendError(res, err);
+  }
+  })
 export default router;

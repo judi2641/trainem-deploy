@@ -12,19 +12,27 @@ import { formatDistanceToNow } from 'date-fns';
 import { CheckCircle2, XCircle, Activity } from 'lucide-react';
 
 export default function RecentActivity() {
-	const { entries, workouts } = useMyContext();
+	const { entries, workouts, habits } = useMyContext();
 
 	const recentEntries = useMemo(() => {
 		return [...entries]
 			.filter((e: any) => e.completed || e.aborted)
 			.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
-			.slice(0, 5)
+			.slice(0, 7)
 			.map((entry: any) => {
-				const workout = workouts.find((w: any) => w._id === entry.workoutId);
-				return {
-					...entry,
-					workoutName: workout?.name ?? 'Workout',
-				};
+				if (entry.workoutId) {
+					const workout = workouts.find((w: any) => w._id === entry.workoutId);
+					return {
+						...entry,
+						entryName: workout?.name ?? 'Workout',
+					};
+				} else {
+					const habit = habits.find((h: any) => h._id === entry.habitId);
+					return {
+						...entry,
+						entryName: habit?.name ?? 'Habit',
+					};
+				}
 			});
 	}, [entries, workouts]);
 
@@ -60,7 +68,7 @@ export default function RecentActivity() {
 									<XCircle className="h-4 w-4 text-red-500 shrink-0" />
 								)}
 								<div className="flex-1 min-w-0">
-									<div className="text-xs font-medium text-black truncate">{entry.workoutName}</div>
+									<div className="text-xs font-medium text-black truncate">{entry.entryName}</div>
 									<div className="text-[10px] text-black/50">
 										{formatDistanceToNow(new Date(entry.date), { addSuffix: true })}
 									</div>
