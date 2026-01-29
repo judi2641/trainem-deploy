@@ -47,7 +47,7 @@ export default function BasicInfo() {
 			<h2 className="text-xl font-bold mb-4">Basic Information</h2>
 			<p className="text-gray-600 mb-6">Please enter some personal information about yourself.</p>
 			{/* Firstname */}
-			<p className="mb-2 font-medium">Firstname</p>
+			<p className="mb-2 font-medium">First name</p>
 			<Input
 				placeholder="..."
 				value={firstname}
@@ -55,7 +55,7 @@ export default function BasicInfo() {
 				className="mb-4"
 			/>
 			{/* Lastname */}
-			<p className="mb-2 font-medium">Lastname</p>
+			<p className="mb-2 font-medium">Last name</p>
 			<Input
 				placeholder="...."
 				value={lastname}
@@ -64,7 +64,7 @@ export default function BasicInfo() {
 			/>
 			{/* Birthdate */}
 			<div className="mb-4">
-				<p className="mb-2 font-medium">Birthdate</p>
+						<p className="mb-2 font-medium">Birthdate</p>
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button
@@ -75,7 +75,7 @@ export default function BasicInfo() {
 						>
 							{birthDate
 								? format(new Date(birthDate), 'dd.MM.yyyy')
-								: 'Select date (DD.MM.YYYY) e.g. 18.12.2025'}
+								: 'Select date (DD.MM.YYYY), e.g. 18.12.2025'}
 						</Button>
 					</PopoverTrigger>
 

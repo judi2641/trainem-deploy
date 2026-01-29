@@ -9,7 +9,6 @@ import BasicInfo from './pages/OnboardingSteps/BasicInfo';
 import Experience from './pages/OnboardingSteps/Experience';
 import Goals from './pages/OnboardingSteps/Goals';
 import Schedule from './pages/OnboardingSteps/Schedule';
-import CharacterColor from './pages/OnboardingSteps/CharacterColor';
 import Intro from './pages/OnboardingSteps/Intro';
 
 import { useAuth0 } from '@auth0/auth0-react';
@@ -143,7 +142,6 @@ function App() {
 						<Route path="experience" element={<Experience />} />
 						<Route path="goals" element={<Goals />} />
 						<Route path="schedule" element={<Schedule />} />
-						<Route path="CharacterColor" element={<CharacterColor />} />
 					</Route>
 				</Routes>
 			</ContextProvider>
