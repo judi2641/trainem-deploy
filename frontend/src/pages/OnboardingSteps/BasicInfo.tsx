@@ -64,7 +64,7 @@ export default function BasicInfo() {
 			/>
 			{/* Birthdate */}
 			<div className="mb-4">
-						<p className="mb-2 font-medium">Birthdate</p>
+				<p className="mb-2 font-medium">Birthdate</p>
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button
@@ -134,37 +134,34 @@ export default function BasicInfo() {
 				<p className="mb-2 font-medium">Gender</p>
 				<div className="flex gap-4 justify-center mt-4">
 					{['Male', 'Female', 'Diverse'].map((g) => (
-						<Button
+						<button
 							key={g}
-							variant={gender === g ? 'default' : 'outline'}
 							onClick={() => setGender(g)}
 							className={`
-              px-8 py-3 text-lg rounded-lg transition
-              ${gender === g ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300'}
+              items-center justify-center gap-1.5 px-3 py-2 text-l font-medium bg-white border-2 border-black hover:bg-gray-50 transition
+              ${gender === g ? 'bg-primary text-black border-primary' : 'border-gray-300'}
             `}
 						>
 							{g}
-						</Button>
+						</button>
 					))}
 				</div>
 			</div>
 			{/* Navigation */}
 			<div className="flex justify-between mt-6">
-				<Button
+				<button
 					onClick={() => navigate('/onboarding')}
-					variant="outline"
-					className="h-11 w-11 p-0 flex items-center justify-center"
+					className="items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
 				>
 					<ArrowLeft className="h-5 w-5" />
-				</Button>
+				</button>
 
-				<Button
+				<button
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
 					onClick={handleNext}
-					variant="outline"
-					className="bg-amber-400 hover:bg-amber-500 text-black"
 				>
 					<ArrowRight className="h-5 w-5" />
-				</Button>
+				</button>
 			</div>
 		</div>
 	);

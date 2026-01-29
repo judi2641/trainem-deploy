@@ -6,113 +6,57 @@ import { useMyContext } from '../context/AppContext';
 export default function Callback() {
 	const navigate = useNavigate();
 	const { user, isLoading } = useAuth0();
-	const { setMyUser, setWorkouts, setEntries, setExercises } = useMyContext();
+	// Wir brauchen nur noch setMyUser, der Rest passiert automatisch im Context
+	const { setMyUser } = useMyContext();
 
-	async function setUserData() {
-		if (!isLoading && user) {
-			if (user.sub) {
-				const res_user = await fetch(
-					`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
-				);
-				let contextUser;
-				if (res_user.ok) {
-					contextUser = await res_user.json();
-					console.log('Backend user');
-				}
-				if (!res_user.ok) {
-					const res_newuser = await fetch(`http://localhost:3000/api/user`, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
-					});
+	async function handleUserSync() {
+		// Warten bis Auth0 fertig geladen hat
+		if (isLoading || !user || !user.sub) return;
 
-					if (!res_newuser.ok) {
-						console.log('fehler beim erstellen');
-						navigate('/');
-						return;
-					}
-					contextUser = await res_newuser.json();
-				}
-				setMyUser(contextUser);
-				if (contextUser.onboardingCompleted) {
-					navigate('/dashboard');
-				} else {
-					navigate('/onboarding');
-				}
+		try {
+			// 1. Prüfen: Gibt es den User schon in MEINER Datenbank?
+			const res_user = await fetch(
+				`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
+			);
+
+			let contextUser;
+
+			if (res_user.ok) {
+				contextUser = await res_user.json();
+				console.log('User gefunden, logge ein...');
 			} else {
-				console.log('keine user.sub');
-				navigate('/');
-			}
-		}
-	}
-
-	async function setEntriesData() {
-		if (!isLoading && user) {
-			if (user.sub) {
-				const res_entries = await fetch(`http://localhost:3000/api/entries/${user.sub}`, {
+				console.log('User neu, erstelle Account...');
+				const res_newuser = await fetch(`http://localhost:3000/api/user`, {
+					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
+					body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
 				});
 
-				if (!res_entries.ok) {
-					console.log('fehler beim fetch von entries');
+				if (!res_newuser.ok) {
+					console.error('Fehler beim Erstellen des Users');
 					navigate('/');
 					return;
 				}
-
-				setEntries(await res_entries.json());
+				contextUser = await res_newuser.json();
 			}
-		}
-	}
 
-	async function setWorkoutsData() {
-		if (!isLoading && user) {
-			if (user.sub) {
-				const res_workouts = await fetch(`http://localhost:3000/api/workouts/${user.sub}`, {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
+			setMyUser(contextUser);
 
-				if (!res_workouts.ok) {
-					console.log('fehler beim fetch von workouts');
-					navigate('/');
-					return;
-				}
-
-				setWorkouts(await res_workouts.json());
+			if (contextUser.onboardingCompleted) {
+				navigate('/dashboard');
+			} else {
+				navigate('/onboarding');
 			}
-		}
-	}
-
-	async function setExercisesData() {
-		if (!isLoading && user) {
-			if (user.sub) {
-				const res_exercises = await fetch(`http://localhost:3000/api/exercises`, {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
-
-				if (!res_exercises.ok) {
-					console.log('fehler beim fetch von Exercises');
-					navigate('/');
-					return;
-				}
-
-				setExercises(await res_exercises.json());
-			}
+		} catch (error) {
+			console.error('Critical Error in Callback:', error);
+			navigate('/');
 		}
 	}
 
 	useEffect(() => {
-		setUserData();
-		setEntriesData();
-		setWorkoutsData();
-		setExercisesData();
+		handleUserSync();
 	}, [isLoading, user]);
 
 	return (

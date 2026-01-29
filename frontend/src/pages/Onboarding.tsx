@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import ProgressBar from '../components/ProgressBar';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import PixelBackground from '@/components/pixel/PixelBackground';
+import { PixelCard, PixelCardContent, PixelCardHeader } from '@/components/ui/pixel-card';
 
 const steps = [
 	'/onboarding',
@@ -18,9 +19,7 @@ export default function Onboarding() {
 	const current = idx !== -1 ? idx + 1 : 1;
 
 	return (
-		<div
-			className="relative flex min-h-screen overflow-hidden items-center justify-center p-4 bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]"
-		>
+		<div className="relative flex min-h-screen overflow-hidden items-center justify-center p-4 bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
 			{/* Subtle grid */}
 			<div
 				className="absolute inset-0 pointer-events-none opacity-20"
@@ -39,15 +38,15 @@ export default function Onboarding() {
 			<PixelBackground count={120} seed={42} />
 
 			{/* Card stays on top */}
-			<Card className="relative z-10 w-full max-w-3xl shadow-xl p-5 bg-white/95">
-				<CardHeader>
+			<PixelCard className="min-w-200 max-w-200 ">
+				<PixelCardHeader>
 					<ProgressBar current={current} total={6} />
-				</CardHeader>
+				</PixelCardHeader>
 
-				<CardContent>
+				<PixelCardContent scrollable className="m-6 p-6 ">
 					<Outlet />
-				</CardContent>
-			</Card>
+				</PixelCardContent>
+			</PixelCard>
 		</div>
 	);
 }

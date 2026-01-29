@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button';
+import { PixelCard } from '@/components/ui/pixel-card';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function OnboardingSummary() {
@@ -12,16 +14,16 @@ export default function OnboardingSummary() {
 
 			<div className="grid gap-4 text-left">
 				{/* Pixel Avatar */}
-				<div className="p-4 bg-white shadow rounded-lg">
+				<PixelCard>
 					<h2 className="text-xl font-semibold mb-2">Pixel Avatar</h2>
 					<p className="text-gray-600">
-						You build your avatar pixel by pixel. Each level unlocks more pixels so your profile
-						can grow with your progress.
+						You build your avatar pixel by pixel. Each level unlocks more pixels so your profile can
+						grow with your progress.
 					</p>
-				</div>
+				</PixelCard>
 
 				{/* Points System */}
-				<div className="p-4 bg-white shadow rounded-lg">
+				<PixelCard>
 					<h2 className="text-xl font-semibold">Points and Rewards</h2>
 
 					<p className="text-gray-600">
@@ -34,27 +36,33 @@ export default function OnboardingSummary() {
 						<li>Completing single exercises during a workout</li>
 					</ul>
 
-					<p className="text-gray-600 mt-2">
-						Each level up unlocks more pixels for your avatar.
-					</p>
-				</div>
+					<p className="text-gray-600 mt-2">Each level up unlocks more pixels for your avatar.</p>
+				</PixelCard>
 
 				{/* Personal Plan */}
-				<div className="p-4 bg-white shadow rounded-lg">
+				<PixelCard>
 					<h2 className="text-xl font-semibold">Personalized Training Plan</h2>
 					<p className="text-gray-600">
 						Based on your goals and experience, TrainEm generates a training plan designed
 						specifically for you.
 					</p>
-				</div>
+				</PixelCard>
 			</div>
 
 			<div className="flex gap-4 mt-6 justify-center">
-				<Button variant="outline" onClick={() => navigate('/onboarding/schedule')}>
-					Back
-				</Button>
+				<button
+					onClick={() => navigate('/onboarding/schedule')}
+					className="items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
+				>
+					<ArrowLeft className="h-5 w-5" />
+				</button>
 
-				<Button onClick={() => navigate('/dashboard')}>Start your journey!</Button>
+				<button
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-amber-400 hover:bg-amber-500"
+					onClick={() => navigate('/dashboard')}
+				>
+					Start your journey!
+				</button>
 			</div>
 		</div>
 	);

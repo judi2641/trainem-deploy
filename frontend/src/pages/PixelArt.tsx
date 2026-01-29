@@ -157,7 +157,7 @@ export default function PixelArt() {
 						<div className="absolute left-2 top-2 h-full w-full border-4 border-black bg-black/10" />
 
 						{/* Main card */}
-						<div className="relative bg-white/90 backdrop-blur border-4 border-black p-6 w-full">
+						<div className="relative bg-white/90 backdrop-blur border-4 border-black p-6 ">
 							{/* Header */}
 							<div className="flex items-center gap-3 mb-6">
 								<div className="h-5 w-5 bg-amber-400 border-2 border-black" />

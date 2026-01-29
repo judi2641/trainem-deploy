@@ -17,7 +17,9 @@ export default function Experience() {
 	const [weight, setWeight] = useState(planData.weight ?? '');
 	const [height, setHeight] = useState(planData.height ?? '');
 	const [equipment, setEquipment] = useState<string | null>(planData.equipment ?? null);
-	const [preferredSplit, setPreferredSplit] = useState<string | null>(planData.preferredSplit ?? null);
+	const [preferredSplit, setPreferredSplit] = useState<string | null>(
+		planData.preferredSplit ?? null,
+	);
 	const initialLimitations = planData.limitations === 'None' ? '' : (planData.limitations ?? '');
 	const [limitations, setLimitations] = useState(initialLimitations);
 	const [noLimitations, setNoLimitations] = useState(planData.limitations === 'None');
@@ -120,7 +122,7 @@ export default function Experience() {
 							onClick={() => setSelectedExperience(lvl.key as TrainingsExperience)}
 							className={`px-6 py-3 text-lg rounded-lg transition ${
 								selectedExperience === lvl.key
-									? 'bg-indigo-600 text-white border-indigo-600'
+									? 'bg-primary text-white border-primary'
 									: 'border-gray-300'
 							}`}
 						>
@@ -133,7 +135,7 @@ export default function Experience() {
 			{/* Equipment */}
 			<div>
 				<h2 className="text-xl font-bold mb-2">Equipment</h2>
-					<p className="text-gray-600 mb-4">What equipment do you have access to?</p>
+				<p className="text-gray-600 mb-4">What equipment do you have access to?</p>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 					{equipmentOptions.map((option) => {
@@ -145,7 +147,7 @@ export default function Experience() {
 								variant="outline"
 								onClick={() => setEquipment(option)}
 								className={`justify-start h-auto py-3 px-4 ${
-									isSelected ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300'
+									isSelected ? 'bg-primary text-white border-primary' : 'border-gray-300'
 								}`}
 							>
 								{option}
@@ -170,7 +172,7 @@ export default function Experience() {
 								variant="outline"
 								onClick={() => setPreferredSplit(option)}
 								className={`justify-start h-auto py-3 px-4 ${
-									isSelected ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300'
+									isSelected ? 'bg-primary text-white border-primary' : 'border-gray-300'
 								}`}
 							>
 								{option}
@@ -183,9 +185,7 @@ export default function Experience() {
 			{/* Limitations */}
 			<div>
 				<h2 className="text-xl font-bold mb-2">Limitations</h2>
-				<p className="text-gray-600 mb-4">
-					Injuries or pain, and what you cannot do.
-				</p>
+				<p className="text-gray-600 mb-4">Injuries or pain, and what you cannot do.</p>
 
 				<label className="flex items-center gap-2 text-sm text-gray-700 mb-3">
 					<input
@@ -221,17 +221,19 @@ export default function Experience() {
 
 			{/* Navigation */}
 			<div className="flex justify-between mt-10">
-				<Button
+				<button
 					onClick={() => navigate('/onboarding/basic')}
-					variant="outline"
-					className="h-11 w-11 p-0 flex items-center justify-center"
+					className="items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
 				>
 					<ArrowLeft className="h-5 w-5" />
-				</Button>
+				</button>
 
-				<Button onClick={handleNext} className="bg-amber-400 hover:bg-amber-500 text-black">
+				<button
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-amber-400 hover:bg-amber-500"
+					onClick={handleNext}
+				>
 					<ArrowRight className="h-5 w-5" />
-				</Button>
+				</button>
 			</div>
 		</div>
 	);

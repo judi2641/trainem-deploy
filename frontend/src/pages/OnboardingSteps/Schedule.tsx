@@ -103,9 +103,7 @@ export default function Schedule() {
 									}
 								}}
 								className={`px-5 py-2 ${
-									daysPerWeek === days
-										? 'bg-indigo-600 text-white border-indigo-600'
-										: 'border-gray-300'
+									daysPerWeek === days ? 'bg-primary  text-white border-primary' : 'border-gray-300'
 								}`}
 							>
 								{days}
@@ -127,7 +125,7 @@ export default function Schedule() {
 								}}
 								className={`px-5 py-2 ${
 									minutesPerSession === minutes
-										? 'bg-indigo-600 text-white border-indigo-600'
+										? 'bg-primary  text-white border-primary'
 										: 'border-gray-300'
 								}`}
 							>
@@ -152,7 +150,7 @@ export default function Schedule() {
 								variant={isSelected ? 'default' : 'outline'}
 								onClick={() => toggleDay(day.key)}
 								className={`w-full py-3 text-md rounded-lg ${
-									isSelected ? 'bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600' : ''
+									isSelected ? 'bg-primary  text-white border-primary' : ''
 								}`}
 							>
 								{day.label}
@@ -163,17 +161,19 @@ export default function Schedule() {
 			</div>
 
 			<div className="flex justify-between mt-6">
-				<Button
+				<button
 					onClick={() => navigate('/onboarding/goals')}
-					variant="outline"
-					className="h-11 w-11 p-0 flex items-center justify-center"
+					className="items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
 				>
 					<ArrowLeft className="h-5 w-5" />
-				</Button>
+				</button>
 
-				<Button onClick={handleFinish} className="bg-amber-400 hover:bg-amber-500 text-black">
+				<button
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-amber-400 hover:bg-amber-500"
+					onClick={handleFinish}
+				>
 					<ArrowRight className="h-5 w-5" />
-				</Button>
+				</button>
 			</div>
 		</div>
 	);

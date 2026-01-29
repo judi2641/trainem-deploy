@@ -10,12 +10,12 @@ export default function Landing() {
 			<p className="text-muted-foreground">Let's set up your profile in a few quick steps.</p>
 
 			<div className="flex justify-center">
-				<Button
+				<button
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-amber-400 hover:bg-amber-500"
 					onClick={() => navigate('/onboarding/basic')}
-					className="bg-amber-400 hover:bg-amber-500 text-black"
 				>
 					Start
-				</Button>
+				</button>
 			</div>
 		</div>
 	);
