@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/select';
 import ExerciseDetailDialog from '@/components/ExerciseDetailDialog';
 import { toast } from 'sonner';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
 	Plus,
 	Dumbbell,
@@ -284,8 +284,8 @@ export default function ActiveWorkout() {
 	const [showWorkoutComplete, setShowWorkoutComplete] = useState(false);
 	const [celebrationExiting, setCelebrationExiting] = useState(false);
 	const [showCompleted, setShowCompleted] = useState(true);
-	const [isClosing, setIsClosing] = useState(false);
-	const [lastCompletedEntryId, setLastCompletedEntryId] = useState<string | null>(null);
+	const [_isClosing, _setIsClosing] = useState(false);
+	const [_lastCompletedEntryId, _setLastCompletedEntryId] = useState<string | null>(null);
 
 	// Track the entry ID that triggered completion to prevent re-triggering
 	const [completedEntryId, setCompletedEntryId] = useState<string | null>(null);
@@ -441,10 +441,6 @@ export default function ActiveWorkout() {
 		setOpenForExerciseName(null);
 		setPendingExercise(null);
 	}
-
-	const handleWorkoutCompleteFinish = useCallback(() => {
-		// Handle workout complete finish logic here
-	}, []);
 
 	if (!latestUncompletedEntry) {
 		return (
@@ -710,9 +706,7 @@ export default function ActiveWorkout() {
 
 								{showCompleted && (
 									<div className="space-y-2">
-										{completedExercises.map((ex: any) => {
-											const cardio = ex.exercise?.type === 'cardio';
-											return (
+										{completedExercises.map((ex: any) => (
 												<div
 													key={ex.exercise?.name}
 													className="flex items-center gap-3 p-3 border-2 bg-emerald-50 border-emerald-300"
@@ -744,8 +738,7 @@ export default function ActiveWorkout() {
 														</div>
 													</button>
 												</div>
-											);
-										})}
+										))}
 									</div>
 								)}
 							</div>

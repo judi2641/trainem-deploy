@@ -22,23 +22,19 @@
 ```
 frontend/src/
 ├── components/
-│   ├── ui/                    # 40+ shadcn/ui Components
+│   ├── ui/                    # shadcn/ui Components
 │   ├── dashboardkacheln/     # Dashboard Widgets
-│   ├── statistiken/          # Charts & Analytics
-│   ├── trainingsplan/        # Workout Components
+│   │   ├── ActiveWorkout.tsx
+│   │   ├── PixelCharacter.tsx
+│   │   ├── QuickStats.tsx
+│   │   └── UpcomingWorkouts.tsx
 │   ├── pixel/                # Pixel-Art Components
 │   ├── groups/              # Groups Components
 │   │   ├── GroupList.tsx
 │   │   └── CreateGroupModal.tsx
 │   ├── pixelwar/            # Pixel Wars Components
 │   │   ├── PixelWarsArea.tsx
-│   │   ├── PixelBoard.tsx
-│   │   └── battles/
-│   │       ├── BattleList.tsx
-│   │       ├── BattleCard.tsx
-│   │       ├── BattleArena.tsx
-│   │       ├── ChallengeModal.tsx
-│   │       └── PendingChallenges.tsx
+│   │   └── PixelBoard.tsx
 │   ├── Header.tsx
 │   ├── Sidebar.tsx
 │   ├── EntryArea.tsx         # Workout Execution
@@ -63,11 +59,9 @@ frontend/src/
 │   ├── AppContext.tsx        # Global State
 │   └── OnboardingContext.tsx # Onboarding State
 ├── hooks/
-│   ├── use-mobile.tsx
-│   └── use-toast.ts
+│   └── use-mobile.tsx
 ├── util/
 │   ├── level.ts              # XP → Level Calculation
-│   ├── statsHelpers.ts       # Streak, Stats, etc.
 │   ├── theme.ts              # Dark/Light Mode
 │   └── stringToColor.tsx
 ├── lib/                       # Utilities
@@ -262,16 +256,12 @@ export function getLevelFromScore(score: number): number {
 // ...
 ```
 
-### Stats Helpers
+### String to Color
 
 ```typescript
-// util/statsHelpers.ts
-export const calculateStreak = (entries: Entry[]): number => {
-  // Berechnet aufeinanderfolgende Trainingstage
-};
-
-export const getWeeklyXP = (entries: Entry[]): number => {
-  // Summiert XP der letzten 7 Tage
+// util/stringToColor.tsx
+export const stringToColor = (str: string): string => {
+  // Generiert konsistente Farbe aus String (z.B. für Avatare)
 };
 ```
 
@@ -297,23 +287,18 @@ export function useIsMobile() {
 }
 ```
 
-### use-toast
+### Toast (Sonner)
+
+Toasts werden direkt mit der `sonner` Library genutzt:
 
 ```typescript
-// hooks/use-toast.ts
-export const useToast = () => {
-  const { toast } = useSonner();
-  
-  const showSuccess = (message: string) => {
-    toast.success(message);
-  };
-  
-  const showError = (message: string) => {
-    toast.error(message);
-  };
-  
-  return { showSuccess, showError };
-};
+import { toast } from 'sonner';
+
+// Erfolg
+toast.success('Workout gespeichert!');
+
+// Fehler
+toast.error('Fehler beim Speichern');
 ```
 
 ---
