@@ -1,67 +1,63 @@
-# 🤖 Session Context für Claude Code
+# Session Context für Claude Code
 
-**Letzte Session**: 2026-01-24
-**Branch**: `new_design`
-**Status**: Entwicklung, Dokumentation fertig
+**Letzte Session**: 2026-01-29
+**Branch**: `release-final`
+**Status**: Release-ready, Build erfolgreich, Dokumentation aktualisiert
 
 ---
 
-## 📋 Projekt-Übersicht
+## Projekt-Übersicht
 
 **Trainem** - MERN Fitness & Habit Tracking App mit Gamification
 
 ### Tech-Stack
-- **Backend**: Express.js + MongoDB (Docker) + Auth0
-- **Frontend**: React 19 + Vite + Tailwind CSS + shadcn/ui
-- **Database**: MongoDB (Docker Container `my_database`)
-- **Auth**: Auth0 (Production) - aktuell Callback-Problem in Dev
+- **Backend**: Express.js 5.1 + MongoDB (Docker) + Auth0
+- **Frontend**: React 19.1 + Vite 7.1 + Tailwind CSS 4.1 + shadcn/ui
+- **Database**: MongoDB (Docker Container)
+- **Auth**: Auth0 (OAuth2 JWT)
 
 ### Wichtige Pfade
 ```
 /backend          - Express API (Port 3000)
 /frontend         - React App (Port 5173)
-/shared           - Gemeinsame TypeScript Types
+/shared           - Gemeinsame TypeScript Types (sharedTypes.ts)
 /docs             - Projektdokumentation (11 Dateien)
-WIKI.md           - Haupt-Dokumentations-Index
+DOKUMENTATION.md  - Haupt-Dokumentation (aktualisiert)
+WIKI.md           - Dokumentations-Index
 ```
 
 ---
 
-## ✅ Was in letzter Session gemacht wurde
+## Was in dieser Session gemacht wurde
 
-### 1. App-Start gefixt
-- MongoDB Docker Container läuft bereits
-- Frontend Dependencies neu installiert (radix-ui Problem)
-- App läuft auf `http://localhost:5173`
+### 1. Build-Fehler gefixt
+- Unused imports entfernt (useCallback, Button, React)
+- 28 unbenutzte UI-Komponenten gelöscht (accordion, carousel, toast, etc.)
+- Frontend Build: ERFOLGREICH
+- Backend Build: ERFOLGREICH
 
-### 2. Auth0 Workaround (temporär rückgängig gemacht)
-- Problem: Auth0 Callback URL nicht konfiguriert
-- Lösung war: `MockAuth0Provider.tsx` für Dev-Mode
-- **AKTUELL**: MockAuth zurück zu echtem Auth0Provider
-- `MockAuth0Provider.tsx` wurde gelöscht
+### 2. Release-Branch erstellt
+- Neuer Branch `release-final` aus `pixelwars` erstellt
+- `new_design` Branch gemerged (landingpage + onboarding)
+- Alle relevanten Features zusammengeführt
 
-### 3. Komplette Dokumentation erstellt 📚
-**11 Markdown-Dateien** in `/docs`:
-1. Projektübersicht (Team, Tech-Stack, Glossar)
-2. Developer Setup (Installation, Scripts)
-3. API-Dokumentation (alle Endpoints)
-4. Architektur & Design (MERN, Patterns)
-5. Datenmodelle (MongoDB Schemas)
-6. Frontend-Struktur (Komponenten, Routing)
-7. User-Dokumentation (Anleitung, FAQ)
-8. Deployment (Vercel, Railway, MongoDB Atlas)
-9. Testing (Jest, Known Issues)
-10. Prozess & Meilensteine (Timeline, ADRs)
-11. Lessons Learned (Retrospektive)
+### 3. Dokumentation aktualisiert
+- `DOKUMENTATION.md` komplett überarbeitet
+- `docs/06-Frontend-Struktur.md` an aktuellen Stand angepasst
+- Alle Features dokumentiert: Workouts, Habits, Entries, Groups, Pixel Wars
 
-**Commit**: `📚 Doku 📚` (gepusht auf `new_design`)
+### 4. Code geprüft
+- XP-System: 67 XP pro Übung, 10 XP pro Habit
+- Groups: XP-Sharing zu allen Gruppen des Users
+- Battles: XP wird zu aktiven Battles hinzugefügt
+- API-Endpoints: 9 Route-Module registriert
 
 ---
 
-## 🔧 Wie man die App startet
+## App starten
 
 ```bash
-# 1. MongoDB starten (falls nicht läuft)
+# 1. MongoDB starten
 cd backend
 docker compose up -d
 
@@ -77,148 +73,153 @@ npm run dev
 
 ---
 
-## ⚠️ Bekannte Probleme
+## Features (vollständig implementiert)
 
-### 1. Auth0 Callback Error
-**Problem**:
-```
-Callback URL mismatch
-The provided redirect_uri is not in the list of allowed callback URLs
-```
+### Core Features
+- User-Management (Auth0)
+- Onboarding (6 Schritte)
+- Workouts (Create, Edit, Execute)
+- Habits (Daily/Weekly)
+- Entry-System (Workout-Ausführung)
+- 50+ Exercises mit Videos
+- XP-System (67 XP/Exercise, 10 XP/Habit)
+- Level-Progression
+- Pixel-Art Avatar (32x32)
+- Streak-Tracking
 
-**Grund**:
-- `http://localhost:5173/callback` nicht in Auth0 Dashboard konfiguriert
-- Team hat keinen Zugang zum Auth0 Dashboard
+### Gruppen
+- Gruppen erstellen (öffentlich/privat)
+- Gruppen beitreten/verlassen
+- Gemeinsam XP sammeln
+- Rollen: Owner, Admin, Member
 
-**Workarounds**:
-- **Temporär entfernt**: MockAuth0Provider (User wollte das rückgängig)
-- **Lösung**: Auth0 Dashboard-Zugang bekommen & Callback URL hinzufügen
-
-**Für nächste Session**:
-- Falls User wieder entwickeln will, MockAuth0Provider wieder aktivieren
-- Oder: Auth0 Dashboard konfigurieren
-
-### 2. Fehlende Frontend-Tests
-- 0% Test Coverage im Frontend
-- Backend: 30% Coverage
-- Geplant: Vitest + React Testing Library
-
-### 3. Performance
-- Pixel-Art bei großen Grids (>64x64) langsam
-- Canvas API statt DOM geplant
+### Pixel Wars
+- 1v1 Battles zwischen Gruppen
+- Challenge erstellen, annehmen, ablehnen
+- Pixel auf geteiltem Canvas setzen
+- XP automatisch zum Battle hinzugefügt
+- Live-Score Tracking
+- Winner-Ermittlung nach Zeitablauf
 
 ---
 
-## 📂 Wichtige Dateien
+## API-Routen
+
+| Route | Beschreibung |
+|-------|--------------|
+| `/api/user` | User-Management, Onboarding |
+| `/api/workouts` | Workout CRUD |
+| `/api/habits` | Habit CRUD |
+| `/api/entries` | Abgeschlossene Workouts/Habits |
+| `/api/exercises` | 50+ Übungen (öffentlich) |
+| `/api/pixel-art` | Pixel-Art Avatar |
+| `/api/groups` | Gruppen CRUD |
+| `/api/pixelwar` | Seasons, Leaderboards |
+| `/api/pixelwar/battles` | 1v1 Battles |
+
+---
+
+## Wichtige Dateien
 
 ### Backend
 ```
 backend/src/
-├── Server.ts                    # Entry Point
-├── database/                    # MongoDB Connection
+├── Server.ts                    # Entry Point (9 Routes)
 ├── endpoints/
 │   ├── users/UserService.ts     # User-Logik
 │   ├── workouts/WorkoutService.ts
+│   ├── habits/HabitService.ts
 │   ├── entries/EntryService.ts  # XP-Logik (67 XP/Exercise)
-│   └── exercises/               # 50+ Übungen
-└── utils/logger.ts              # Winston Logger
+│   ├── exercises/               # 50+ Übungen
+│   ├── groups/GroupService.ts   # Gruppen-Logik
+│   └── pixelwar/
+│       ├── BattleService.ts     # 1v1 Battle-Logik
+│       └── PixelWarService.ts   # Season-Logik
 ```
 
 ### Frontend
 ```
 frontend/src/
 ├── main.tsx                     # Entry (Auth0Provider)
-├── App.tsx                      # Router
+├── App.tsx                      # Router (10 Routes)
 ├── context/AppContext.tsx       # Global State
 ├── pages/
 │   ├── Dashboard.tsx
-│   ├── Onboarding.tsx           # 7 Steps
-│   └── OnboardingSteps/
+│   ├── Workouts.tsx
+│   ├── Habits.tsx
+│   ├── Groups.tsx
+│   ├── PixelWars.tsx
+│   ├── Statistics.tsx
+│   └── OnboardingSteps/         # 6 Steps
 ├── components/
-│   ├── ui/                      # 40+ shadcn Components
+│   ├── ui/                      # shadcn Components (bereinigt)
 │   ├── dashboardkacheln/        # Widgets
-│   └── statistiken/             # Charts (Recharts)
-└── util/
-    ├── level.ts                 # XP → Level Calc
-    └── statsHelpers.ts
+│   ├── groups/                  # Gruppen-Komponenten
+│   └── pixelwar/                # Pixel Wars Komponenten
+```
+
+### Shared Types
+```
+shared/sharedTypes.ts            # Alle TypeScript Interfaces
+- User, Workout, Habit, Entry
+- Exercise, WorkoutExercise
+- Group, GroupMember
+- Battle, BattleParticipant, BattleSettings
+- Season, PixelBoard
 ```
 
 ---
 
-## 🎮 Features
+## Git-Status
 
-### Core Features
-- ✅ User-Management (Auth0)
-- ✅ Onboarding (7 Schritte)
-- ✅ Workouts (Create, Edit, Execute)
-- ✅ Habits (Daily/Weekly)
-- ✅ Entry-System (Workout-Ausführung)
-- ✅ 50+ Exercises mit Videos
-- ✅ XP-System (67 XP/Exercise, 10 XP/Habit)
-- ✅ Level-Progression
-- ✅ Pixel-Art Avatar (32x32)
-- ✅ Statistiken (Charts)
-- ✅ Streak-Tracking
+**Branch**: `release-final`
 
-### Geplant
-- [ ] Frontend-Tests
-- [ ] E2E-Tests
-- [ ] Performance-Optimierung
-- [ ] Production Deployment
-- [ ] Social Features (V2.0)
-
----
-
-## 🗂️ Git-Status
-
-**Branch**: `new_design`
 **Letzte Commits**:
 ```
-983a4bc - 📚 Doku 📚 (2026-01-24)
-eda111c - LandingPage und Onboading verändert
-42a9df7 - Sidebar mit shadcn
-```
-
-**Untracked Files** (nicht committed):
-```
-DOKUMENTATION.md                           # Alt, kann gelöscht werden
-frontend/src/components/StatistikenArea.tsx
-frontend/src/components/statistiken/
-frontend/src/components/trainingsplan/
-frontend/src/util/statsHelpers.ts
-trainem/                                    # Unbekannt, prüfen
+f55c6ad - fix: Build-Fehler behoben und unbenutzte UI-Komponenten entfernt
+2086f1f - Merge remote-tracking branch 'origin/new_design' into pixelwars
+44f3bf5 - docs: Groups und Pixel Wars Dokumentation aktualisiert
 ```
 
 ---
 
-## 💡 Nächste Schritte (Vorschläge)
+## Hilfreiche Kommandos
 
-### Sofort
-1. **Auth0-Problem lösen**:
-   - Option A: MockAuth0Provider wieder aktivieren für Dev
-   - Option B: Auth0 Dashboard-Zugang bekommen
+```bash
+# App starten
+npm run dev
 
-2. **Untracked Files committen**:
-   - `StatistikenArea.tsx`, `statistiken/`, etc.
-   - `trainem/` Ordner prüfen (was ist das?)
+# Nur Backend
+npm run backend
 
-### Kurzfristig
-3. **Frontend-Tests schreiben**
-4. **Performance-Optimierung** (Pixel-Art)
-5. **Deployment vorbereiten**
+# Nur Frontend
+npm run frontend
 
-### Mittelfristig
-6. **Production Deployment** (Vercel + Railway)
-7. **MongoDB Atlas** statt lokalem Docker
-8. **Monitoring** (Sentry)
+# Build (Frontend)
+cd frontend && npm run build
+
+# Build (Backend)
+cd backend && npm run build
+
+# Tests (Backend)
+cd backend && npm test
+
+# MongoDB Container
+cd backend && docker compose up -d
+cd backend && docker compose down
+
+# Git
+git status
+git log --oneline -10
+git push origin release-final
+```
 
 ---
 
-## 🔑 Wichtige Credentials
+## Credentials
 
 **MongoDB**:
 - Local: `mongodb://localhost:27017/trainem`
-- Container: `my_database` (Port 27017)
 
 **Auth0** (siehe `frontend/src/main.tsx`):
 - Domain: `dev-wmcuuu42i1iqwc5e.us.auth0.com`
@@ -232,113 +233,18 @@ trainem/                                    # Unbekannt, prüfen
 
 ---
 
-## 📚 Dokumentation
+## Dokumentation
 
-**Haupt-Einstieg**: [WIKI.md](WIKI.md)
+**Haupt-Einstieg**: [DOKUMENTATION.md](DOKUMENTATION.md)
 
 Alle Docs in `/docs/`:
 - Setup: [02-Developer-Setup.md](docs/02-Developer-Setup.md)
 - API: [03-API-Dokumentation.md](docs/03-API-Dokumentation.md)
-- Architektur: [04-Architektur-Design.md](docs/04-Architektur-Design.md)
+- Datenmodelle: [05-Datenmodelle.md](docs/05-Datenmodelle.md)
+- Frontend: [06-Frontend-Struktur.md](docs/06-Frontend-Struktur.md)
 
 ---
 
-## 🐛 Debugging-Tipps
-
-**MongoDB nicht erreichbar?**
-```bash
-docker ps | grep my_database
-docker compose up -d
-```
-
-**Frontend Build-Fehler?**
-```bash
-cd frontend
-rm -rf node_modules
-npm install
-```
-
-**Backend startet nicht?**
-```bash
-cd backend
-npm install
-```
-
-**Logs prüfen**:
-```bash
-# Wenn App im Background läuft
-tail -f /private/tmp/claude/-Users-daboy-Documents-Projekt-trainem/tasks/*.output
-```
-
----
-
-## 🎯 Projektkontext für KI
-
-**Team**: 4 Studierende (Namen in Docs TODO)
-**Zweck**: Uni-Projekt (Abgabe Feb 2026)
-**Entwicklungszeit**: Nov 2025 - Jan 2026 (3 Monate)
-**Status**: MVP fertig, Doku fertig, Testing & Deployment offen
-
-**Besonderheiten**:
-- Gamification mit Pixel-Art Avatar
-- 50+ vordefinierte Übungen
-- shadcn/ui (Copy-Paste Components)
-- TypeScript Full-Stack
-- Auth0 für Authentifizierung (aktuell Problem in Dev)
-
-**Code-Qualität**:
-- ESLint + Prettier aktiv
-- Jest Tests im Backend (30% Coverage)
-- TypeScript strict mode
-- Clean Code angestrebt
-
----
-
-## 📞 Hilfreiche Kommandos
-
-```bash
-# App starten
-npm run dev
-
-# Nur Backend
-npm run backend
-
-# Nur Frontend
-npm run frontend
-
-# Tests (Backend)
-cd backend && npm test
-
-# Linting
-npm run lint
-
-# Build (Frontend)
-cd frontend && npm run build
-
-# MongoDB Container
-cd backend && docker compose up -d
-cd backend && docker compose down
-
-# Git
-git status
-git log --oneline -10
-git branch -a
-```
-
----
-
-**Erstellt**: 2026-01-24 21:15 Uhr
+**Erstellt**: 2026-01-24
+**Aktualisiert**: 2026-01-29
 **Für**: Kontinuität zwischen Claude Code Sessions
-**Update**: Bei wichtigen Änderungen diese Datei aktualisieren!
-
----
-
-## 🤝 Tipps für die nächste Session
-
-1. **Diese Datei lesen** - Kontext verstehen
-2. **Git Status prüfen** - Was ist neu?
-3. **App starten testen** - Funktioniert alles?
-4. **User fragen** - Was ist das Ziel heute?
-5. **Dokumentation nutzen** - `/docs` ist vollständig
-
-**Viel Erfolg! 🚀**
