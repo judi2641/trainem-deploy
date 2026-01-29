@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { Battle, PixelBoard, BattleLiveScore } from '../../../../../shared/sharedTypes';
+import { toast } from 'sonner';
+import type { Battle, PixelBoard, BattleLiveScore, BattleMember } from '../../../../../shared/sharedTypes';
 
 interface BattleArenaProps {
 	battle: Battle;
@@ -7,8 +8,9 @@ interface BattleArenaProps {
 	onBack: () => void;
 }
 
-export default function BattleArena({ battle, userId, onBack }: BattleArenaProps) {
+export default function BattleArena({ battle: initialBattle, userId, onBack }: BattleArenaProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [battle, setBattle] = useState<Battle>(initialBattle);
 	const [board, setBoard] = useState<PixelBoard | null>(null);
 	const [liveScore, setLiveScore] = useState<BattleLiveScore | null>(null);
 	const [zoom, setZoom] = useState(4);
@@ -16,18 +18,34 @@ export default function BattleArena({ battle, userId, onBack }: BattleArenaProps
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 	const [userGroupId, setUserGroupId] = useState<string | null>(null);
+	const [userMember, setUserMember] = useState<BattleMember | null>(null);
 
-	// Determine which group the user belongs to
+	// Determine which group the user belongs to and get member data
 	useEffect(() => {
-		const isChallenger = battle.challenger.members.some((m) => m.userId === userId);
-		const isOpponent = battle.opponent.members.some((m) => m.userId === userId);
+		const challengerMember = battle.challenger.members.find((m) => m.userId === userId);
+		const opponentMember = battle.opponent.members.find((m) => m.userId === userId);
 
-		if (isChallenger) {
+		if (challengerMember) {
 			setUserGroupId(battle.challenger.groupId);
-		} else if (isOpponent) {
+			setUserMember(challengerMember);
+		} else if (opponentMember) {
 			setUserGroupId(battle.opponent.groupId);
+			setUserMember(opponentMember);
 		}
 	}, [battle, userId]);
+
+	// Fetch updated battle data
+	const fetchBattle = useCallback(async () => {
+		try {
+			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battle._id}`);
+			if (res.ok) {
+				const data = await res.json();
+				setBattle(data);
+			}
+		} catch (error) {
+			console.error('Failed to fetch battle:', error);
+		}
+	}, [battle._id]);
 
 	// Fetch board data
 	const fetchBoard = useCallback(async () => {
@@ -59,14 +77,16 @@ export default function BattleArena({ battle, userId, onBack }: BattleArenaProps
 	useEffect(() => {
 		fetchBoard();
 		fetchScore();
+		fetchBattle();
 
 		const interval = setInterval(() => {
 			fetchBoard();
 			fetchScore();
+			fetchBattle();
 		}, 5000);
 
 		return () => clearInterval(interval);
-	}, [fetchBoard, fetchScore]);
+	}, [fetchBoard, fetchScore, fetchBattle]);
 
 	// Draw canvas
 	useEffect(() => {
@@ -112,6 +132,12 @@ export default function BattleArena({ battle, userId, onBack }: BattleArenaProps
 		if (!canvasRef.current || !board || !userGroupId) return;
 		if (battle.status !== 'active') return;
 
+		// Check if user has available pixels
+		if (!userMember || userMember.pixelsAvailable < 1) {
+			toast.error('No pixels available! Complete exercises to earn more.');
+			return;
+		}
+
 		const rect = canvasRef.current.getBoundingClientRect();
 		const x = Math.floor((e.clientX - rect.left) / zoom);
 		const y = Math.floor((e.clientY - rect.top) / zoom);
@@ -130,11 +156,17 @@ export default function BattleArena({ battle, userId, onBack }: BattleArenaProps
 			});
 
 			if (res.ok) {
+				toast.success('Pixel placed!');
 				fetchBoard();
 				fetchScore();
+				fetchBattle();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to place pixel');
 			}
 		} catch (error) {
 			console.error('Failed to place pixel:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 
@@ -267,14 +299,25 @@ export default function BattleArena({ battle, userId, onBack }: BattleArenaProps
 					</button>
 				</div>
 
-				{/* User Color Indicator */}
+				{/* User Info Panel */}
 				{userGroupId && (
-					<div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-white px-3 py-2 border-2 border-black rounded">
-						<span className="text-sm">Your color:</span>
-						<div
-							className="w-6 h-6 border-2 border-black"
-							style={{ backgroundColor: userColor }}
-						/>
+					<div className="absolute top-4 left-4 z-10 flex flex-col gap-2 bg-white px-3 py-2 border-2 border-black rounded">
+						<div className="flex items-center gap-2">
+							<span className="text-sm">Your color:</span>
+							<div
+								className="w-6 h-6 border-2 border-black"
+								style={{ backgroundColor: userColor }}
+							/>
+						</div>
+						<div className="flex items-center gap-2">
+							<span className="text-sm">Available pixels:</span>
+							<span className="font-bold text-lg">{userMember?.pixelsAvailable ?? 0}</span>
+						</div>
+						{(!userMember || userMember.pixelsAvailable === 0) && (
+							<div className="text-xs text-orange-600">
+								Complete exercises to earn pixels!
+							</div>
+						)}
 					</div>
 				)}
 
