@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { toast } from 'sonner';
 import GroupList from './groups/GroupList';
 import CreateGroupModal from './groups/CreateGroupModal';
 import type { Group } from '../../../shared/sharedTypes';
@@ -23,16 +24,19 @@ export default function GroupsArea() {
 		try {
 			// Fetch user's groups
 			const myGroupsRes = await fetch(`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`);
+			let userGroups: Group[] = [];
 			if (myGroupsRes.ok) {
-				const data = await myGroupsRes.json();
-				setMyGroups(data);
+				userGroups = await myGroupsRes.json();
+				setMyGroups(userGroups);
 			}
 
 			// Fetch public groups
 			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=20`);
 			if (publicRes.ok) {
 				const data = await publicRes.json();
-				setPublicGroups(data.filter((g: Group) => !myGroups.find(mg => mg._id === g._id)));
+				// Filter uses local userGroups, not stale state
+				const userGroupIds = userGroups.map(g => g._id);
+				setPublicGroups(data.filter((g: Group) => !userGroupIds.includes(g._id)));
 			}
 		} catch (error) {
 			console.error('Failed to fetch groups:', error);
@@ -59,10 +63,15 @@ export default function GroupsArea() {
 
 			if (res.ok) {
 				setIsCreateModalOpen(false);
+				toast.success('Group created!');
 				fetchGroups();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to create group');
 			}
 		} catch (error) {
 			console.error('Failed to create group:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 
@@ -75,10 +84,15 @@ export default function GroupsArea() {
 			});
 
 			if (res.ok) {
+				toast.success('Joined group!');
 				fetchGroups();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to join group');
 			}
 		} catch (error) {
 			console.error('Failed to join group:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 
@@ -91,10 +105,15 @@ export default function GroupsArea() {
 			});
 
 			if (res.ok) {
+				toast.success('Left group');
 				fetchGroups();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to leave group');
 			}
 		} catch (error) {
 			console.error('Failed to leave group:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 
