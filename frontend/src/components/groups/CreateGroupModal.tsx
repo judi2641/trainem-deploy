@@ -20,25 +20,9 @@ interface CreateGroupModalProps {
 	}) => void;
 }
 
-const PRESET_COLORS = [
-	'#FF6B6B',
-	'#4ECDC4',
-	'#45B7D1',
-	'#FFA07A',
-	'#98D8C8',
-	'#F7B731',
-	'#5F27CD',
-	'#00D2D3',
-	'#FF6348',
-	'#1dd1a1',
-	'#feca57',
-	'#ff9ff3',
-];
-
 export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModalProps) {
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
-	const [color, setColor] = useState(PRESET_COLORS[0]);
 	const [isPublic, setIsPublic] = useState(true);
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -47,7 +31,7 @@ export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModal
 			onCreate({
 				name: name.trim(),
 				description: description.trim() || undefined,
-				color,
+				color: '#10b981', // Default emerald-500 color
 				isPublic,
 			});
 		}
@@ -92,26 +76,6 @@ export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModal
 							rows={3}
 							maxLength={200}
 						/>
-					</div>
-
-					{/* Color */}
-					<div className="space-y-2">
-						<Label className="font-medium text-sm">Group Color</Label>
-						<div className="grid grid-cols-6 gap-2">
-							{PRESET_COLORS.map((presetColor) => (
-								<button
-									key={presetColor}
-									type="button"
-									onClick={() => setColor(presetColor)}
-									className={`w-10 h-10 border-2 transition-all hover:scale-105 ${
-										color === presetColor
-											? 'border-black scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.3)]'
-											: 'border-black/30 hover:border-black'
-									}`}
-									style={{ backgroundColor: presetColor }}
-								/>
-							))}
-						</div>
 					</div>
 
 					{/* Visibility */}

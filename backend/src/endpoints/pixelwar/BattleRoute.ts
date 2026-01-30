@@ -266,7 +266,7 @@ router.get('/:battleId/board', async (req: Request, res: Response) => {
 router.post('/:battleId/pixels', async (req: Request, res: Response) => {
 	try {
 		const { battleId } = req.params;
-		const { groupId, userId, coordinates } = req.body;
+		const { groupId, userId, coordinates, color } = req.body;
 
 		if (!isValidObjectId(battleId)) {
 			throw new HttpError(400, 'Invalid battle ID format');
@@ -300,6 +300,7 @@ router.post('/:battleId/pixels', async (req: Request, res: Response) => {
 			groupId,
 			userId,
 			coordinates,
+			color, // Optional custom color
 		});
 
 		return res.json(board);

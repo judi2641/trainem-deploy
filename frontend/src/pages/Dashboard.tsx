@@ -27,8 +27,22 @@ export default function Dashboard() {
 
 			{/* Main content */}
 			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden">
-				<main className="flex-1 p-4 pr-6 overflow-hidden">
-					<DashboardArea />
+				<main className="flex-1 p-6 overflow-hidden flex flex-col gap-4">
+					{/* Header */}
+					<div className="flex items-center gap-3 pt-2">
+						<div className="h-8 w-8 bg-emerald-500 border-3 border-black flex items-center justify-center">
+							<svg viewBox="0 0 16 16" className="h-5 w-5 text-white" fill="currentColor">
+								<rect x="1" y="1" width="6" height="6" />
+								<rect x="9" y="1" width="6" height="6" />
+								<rect x="1" y="9" width="6" height="6" />
+								<rect x="9" y="9" width="6" height="6" />
+							</svg>
+						</div>
+						<h1 className="font-pixel text-2xl text-black dark:text-white">Dashboard</h1>
+					</div>
+					<div className="flex-1 min-h-0">
+						<DashboardArea />
+					</div>
 				</main>
 			</div>
 		</div>

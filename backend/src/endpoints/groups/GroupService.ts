@@ -31,6 +31,7 @@ export class GroupService {
 			maxMembers,
 			totalXP: 0,
 			currentSeasonXP: 0,
+			unlockedPixels: 10, // Start with 10 pixels for canvas
 		});
 		await group.save();
 		return group;

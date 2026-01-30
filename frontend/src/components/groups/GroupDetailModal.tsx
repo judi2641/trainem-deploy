@@ -286,15 +286,9 @@ export default function GroupDetailModal({
 									</p>
 								)}
 
-								{isMember && pixelArtInfo.availablePixels <= 0 && pixelArtInfo.unlockedPixels > 0 && (
+								{isMember && pixelArtInfo.availablePixels <= 0 && (
 									<p className="text-xs text-black/50 dark:text-white/50">
 										All pixels placed! Win more battles to unlock more.
-									</p>
-								)}
-
-								{pixelArtInfo.unlockedPixels === 0 && (
-									<p className="text-xs text-orange-600 dark:text-orange-400">
-										Win your first battle to unlock pixels for your group canvas!
 									</p>
 								)}
 							</div>

@@ -1,7 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
-import { ArrowLeft, Clock, Trophy, Crosshair } from 'lucide-react';
+import { ArrowLeft, Clock, Trophy, Crosshair, Palette } from 'lucide-react';
 import type { Battle, PixelBoard, BattleLiveScore, BattleMember } from '../../../../../shared/sharedTypes';
+
+// Farben für den Canvas (gleich wie GroupDetailModal)
+const CANVAS_COLORS = [
+	'#10b981', // emerald
+	'#22c55e', // green
+	'#3b82f6', // blue
+	'#8b5cf6', // violet
+	'#ec4899', // pink
+	'#f59e0b', // amber
+	'#ef4444', // red
+	'#0f172a', // dark
+	'#f8fafc', // white
+];
 
 interface BattleArenaProps {
 	battle: Battle;
@@ -20,6 +33,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 	const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 	const [userGroupId, setUserGroupId] = useState<string | null>(null);
 	const [userMember, setUserMember] = useState<BattleMember | null>(null);
+	const [selectedColor, setSelectedColor] = useState(CANVAS_COLORS[0]);
 
 	// Determine which group the user belongs to and get member data
 	useEffect(() => {
@@ -153,6 +167,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 					groupId: userGroupId,
 					userId,
 					coordinates: [{ x, y }],
+					color: selectedColor,
 				}),
 			});
 
@@ -195,9 +210,6 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		const s = Math.floor(seconds % 60);
 		return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 	};
-
-	const userColor =
-		userGroupId === battle.challenger.groupId ? battle.challenger.color : battle.opponent.color;
 
 	return (
 		<div className="h-full flex flex-col gap-4">
@@ -320,17 +332,17 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 w-6">{zoom}x</span>
 				</div>
 
-				{/* User Info Panel */}
+				{/* User Info Panel with Color Palette */}
 				{userGroupId && (
 					<div className="absolute top-4 left-4 z-10 bg-white dark:bg-gray-800 p-3 border-3 border-black shadow-[3px_3px_0px_rgba(0,0,0,0.15)]">
 						<div className="flex items-center gap-2 mb-2">
 							<Crosshair className="h-4 w-4 text-black/60 dark:text-white/60" />
 							<span className="text-sm text-black dark:text-white font-medium">Your Team</span>
 						</div>
-						<div className="flex items-center gap-3">
+						<div className="flex items-center gap-3 mb-3">
 							<div
 								className="w-8 h-8 border-2 border-black"
-								style={{ backgroundColor: userColor }}
+								style={{ backgroundColor: selectedColor }}
 							/>
 							<div>
 								<div className="text-2xl font-bold text-black dark:text-white">
@@ -339,8 +351,34 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 								<div className="text-xs text-black/50 dark:text-white/50">pixels available</div>
 							</div>
 						</div>
+
+						{/* Color Palette */}
+						{battle.status === 'active' && userMember && userMember.pixelsAvailable > 0 && (
+							<div className="border-t border-black/10 dark:border-white/10 pt-3">
+								<div className="flex items-center gap-2 mb-2">
+									<Palette className="h-3 w-3 text-black/50 dark:text-white/50" />
+									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Colors</span>
+								</div>
+								<div className="grid grid-cols-5 gap-1.5">
+									{CANVAS_COLORS.map((color) => (
+										<button
+											key={color}
+											type="button"
+											onClick={() => setSelectedColor(color)}
+											className={`h-6 w-6 border-2 transition-all ${
+												selectedColor === color
+													? 'border-black dark:border-white scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]'
+													: 'border-black/30 dark:border-white/30 hover:border-black hover:scale-105'
+											}`}
+											style={{ backgroundColor: color }}
+										/>
+									))}
+								</div>
+							</div>
+						)}
+
 						{(!userMember || userMember.pixelsAvailable === 0) && (
-							<div className="mt-2 text-xs text-orange-600 dark:text-orange-400 border-t border-black/10 dark:border-white/10 pt-2">
+							<div className="text-xs text-orange-600 dark:text-orange-400 border-t border-black/10 dark:border-white/10 pt-2">
 								Complete exercises to earn pixels!
 							</div>
 						)}

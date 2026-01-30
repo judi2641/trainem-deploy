@@ -395,8 +395,9 @@ export class BattleService {
 		groupId: string;
 		userId: string;
 		coordinates: { x: number; y: number }[];
+		color?: string; // Optional custom color
 	}): Promise<IPixelBoard> {
-		const { battleId, groupId, userId, coordinates } = data;
+		const { battleId, groupId, userId, coordinates, color } = data;
 
 		const battle = await BattleModel.findById(battleId);
 		if (!battle) {
@@ -471,10 +472,13 @@ export class BattleService {
 				}
 			}
 
+			// Use custom color if provided, otherwise fall back to group color
+			const pixelColor = color && /^#[0-9A-F]{6}$/i.test(color) ? color : group.color;
+
 			const newPixel: IPixel = {
 				x: coord.x,
 				y: coord.y,
-				color: group.color,
+				color: pixelColor,
 				groupId,
 				lastUpdatedBy: userId,
 				lastUpdatedAt: new Date(),

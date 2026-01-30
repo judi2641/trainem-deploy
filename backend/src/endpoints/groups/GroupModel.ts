@@ -128,7 +128,7 @@ const GroupSchema = new Schema<IGroup>(
 		},
 		unlockedPixels: {
 			type: Number,
-			default: 0,
+			default: 10, // Start with 10 pixels
 			min: 0,
 		},
 		pixelArt: {

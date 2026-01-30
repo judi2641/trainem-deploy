@@ -60,16 +60,33 @@ export default function Help() {
 
 			<Sidebar />
 
-			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden p-4 pr-6">
-				<main className="flex-1 overflow-y-auto">
+			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden p-6">
+				<main className="flex-1 overflow-y-auto flex flex-col gap-4">
+					{/* Header */}
+					<div className="flex items-center gap-3 pt-2">
+						<div className="h-8 w-8 bg-emerald-400 border-3 border-black flex items-center justify-center">
+							<svg viewBox="0 0 16 16" className="h-5 w-5 text-white" fill="currentColor">
+								<rect x="5" y="1" width="6" height="2" />
+								<rect x="3" y="3" width="2" height="2" />
+								<rect x="11" y="3" width="2" height="2" />
+								<rect x="2" y="5" width="2" height="4" />
+								<rect x="12" y="5" width="2" height="4" />
+								<rect x="10" y="9" width="2" height="2" />
+								<rect x="8" y="11" width="2" height="2" />
+								<rect x="8" y="14" width="2" height="2" />
+							</svg>
+						</div>
+						<h1 className="font-pixel text-2xl text-black dark:text-white">Help & Support</h1>
+					</div>
+
 					<div className="grid gap-6 grid-cols-1 xl:grid-cols-[1.3fr,1fr] items-start max-w-6xl">
 						{/* Contact Form Card */}
 						<div className="relative">
 							<div className="absolute left-2 top-2 h-full w-full border-4 border-black dark:border-white/20 bg-black/10 dark:bg-white/5" />
 							<div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur border-4 border-black dark:border-white/20 p-6">
 								<div className="flex items-center gap-3 mb-4">
-									<div className="h-5 w-5 bg-emerald-400 border-2 border-black dark:border-white/30" />
-									<h1 className="font-pixel text-xl text-black dark:text-white">Help & Support</h1>
+									<div className="h-4 w-4 bg-emerald-400 border-2 border-black dark:border-white/30" />
+									<h2 className="font-pixel text-lg text-black dark:text-white">Contact Us</h2>
 								</div>
 								<p className="text-sm text-black/60 dark:text-white/60 mb-6">
 									Have suggestions or found an issue? Reach out to support and we will get back to

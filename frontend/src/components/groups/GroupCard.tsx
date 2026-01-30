@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Users, Zap, Globe, Lock, Trophy, Grid3X3 } from 'lucide-react';
 import type { Group } from '../../../../shared/sharedTypes';
 
@@ -9,6 +10,34 @@ interface GroupCardProps {
 	currentUserId?: string;
 	showJoinButton?: boolean;
 	showLeaveButton?: boolean;
+}
+
+// Mini canvas preview component
+function MiniCanvas({ pixels, gridSize }: { pixels: { x: number; y: number; color: string }[]; gridSize: number }) {
+	const previewSize = 48; // 48px total
+
+	return (
+		<div
+			className="bg-white dark:bg-gray-700 border-2 border-black overflow-hidden"
+			style={{ width: previewSize, height: previewSize }}
+		>
+			<svg width={previewSize} height={previewSize} viewBox={`0 0 ${gridSize} ${gridSize}`}>
+				{/* Grid background */}
+				<rect width={gridSize} height={gridSize} fill="#f8fafc" className="dark:fill-gray-600" />
+				{/* Pixels */}
+				{pixels.map((pixel, idx) => (
+					<rect
+						key={idx}
+						x={pixel.x}
+						y={pixel.y}
+						width={1}
+						height={1}
+						fill={pixel.color}
+					/>
+				))}
+			</svg>
+		</div>
+	);
 }
 
 export default function GroupCard({
@@ -24,8 +53,10 @@ export default function GroupCard({
 	const memberCount = group.members.length;
 	const isFull = memberCount >= group.maxMembers;
 	const wins = group.wins || 0;
-	const unlockedPixels = group.unlockedPixels || 0;
+	const unlockedPixels = group.unlockedPixels || 10; // Default to 10 start pixels
 	const usedPixels = group.pixelArt?.pixels?.length || 0;
+	const gridSize = group.pixelArt?.gridSize || 16;
+	const pixels = useMemo(() => group.pixelArt?.pixels || [], [group.pixelArt?.pixels]);
 
 	return (
 		<div
@@ -33,17 +64,12 @@ export default function GroupCard({
 			onClick={() => onClick?.(group)}
 		>
 			<div className="flex items-start gap-4">
-				{/* Color indicator / Mini Canvas Preview */}
-				<div className="relative">
-					<div
-						className="w-10 h-10 border-2 border-black shrink-0"
-						style={{ backgroundColor: group.color }}
-					/>
-					{usedPixels > 0 && (
-						<div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border border-black flex items-center justify-center">
-							<Grid3X3 className="w-2.5 h-2.5 text-white" />
-						</div>
-					)}
+				{/* Mini Canvas Preview - always visible */}
+				<div className="relative shrink-0">
+					<MiniCanvas pixels={pixels} gridSize={gridSize} />
+					<div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border border-black flex items-center justify-center">
+						<Grid3X3 className="w-2.5 h-2.5 text-white" />
+					</div>
 				</div>
 
 				{/* Content */}
@@ -102,14 +128,12 @@ export default function GroupCard({
 								</span>
 							</div>
 						)}
-						{unlockedPixels > 0 && (
-							<div className="flex items-center gap-1 px-2 py-1 bg-pink-100 dark:bg-pink-900/40 border border-black dark:border-white/20 text-xs">
-								<Grid3X3 className="h-3 w-3 text-pink-600" />
-								<span className="text-black dark:text-white font-medium">
-									{usedPixels}/{unlockedPixels} px
-								</span>
-							</div>
-						)}
+						<div className="flex items-center gap-1 px-2 py-1 bg-pink-100 dark:bg-pink-900/40 border border-black dark:border-white/20 text-xs">
+							<Grid3X3 className="h-3 w-3 text-pink-600" />
+							<span className="text-black dark:text-white font-medium">
+								{usedPixels}/{unlockedPixels} px
+							</span>
+						</div>
 						<div className="flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 border border-black dark:border-white/20 text-xs">
 							<Zap className="h-3 w-3 text-amber-600" />
 							<span className="text-black dark:text-white font-medium">
