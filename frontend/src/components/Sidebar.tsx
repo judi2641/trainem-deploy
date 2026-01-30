@@ -243,26 +243,26 @@ export default function Sidebar() {
 	const xpPercent = nextLevelXp > 0 ? (currentXp / nextLevelXp) * 100 : 0;
 
 	const activeVisuals =
-		'flex items-center gap-3 px-3 py-2.5 bg-emerald-500 text-white font-medium border-2 border-black';
+		'flex items-center gap-3 px-3 py-2.5 bg-emerald-500 text-white font-medium border-2 border-black dark:border-white/20';
 	const nonActiveVisuals =
-		'flex items-center gap-3 px-3 py-2.5 text-black/70 hover:bg-white/50 hover:text-black border-2 border-transparent transition-colors';
+		'flex items-center gap-3 px-3 py-2.5 text-black/70 dark:text-white/70 hover:bg-white/50 dark:hover:bg-white/10 hover:text-black dark:hover:text-white border-2 border-transparent transition-colors';
 
 	return (
 		<div className="relative w-72 m-4 flex flex-col shrink-0">
 			{/* Shadow layer */}
-			<div className="absolute left-2 top-2 h-full w-full border-4 border-black bg-black/10" />
+			<div className="absolute left-2 top-2 h-full w-full border-4 border-black dark:border-white/20 bg-black/10 dark:bg-white/5" />
 
 			{/* Main sidebar container */}
-			<div className="relative h-full bg-white/90 backdrop-blur border-4 border-black p-5 flex flex-col">
+			<div className="relative h-full bg-white/90 dark:bg-gray-800/90 backdrop-blur border-4 border-black dark:border-white/20 p-5 flex flex-col">
 				{/* Logo */}
 				<div className="flex items-center gap-3 mb-8">
-					<div className="h-5 w-5 bg-emerald-500 border-2 border-black" />
-					<span className="font-pixel text-black text-xl">TrainEm</span>
+					<div className="h-5 w-5 bg-emerald-500 border-2 border-black dark:border-white/30" />
+					<span className="font-pixel text-black dark:text-white text-xl">TrainEm</span>
 				</div>
 
 				{/* User Profile */}
-				<div className="flex items-center gap-4 mb-8 p-3 bg-gradient-to-r from-emerald-50 to-amber-50 border-2 border-black">
-					<Avatar className="h-16 w-16 border-2 border-black rounded-none">
+				<div className="flex items-center gap-4 mb-8 p-3 bg-gradient-to-r from-emerald-50 to-amber-50 dark:from-emerald-900/30 dark:to-amber-900/30 border-2 border-black dark:border-white/20">
+					<Avatar className="h-16 w-16 border-2 border-black dark:border-white/20 rounded-none">
 						{pixelAvatarUrl || myUser?.img ? (
 							<AvatarImage
 								src={pixelAvatarUrl || myUser?.img}
@@ -275,15 +275,15 @@ export default function Sidebar() {
 						</AvatarFallback>
 					</Avatar>
 					<div className="flex-1 min-w-0">
-						<p className="font-medium text-black truncate">{myUser?.firstName ?? 'User'}</p>
-						<p className="text-xs text-black/60">Level {level}</p>
-						<div className="mt-2 h-2 w-full bg-black/10 border border-black overflow-hidden">
+						<p className="font-medium text-black dark:text-white truncate">{myUser?.firstName ?? 'User'}</p>
+						<p className="text-xs text-black/60 dark:text-white/60">Level {level}</p>
+						<div className="mt-2 h-2 w-full bg-black/10 dark:bg-white/10 border border-black dark:border-white/20 overflow-hidden">
 							<div
 								className="h-full bg-emerald-500 transition-all duration-300"
 								style={{ width: `${xpPercent}%` }}
 							/>
 						</div>
-						<p className="text-[10px] text-black/50 mt-1">
+						<p className="text-[10px] text-black/50 dark:text-white/50 mt-1">
 							{nextLevelXp - currentXp} XP to next level
 						</p>
 					</div>
@@ -293,7 +293,7 @@ export default function Sidebar() {
 				<nav className="flex-1 space-y-6">
 					{/* Menu Section */}
 					<div>
-						<h3 className="font-pixel text-[10px] text-black/50 uppercase mb-3 tracking-wider">
+						<h3 className="font-pixel text-[10px] text-black/50 dark:text-white/50 uppercase mb-3 tracking-wider">
 							Menu
 						</h3>
 						<ul className="space-y-1.5">
@@ -365,7 +365,7 @@ export default function Sidebar() {
 
 					{/* General Section */}
 					<div>
-						<h3 className="font-pixel text-[10px] text-black/50 uppercase mb-3 tracking-wider">
+						<h3 className="font-pixel text-[10px] text-black/50 dark:text-white/50 uppercase mb-3 tracking-wider">
 							General
 						</h3>
 						<ul className="space-y-1.5">
@@ -394,7 +394,7 @@ export default function Sidebar() {
 				{/* Logout Button */}
 				<button
 					onClick={handleLogout}
-					className="flex items-center gap-3 px-3 py-2.5 mt-4 w-full text-black/70 hover:bg-red-50 hover:text-red-600 border-2 border-transparent hover:border-red-200 transition-colors"
+					className="flex items-center gap-3 px-3 py-2.5 mt-4 w-full text-black/70 dark:text-white/70 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 border-2 border-transparent hover:border-red-200 dark:hover:border-red-800 transition-colors"
 				>
 					<PixelLogoutIcon className="h-5 w-5 shrink-0" />
 					<span>Logout</span>

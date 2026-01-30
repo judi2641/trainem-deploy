@@ -127,10 +127,10 @@ export default function PixelArt() {
 	};
 
 	return (
-		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
+		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			{/* Subtle grid */}
 			<div
-				className="absolute inset-0 pointer-events-none opacity-20"
+				className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-10"
 				style={{
 					backgroundImage:
 						'linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)',
@@ -139,8 +139,8 @@ export default function PixelArt() {
 			/>
 
 			{/* Glow effects */}
-			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 blur-3xl" />
-			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 blur-3xl" />
+			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 dark:bg-emerald-500/10 blur-3xl" />
+			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 dark:bg-amber-500/10 blur-3xl" />
 
 			{/* Pixel background */}
 			<PixelBackground count={100} seed={88} />
@@ -154,29 +154,29 @@ export default function PixelArt() {
 					{/* Card with shadow */}
 					<div className="relative max-w-4xl">
 						{/* Shadow layer */}
-						<div className="absolute left-2 top-2 h-full w-full border-4 border-black bg-black/10" />
+						<div className="absolute left-2 top-2 h-full w-full border-4 border-black dark:border-white/20 bg-black/10 dark:bg-white/5" />
 
 						{/* Main card */}
-						<div className="relative bg-white/90 backdrop-blur border-4 border-black p-6 w-full">
+						<div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur border-4 border-black dark:border-white/20 p-6 w-full">
 							{/* Header */}
 							<div className="flex items-center gap-3 mb-6">
-								<div className="h-5 w-5 bg-amber-400 border-2 border-black" />
-								<h1 className="font-pixel text-xl text-black">Pixel Studio</h1>
+								<div className="h-5 w-5 bg-amber-400 border-2 border-black dark:border-white/30" />
+								<h1 className="font-pixel text-xl text-black dark:text-white">Pixel Studio</h1>
 							</div>
 
 							{/* Level info */}
-							<div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-amber-50 border-2 border-black">
+							<div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-amber-50 dark:from-emerald-900/30 dark:to-amber-900/30 border-2 border-black dark:border-white/20">
 								<div className="flex items-center justify-between mb-2">
-									<span className="text-sm font-medium text-black">Level {level}</span>
-									<span className="text-xs text-black/60">{unlockedPixels} pixels unlocked</span>
+									<span className="text-sm font-medium text-black dark:text-white">Level {level}</span>
+									<span className="text-xs text-black/60 dark:text-white/60">{unlockedPixels} pixels unlocked</span>
 								</div>
-								<div className="h-2 w-full bg-black/10 border border-black overflow-hidden">
+								<div className="h-2 w-full bg-black/10 dark:bg-white/10 border border-black dark:border-white/20 overflow-hidden">
 									<div
 										className="h-full bg-emerald-500 transition-all duration-300"
 										style={{ width: `${(currentXp / nextLevelXp) * 100}%` }}
 									/>
 								</div>
-								<p className="text-xs text-black/50 mt-2">
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">
 									{nextLevelXp - currentXp} XP to reach level {level + 1}.
 								</p>
 							</div>
@@ -184,14 +184,14 @@ export default function PixelArt() {
 							{isLoading ? (
 								<div className="flex items-center justify-center py-12">
 									<div className="flex items-center gap-3">
-										<div className="h-4 w-4 bg-emerald-500 border border-black animate-pulse" />
-										<span className="text-sm text-black/50">Loading pixel art...</span>
+										<div className="h-4 w-4 bg-emerald-500 border border-black dark:border-white/30 animate-pulse" />
+										<span className="text-sm text-black/50 dark:text-white/50">Loading pixel art...</span>
 									</div>
 								</div>
 							) : (
 								<div className="space-y-6">
 									{/* Canvas area */}
-									<div className="bg-gradient-to-br from-emerald-50 to-amber-50 border-2 border-black p-4">
+									<div className="bg-gradient-to-br from-emerald-50 to-amber-50 dark:from-emerald-900/20 dark:to-amber-900/20 border-2 border-black dark:border-white/20 p-4">
 										<PixelCanvas
 											gridSize={gridSize}
 											maxPixels={unlockedPixels}
@@ -207,7 +207,7 @@ export default function PixelArt() {
 									{/* Preview and save section */}
 									<div className="flex items-center gap-6">
 										<div className="flex items-center gap-4">
-											<div className="h-20 w-20 bg-white border-3 border-black flex items-center justify-center">
+											<div className="h-20 w-20 bg-white dark:bg-gray-700 border-3 border-black dark:border-white/20 flex items-center justify-center">
 												{pixelImage ? (
 													<img
 														src={pixelImage || '/placeholder.svg'}
@@ -215,12 +215,12 @@ export default function PixelArt() {
 														className="w-full h-full object-contain pixelated"
 													/>
 												) : (
-													<SparkleIcon className="h-8 w-8 text-black/20" />
+													<SparkleIcon className="h-8 w-8 text-black/20 dark:text-white/20" />
 												)}
 											</div>
 											<div>
-												<p className="text-sm font-medium text-black">Preview</p>
-												<p className="text-xs text-black/50">Your current pixel avatar</p>
+												<p className="text-sm font-medium text-black dark:text-white">Preview</p>
+												<p className="text-xs text-black/50 dark:text-white/50">Your current pixel avatar</p>
 											</div>
 										</div>
 

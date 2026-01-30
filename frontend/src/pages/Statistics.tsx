@@ -179,10 +179,10 @@ export default function Statistics() {
 	}, [entries, workouts, habits, exercises]);
 
 	return (
-		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
+		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			{/* Subtle grid */}
 			<div
-				className="absolute inset-0 pointer-events-none opacity-20"
+				className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-10"
 				style={{
 					backgroundImage:
 						'linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)',
@@ -191,8 +191,8 @@ export default function Statistics() {
 			/>
 
 			{/* Glow effects */}
-			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 blur-3xl" />
-			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 blur-3xl" />
+			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 dark:bg-emerald-500/10 blur-3xl" />
+			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 dark:bg-amber-500/10 blur-3xl" />
 
 			{/* Pixel background */}
 			<PixelBackground count={100} seed={99} />
@@ -206,7 +206,7 @@ export default function Statistics() {
 					{/* Header */}
 					<div className="flex items-center gap-3 mb-6">
 						<div className="h-6 w-6 bg-sky-400 border-2 border-black" />
-						<h1 className="font-pixel text-xl text-black">Statistics</h1>
+						<h1 className="font-pixel text-xl text-black dark:text-white">Statistics</h1>
 					</div>
 
 					{/* Stats Grid */}
@@ -226,7 +226,7 @@ export default function Statistics() {
 									</span>
 									<DumbbellIcon className="h-10 w-10 text-emerald-300" />
 								</div>
-								<p className="text-xs text-black/50 mt-2">Workouts completed all time</p>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">Workouts completed all time</p>
 							</PixelCardContent>
 						</PixelCard>
 
@@ -243,7 +243,7 @@ export default function Statistics() {
 									<span className="font-pixel text-3xl text-orange-600">{stats.streak}</span>
 									<FlameIcon className="h-10 w-10 text-orange-300" />
 								</div>
-								<p className="text-xs text-black/50 mt-2">Consecutive workout days</p>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">Consecutive workout days</p>
 							</PixelCardContent>
 						</PixelCard>
 
@@ -260,7 +260,7 @@ export default function Statistics() {
 									<span className="font-pixel text-3xl text-sky-600">{stats.thisWeekWorkouts}</span>
 									<CalendarIcon className="h-10 w-10 text-sky-300" />
 								</div>
-								<p className="text-xs text-black/50 mt-2">Workouts this week</p>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">Workouts this week</p>
 							</PixelCardContent>
 						</PixelCard>
 
@@ -281,7 +281,7 @@ export default function Statistics() {
 									</span>
 									<TrophyIcon className="h-10 w-10 text-purple-300" />
 								</div>
-								<p className="text-xs text-black/50 mt-2">Total weight lifted</p>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">Total weight lifted</p>
 							</PixelCardContent>
 						</PixelCard>
 
@@ -297,7 +297,7 @@ export default function Statistics() {
 								<div className="flex justify-between gap-2">
 									{stats.last7Days.map((day) => (
 										<div key={day.date} className="flex-1 text-center">
-											<div className="text-[10px] text-black/50 mb-2 font-medium">{day.day}</div>
+											<div className="text-[10px] text-black/50 dark:text-white/50 mb-2 font-medium">{day.day}</div>
 											<div
 												className={`h-12 w-full border-2 border-black flex items-end justify-center ${
 													day.hasWorkout ? 'bg-emerald-400' : 'bg-black/5'
@@ -328,7 +328,7 @@ export default function Statistics() {
 									<span className="font-pixel text-3xl text-pink-600">{stats.totalExercises}</span>
 									<ChartIcon className="h-10 w-10 text-pink-300" />
 								</div>
-								<p className="text-xs text-black/50 mt-2">Total exercises done</p>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">Total exercises done</p>
 							</PixelCardContent>
 						</PixelCard>
 
@@ -345,7 +345,7 @@ export default function Statistics() {
 									<span className="font-pixel text-3xl text-cyan-600">{stats.memberDays}</span>
 									<CalendarIcon className="h-10 w-10 text-cyan-300" />
 								</div>
-								<p className="text-xs text-black/50 mt-2">Days since first workout</p>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">Days since first workout</p>
 							</PixelCardContent>
 						</PixelCard>
 
@@ -364,14 +364,14 @@ export default function Statistics() {
 											<TrophyIcon className="h-8 w-8 text-rose-500" />
 										</div>
 										<div>
-											<p className="font-medium text-black text-lg">{stats.mostUsedWorkout.name}</p>
-											<p className="text-xs text-black/50 mt-1">
+											<p className="font-medium text-black dark:text-white text-lg">{stats.mostUsedWorkout.name}</p>
+											<p className="text-xs text-black/50 dark:text-white/50 mt-1">
 												{stats.mostUsedWorkout.exercises?.length ?? 0} exercises
 											</p>
 										</div>
 									</div>
 								) : (
-									<p className="text-sm text-black/50">Complete workouts to see your favorite!</p>
+									<p className="text-sm text-black/50 dark:text-white/50">Complete workouts to see your favorite!</p>
 								)}
 							</PixelCardContent>
 						</PixelCard>

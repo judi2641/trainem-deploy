@@ -228,17 +228,17 @@ export default function HabitsArea() {
 					<div className="h-8 w-8 bg-pink-400 border-3 border-black flex items-center justify-center">
 						<CheckIcon className="h-5 w-5 text-white" />
 					</div>
-					<h1 className="font-pixel text-2xl text-black">Habits</h1>
+					<h1 className="font-pixel text-2xl text-black dark:text-white">Habits</h1>
 				</div>
 
 				<Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
 					<DialogTrigger asChild>
-						<button className="pixel-btn flex items-center gap-2">
+						<button className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium">
 							<PlusIcon className="h-4 w-4" />
-							<span>New Habit</span>
+							New Habit
 						</button>
 					</DialogTrigger>
-					<DialogContent className="border-3 border-black bg-white">
+					<DialogContent className="border-3 border-black bg-white text-black">
 						<DialogHeader>
 							<DialogTitle className="font-pixel text-lg">Create New Habit</DialogTitle>
 							<DialogDescription>
@@ -336,7 +336,7 @@ export default function HabitsArea() {
 								<SunIcon className="h-3 w-3 text-black" />
 							</div>
 							<PixelCardTitle>Daily Habits</PixelCardTitle>
-							<span className="ml-auto text-xs text-black/50 font-medium">
+							<span className="ml-auto text-xs text-black/50 dark:text-white/50 font-medium">
 								{dailyHabits.length} habits
 							</span>
 						</div>
@@ -346,9 +346,9 @@ export default function HabitsArea() {
 						{dailyHabits.length === 0 ? (
 							<div className="h-40 flex items-center justify-center">
 								<div className="text-center">
-									<SunIcon className="h-10 w-10 text-black/20 mx-auto mb-2" />
-									<p className="text-sm text-black/50">No daily habits yet</p>
-									<p className="text-xs text-black/40 mt-1">Create one to get started!</p>
+									<SunIcon className="h-10 w-10 text-black/20 dark:text-white/20 mx-auto mb-2" />
+									<p className="text-sm text-black/50 dark:text-white/50">No daily habits yet</p>
+									<p className="text-xs text-black/40 dark:text-white/40 mt-1">Create one to get started!</p>
 								</div>
 							</div>
 						) : (
@@ -376,7 +376,7 @@ export default function HabitsArea() {
 								<CalendarIcon className="h-3 w-3 text-black" />
 							</div>
 							<PixelCardTitle>Weekly Habits</PixelCardTitle>
-							<span className="ml-auto text-xs text-black/50 font-medium">
+							<span className="ml-auto text-xs text-black/50 dark:text-white/50 font-medium">
 								{weeklyHabits.length} habits
 							</span>
 						</div>
@@ -386,9 +386,9 @@ export default function HabitsArea() {
 						{weeklyHabits.length === 0 ? (
 							<div className="h-40 flex items-center justify-center">
 								<div className="text-center">
-									<CalendarIcon className="h-10 w-10 text-black/20 mx-auto mb-2" />
-									<p className="text-sm text-black/50">No weekly habits yet</p>
-									<p className="text-xs text-black/40 mt-1">Create one to get started!</p>
+									<CalendarIcon className="h-10 w-10 text-black/20 dark:text-white/20 mx-auto mb-2" />
+									<p className="text-sm text-black/50 dark:text-white/50">No weekly habits yet</p>
+									<p className="text-xs text-black/40 dark:text-white/40 mt-1">Create one to get started!</p>
 								</div>
 							</div>
 						) : (
@@ -431,7 +431,7 @@ export default function HabitsArea() {
 							if (todaysHabits.length === 0) {
 								return (
 									<div className="h-24 flex items-center justify-center">
-										<p className="text-sm text-black/50">No habits scheduled for today</p>
+										<p className="text-sm text-black/50 dark:text-white/50">No habits scheduled for today</p>
 									</div>
 								);
 							}
@@ -456,10 +456,10 @@ export default function HabitsArea() {
 													onCheckedChange={() => !isDone && completeHabit(habit._id)}
 												/>
 												<div className="flex-1 min-w-0">
-													<div className={`text-sm font-medium truncate ${isDone ? 'text-emerald-700 line-through' : 'text-black'}`}>
+													<div className={`text-sm font-medium truncate ${isDone ? 'text-emerald-700 line-through' : 'text-black dark:text-black'}`}>
 														{habit.name}
 													</div>
-													<div className="text-xs text-black/50">
+													<div className="text-xs text-black/50 dark:text-white/50">
 														{habit.type === 'daily'
 															? 'Daily'
 															: WEEKDAYS.find((d) => d.value === habit.weekday)?.label}
@@ -512,7 +512,7 @@ function HabitItem({
 			/>
 			<div className="flex-1 min-w-0">
 				<div className="flex items-center gap-2">
-					<span className={`text-sm font-medium truncate ${isCompleted ? 'text-emerald-700 line-through' : 'text-black'}`}>
+					<span className={`text-sm font-medium truncate ${isCompleted ? 'text-emerald-700 line-through' : 'text-black dark:text-black'}`}>
 						{habit.name}
 					</span>
 					{isCompleted ? (
@@ -526,17 +526,17 @@ function HabitItem({
 					)}
 				</div>
 				{habit.description && (
-					<p className="text-xs text-black/50 truncate mt-0.5">{habit.description}</p>
+					<p className="text-xs text-black/50 dark:text-white/50 truncate mt-0.5">{habit.description}</p>
 				)}
 				{habit.type === 'weekly' && (
-					<p className="text-xs text-black/40 mt-0.5">
+					<p className="text-xs text-black/40 dark:text-white/40 mt-0.5">
 						Every {WEEKDAYS.find((d) => d.value === habit.weekday)?.label}
 					</p>
 				)}
 			</div>
 			<button
 				onClick={onDelete}
-				className="p-1.5 text-black/40 hover:text-red-500 hover:bg-red-50 transition-colors"
+				className="p-1.5 text-black/40 dark:text-white/40 hover:text-red-500 hover:bg-red-50 transition-colors"
 			>
 				<TrashIcon className="h-4 w-4" />
 			</button>

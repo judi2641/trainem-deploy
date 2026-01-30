@@ -3,7 +3,7 @@ import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Onboarding from './pages/Onboarding';
 //import Tasks from './pages/Tasks';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Landing from './pages/OnboardingSteps/Landing';
 import BasicInfo from './pages/OnboardingSteps/BasicInfo';
 import Experience from './pages/OnboardingSteps/Experience';
@@ -12,6 +12,7 @@ import Schedule from './pages/OnboardingSteps/Schedule';
 import Intro from './pages/OnboardingSteps/Intro';
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { loadStoredTheme } from './util/theme';
 import Callback from './pages/Callback';
 import { OnboardingProvider } from './context/OnboardingContext';
 
@@ -38,6 +39,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+	useEffect(() => {
+		loadStoredTheme();
+	}, []);
+
 	return (
 		<Router>
 			<ContextProvider>

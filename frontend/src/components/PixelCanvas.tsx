@@ -149,14 +149,14 @@ export default function PixelCanvas({
 
 	return (
 		<div className="space-y-4">
-			<div className="flex items-center justify-between text-sm text-slate-600">
+			<div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
 				<span>
 					Unlocked pixels: {usedPixels}/{maxPixels}
 				</span>
 				<span>{remainingPixels} remaining</span>
 			</div>
 
-			<div className="flex items-center gap-3 text-sm text-slate-600">
+			<div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
 				<span className="font-medium">Zoom</span>
 				<Button variant="outline" onClick={() => setZoom((prev) => Math.max(0.5, prev - 0.1))}>
 					-
@@ -168,7 +168,7 @@ export default function PixelCanvas({
 					step={0.1}
 					value={zoom}
 					onChange={(event) => setZoom(Number(event.target.value))}
-					className="w-40"
+					className="w-40 dark:accent-emerald-500"
 					aria-label="Zoom level"
 				/>
 				<Button variant="outline" onClick={() => setZoom((prev) => Math.min(2, prev + 0.1))}>
@@ -177,7 +177,7 @@ export default function PixelCanvas({
 				<span>{Math.round(zoom * 100)}%</span>
 			</div>
 
-			<div className="bg-slate-200 p-1 rounded-md w-72 h-72 sm:w-96 sm:h-96 overflow-auto">
+			<div className="bg-slate-200 dark:bg-slate-700 p-1 rounded-md w-72 h-72 sm:w-96 sm:h-96 overflow-auto">
 				<div
 					className="inline-grid gap-[0.5px]"
 					style={{
@@ -191,8 +191,8 @@ export default function PixelCanvas({
 								key={`${rowIndex}-${colIndex}`}
 								type="button"
 								onClick={() => handlePixelClick(rowIndex, colIndex)}
-								className="w-full h-full border border-slate-100"
-								style={{ backgroundColor: pixel ?? '#ffffff' }}
+								className="w-full h-full border border-slate-100 dark:border-slate-600"
+								style={{ backgroundColor: pixel ?? undefined }}
 								aria-label={`Pixel ${rowIndex + 1}, ${colIndex + 1}`}
 							/>
 						)),
@@ -208,20 +208,20 @@ export default function PixelCanvas({
 						onClick={() => setSelectedColor(color)}
 						className={`h-8 w-8 rounded border ${
 							selectedColor === color
-								? 'ring-2 ring-slate-900 border-slate-900'
-								: 'border-slate-300'
+								? 'ring-2 ring-slate-900 dark:ring-white border-slate-900 dark:border-white'
+								: 'border-slate-300 dark:border-slate-500'
 						}`}
 						style={{ backgroundColor: color }}
 						aria-label={`Select color ${color}`}
 					/>
 				))}
-				<label className="flex items-center gap-2 text-sm text-slate-600">
+				<label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
 					<span className="sr-only">Pick a custom color</span>
 					<input
 						type="color"
 						value={selectedColor}
 						onChange={(event) => setSelectedColor(event.target.value)}
-						className="h-8 w-8 cursor-pointer rounded border border-slate-300 bg-transparent"
+						className="h-8 w-8 cursor-pointer rounded border border-slate-300 dark:border-slate-500 bg-transparent"
 						aria-label="Custom color"
 					/>
 					<span>Spectrum</span>

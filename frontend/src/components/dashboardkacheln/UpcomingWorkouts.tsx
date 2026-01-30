@@ -131,8 +131,8 @@ export default function UpcomingWorkouts() {
 				{!hasContent ? (
 					<div className="h-full flex items-center justify-center">
 						<div className="text-center">
-							<CalendarIcon className="h-8 w-8 text-black/30 mx-auto mb-2" />
-							<p className="text-sm text-black/50">Nothing scheduled</p>
+							<CalendarIcon className="h-8 w-8 text-black/30 dark:text-white/30 mx-auto mb-2" />
+							<p className="text-sm text-black/50 dark:text-white/50">Nothing scheduled</p>
 						</div>
 					</div>
 				) : (
@@ -142,11 +142,11 @@ export default function UpcomingWorkouts() {
 							<div>
 								<div className="flex items-center gap-1.5 mb-2">
 									<CheckIcon className="h-3 w-3 text-pink-500" />
-									<span className="text-[10px] font-bold text-black/50 uppercase">
+									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
 										Today's Habits
 									</span>
 									{totalHabitsCount > 0 && (
-										<span className="text-[10px] text-black/40 ml-auto">
+										<span className="text-[10px] text-black/40 dark:text-white/40 ml-auto">
 											{completedHabitsCount}/{totalHabitsCount}
 										</span>
 									)}
@@ -170,13 +170,13 @@ export default function UpcomingWorkouts() {
 												/>
 												<span
 													className={`text-xs font-medium flex-1 truncate ${
-														isCompleted ? 'text-emerald-700 line-through' : 'text-black'
+														isCompleted ? 'text-emerald-700 line-through' : 'text-black dark:text-white'
 													}`}
 												>
 													{habit.name}
 												</span>
 												<span
-													className={`text-[10px] shrink-0 ${isCompleted ? 'text-emerald-500' : 'text-black/40'}`}
+													className={`text-[10px] shrink-0 ${isCompleted ? 'text-emerald-500' : 'text-black/40 dark:text-white/40'}`}
 												>
 													{habit.type === 'daily' ? 'Daily' : WEEKDAYS[habit.weekday]?.slice(0, 3)}
 												</span>
@@ -192,7 +192,7 @@ export default function UpcomingWorkouts() {
 							<div>
 								<div className="flex items-center gap-1.5 mb-2">
 									<CalendarIcon className="h-3 w-3 text-violet-500" />
-									<span className="text-[10px] font-bold text-black/50 uppercase">Workouts</span>
+									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Workouts</span>
 								</div>
 								<div className="space-y-1.5">
 									{upcomingEntries.map((entry: any) => (
@@ -203,7 +203,7 @@ export default function UpcomingWorkouts() {
 											<div className="bg-violet-500 text-white text-[9px] font-bold px-1.5 py-0.5 border border-black shrink-0">
 												{format(new Date(entry.date), 'MMM d')}
 											</div>
-											<span className="text-xs font-medium text-black truncate">
+											<span className="text-xs font-medium text-black dark:text-white truncate">
 												{entry.workoutName}
 											</span>
 										</div>

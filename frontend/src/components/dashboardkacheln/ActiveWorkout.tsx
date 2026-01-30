@@ -455,9 +455,9 @@ export default function ActiveWorkout() {
 				<PixelCardContent className="flex flex-col justify-center gap-4">
 					<div className="text-center py-6">
 						<div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-amber-100 border-2 border-black flex items-center justify-center mx-auto mb-4">
-							<Plus className="h-6 w-6 text-black/60" />
+							<Plus className="h-6 w-6 text-black/60 dark:text-white/60" />
 						</div>
-						<p className="text-sm text-black/60 mb-4">No active workout. Start one now!</p>
+						<p className="text-sm text-black/60 dark:text-white/60 mb-4">No active workout. Start one now!</p>
 					</div>
 
 					<div className="flex gap-2">
@@ -543,7 +543,7 @@ export default function ActiveWorkout() {
 							<Button
 								variant="ghost"
 								size="sm"
-								className="h-8 w-8 p-0 text-black/50 hover:text-red-600 hover:bg-red-50"
+								className="h-8 w-8 p-0 text-black/50 dark:text-white/50 hover:text-red-600 hover:bg-red-50"
 								onClick={() => abortEntry(latestUncompletedEntry._id)}
 							>
 								<X className="h-4 w-4" />
@@ -551,14 +551,14 @@ export default function ActiveWorkout() {
 						)}
 					</div>
 					<div className="flex items-center justify-between mt-2">
-						<span className="text-sm font-medium text-black">{workout?.name ?? 'Workout'}</span>
+						<span className="text-sm font-medium text-black dark:text-white">{workout?.name ?? 'Workout'}</span>
 						<div className="flex items-center gap-3">
 							{/* Active workout timer */}
-							<div className="flex items-center gap-1 px-2 py-0.5 bg-black/5 border border-black/20">
-								<Clock className="h-3 w-3 text-black/60" />
-								<span className="text-xs font-mono font-medium text-black/80">{elapsedTime}</span>
+							<div className="flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/10 border border-black/20 dark:border-white/20">
+								<Clock className="h-3 w-3 text-black/60 dark:text-white/60" />
+								<span className="text-xs font-mono font-medium text-black/80 dark:text-white/80">{elapsedTime}</span>
 							</div>
-							<span className="text-xs text-black/60">
+							<span className="text-xs text-black/60 dark:text-white/60">
 								{completedCount}/{totalCount} exercises
 							</span>
 						</div>
@@ -579,7 +579,7 @@ export default function ActiveWorkout() {
 							<div>
 								<div className="flex items-center gap-2 mb-2">
 									<div className="h-2 w-2 bg-amber-400 border border-black" />
-									<span className="text-[10px] font-bold text-black/50 uppercase">
+									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
 										Remaining ({remainingExercises.length})
 									</span>
 								</div>
@@ -589,7 +589,7 @@ export default function ActiveWorkout() {
 										return (
 											<div
 												key={ex.exercise.name}
-												className="flex items-center gap-3 p-3 border-2 bg-white border-black/20 hover:border-black/40 hover:shadow-[2px_2px_0px_rgba(0,0,0,0.1)] transition-all group"
+												className="flex items-center gap-3 p-3 border-2 bg-white dark:bg-gray-700 border-black/20 dark:border-white/20 hover:border-black/40 hover:shadow-[2px_2px_0px_rgba(0,0,0,0.1)] transition-all group"
 											>
 												<Checkbox
 													checked={false}
@@ -614,16 +614,16 @@ export default function ActiveWorkout() {
 															)}
 														</div>
 														<div className="flex-1 min-w-0">
-															<div className="text-sm font-medium text-black truncate">
+															<div className="text-sm font-medium text-black dark:text-white truncate">
 																{ex.exercise.name}
 															</div>
-															<div className="text-xs text-black/50">
+															<div className="text-xs text-black/50 dark:text-white/50">
 																{cardio ? `${ex.duration}s` : `${ex.sets}x${ex.reps}`}
 															</div>
 														</div>
 													</div>
 												</button>
-												<ChevronRight className="w-4 h-4 text-black/30 group-hover:text-black/60 shrink-0 transition-all" />
+												<ChevronRight className="w-4 h-4 text-black/30 dark:text-white/30 group-hover:text-black/60 dark:text-white/60 shrink-0 transition-all" />
 
 												<Popover
 													open={openForExerciseName === ex.exercise.name}
@@ -640,12 +640,12 @@ export default function ActiveWorkout() {
 														align="center"
 													>
 														<div className="space-y-3">
-															<div className="font-medium text-sm text-black">
+															<div className="font-medium text-sm text-black dark:text-white">
 																{ex.exercise.name}
 															</div>
 															{cardio ? (
 																<div className="space-y-2">
-																	<Label className="text-xs text-black/70">
+																	<Label className="text-xs text-black/70 dark:text-white/70">
 																		Duration (seconds)
 																	</Label>
 																	<Input
@@ -658,7 +658,7 @@ export default function ActiveWorkout() {
 																</div>
 															) : (
 																<div className="space-y-2">
-																	<Label className="text-xs text-black/70">Weight (kg)</Label>
+																	<Label className="text-xs text-black/70 dark:text-white/70">Weight (kg)</Label>
 																	<Input
 																		value={weightInput}
 																		onChange={(e) => setWeightInput(e.target.value)}
@@ -694,13 +694,13 @@ export default function ActiveWorkout() {
 									className="flex items-center gap-2 mb-2 w-full text-left cursor-pointer hover:opacity-80"
 								>
 									<div className="h-2 w-2 bg-emerald-500 border border-black" />
-									<span className="text-[10px] font-bold text-black/50 uppercase">
+									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
 										Completed ({completedExercises.length})
 									</span>
 									{showCompleted ? (
-										<ChevronUp className="w-3 h-3 text-black/40 ml-auto" />
+										<ChevronUp className="w-3 h-3 text-black/40 dark:text-white/40 ml-auto" />
 									) : (
-										<ChevronDown className="w-3 h-3 text-black/40 ml-auto" />
+										<ChevronDown className="w-3 h-3 text-black/40 dark:text-white/40 ml-auto" />
 									)}
 								</button>
 

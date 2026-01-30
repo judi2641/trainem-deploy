@@ -86,7 +86,7 @@ export default function QuickStats() {
 		<PixelCard>
 			<PixelCardHeader>
 				<div className="flex items-center gap-2">
-					<div className="h-4 w-4 bg-amber-400 border-2 border-black" />
+					<div className="h-4 w-4 bg-amber-400 border-2 border-black dark:border-white/30" />
 					<PixelCardTitle>All Time</PixelCardTitle>
 				</div>
 			</PixelCardHeader>
@@ -96,7 +96,7 @@ export default function QuickStats() {
 					{statItems.map((stat) => (
 						<div
 							key={stat.label}
-							className={`${stat.bgColor} border-2 border-black p-2 flex flex-col items-center justify-center text-center`}
+							className={`${stat.bgColor} border-2 border-black dark:border-white/20 p-2 flex flex-col items-center justify-center text-center`}
 						>
 							<stat.icon className={`h-4 w-4 ${stat.iconColor} mb-1`} />
 							<div className="text-lg font-bold text-black">{stat.value}</div>

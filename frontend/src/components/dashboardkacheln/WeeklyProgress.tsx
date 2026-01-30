@@ -99,7 +99,7 @@ export default function WeeklyProgress() {
 					<div className="h-4 w-4 bg-sky-400 border-2 border-black" />
 					<PixelCardTitle>This Week</PixelCardTitle>
 				</div>
-				<p className="text-xs text-black/50 mt-1">
+				<p className="text-xs text-black/50 dark:text-white/50 mt-1">
 					{format(weekData.weekStart, 'MMM d')} - {format(weekData.weekEnd, 'MMM d')}
 				</p>
 			</PixelCardHeader>
@@ -107,24 +107,24 @@ export default function WeeklyProgress() {
 			<PixelCardContent className="flex flex-col gap-4">
 				{/* Stats row */}
 				<div className="grid grid-cols-2 gap-3">
-					<div className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-black p-3 text-center">
-						<div className="text-2xl font-bold text-black">{weekData.completedWorkouts}</div>
-						<div className="text-xs text-black/60">Workouts</div>
+					<div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/40 dark:to-emerald-800/40 border-2 border-black dark:border-white/20 p-3 text-center">
+						<div className="text-2xl font-bold text-black dark:text-white">{weekData.completedWorkouts}</div>
+						<div className="text-xs text-black/60 dark:text-white/60">Workouts</div>
 					</div>
-					<div className="bg-gradient-to-br from-amber-50 to-amber-100 border-2 border-black p-3 text-center">
-						<div className="text-2xl font-bold text-black flex items-center justify-center gap-1">
+					<div className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/40 dark:to-amber-800/40 border-2 border-black dark:border-white/20 p-3 text-center">
+						<div className="text-2xl font-bold text-black dark:text-white flex items-center justify-center gap-1">
 							{weekData.streak}
 							{weekData.streak > 0 && <Flame className="h-5 w-5 text-orange-500" />}
 						</div>
-						<div className="text-xs text-black/60">Day Streak</div>
+						<div className="text-xs text-black/60 dark:text-white/60">Day Streak</div>
 					</div>
 				</div>
 
 				{/* Weekly goal progress */}
 				<div>
 					<div className="flex items-center justify-between text-sm mb-1">
-						<span className="text-black/60">Weekly Goal</span>
-						<span className="font-medium text-black">
+						<span className="text-black/60 dark:text-white/60">Weekly Goal</span>
+						<span className="font-medium text-black dark:text-white">
 							{weekData.completedWorkouts}/{weeklyGoal}
 						</span>
 					</div>
@@ -140,7 +140,7 @@ export default function WeeklyProgress() {
 				<div className="flex justify-between gap-1 mt-auto">
 					{weekData.dayStatus.map((day) => (
 						<div key={day.day} className="flex flex-col items-center gap-1">
-							<span className="text-[10px] text-black/50 font-medium">{day.day}</span>
+							<span className="text-[10px] text-black/50 dark:text-white/50 font-medium">{day.day}</span>
 							<div
 								className={`w-7 h-7 border-2 flex items-center justify-center text-xs transition-colors ${
 									day.completed
