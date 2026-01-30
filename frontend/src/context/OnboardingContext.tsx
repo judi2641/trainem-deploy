@@ -88,7 +88,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 	const submitUserData = async () => {
 		if (isLoading) {
-			console.warn('Auth0 still loading… delaying user submit');
+			console.warn('Auth0 still loadingâ€¦ delaying user submit');
 			setTimeout(submitUserData, 200);
 			return;
 		}
@@ -115,9 +115,9 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 			if (!res.ok) throw new Error('Error saving user basic info');
 
-			console.log('✔ User basic info saved successfully');
+			console.log('âœ” User basic info saved successfully');
 
-			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workout/onboarding`, {
+			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workouts/onboarding`, {
 				method: 'POST',
 				headers: {
 					'Content-type': 'application/json',
@@ -144,12 +144,13 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/trainingsplan/${user.sub}`, {
+			const res = await fetch(`http://localhost:3000/api/workouts/ai`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					auth0Id: user.sub,
 					onboarding: {
 						goal: planData.goal,
 						experience: planData.experience,
@@ -167,10 +168,14 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			});
 
 			if (!res.ok) {
-				throw new Error('Error creating training plan');
+				throw new Error('Error creating AI workouts');
 			}
 
-			console.log('✔ Training plan created successfully');
+			const aiWorkouts = await res.json();
+			if (Array.isArray(aiWorkouts)) {
+				setWorkouts((prev: any) => [...prev, ...aiWorkouts]);
+			}
+			console.log('âœ” AI workouts created successfully');
 		} catch (err) {
 			console.error('API error:', err);
 		}

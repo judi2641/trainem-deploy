@@ -1,10 +1,17 @@
-import { Button } from '@/components/ui/button';
 import { PixelCard } from '@/components/ui/pixel-card';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useOnboarding } from '../../context/OnboardingContext';
 
 export default function OnboardingSummary() {
 	const navigate = useNavigate();
+	const { submitUserData, submitPlanData } = useOnboarding();
+
+	const handleFinish = async () => {
+		await submitUserData();
+		await submitPlanData();
+		navigate('/dashboard');
+	};
 
 	return (
 		<div className="text-center space-y-6">
@@ -59,7 +66,7 @@ export default function OnboardingSummary() {
 
 				<button
 					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-amber-400 hover:bg-amber-500"
-					onClick={() => navigate('/dashboard')}
+					onClick={handleFinish}
 				>
 					Start your journey!
 				</button>

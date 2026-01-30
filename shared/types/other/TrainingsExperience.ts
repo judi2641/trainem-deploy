@@ -1,4 +1,3 @@
-// experience
 export const EXPERIENCE = {
 	exp1: 'beginner',
 	exp2: 'intermediate',

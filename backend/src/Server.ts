@@ -1,6 +1,10 @@
+import dotenv from 'dotenv';
 import express from 'express';
+import path from 'path';
 import type { Request, Response } from 'express';
 import { logger } from './utils/logger';
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 import cors from 'cors';
 import { initDB } from './database/db';
 import UserRoute from './endpoints/users/UserRoute';
