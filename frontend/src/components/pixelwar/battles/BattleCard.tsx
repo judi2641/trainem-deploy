@@ -1,3 +1,4 @@
+import { Clock, Trophy } from 'lucide-react';
 import type { Battle } from '../../../../../shared/sharedTypes';
 
 interface BattleCardProps {
@@ -19,39 +20,40 @@ function formatTimeRemaining(endDate: string | undefined): string {
 
 	if (hours > 24) {
 		const days = Math.floor(hours / 24);
-		return `${days}d ${hours % 24}h left`;
+		return `${days}d ${hours % 24}h`;
 	}
 
-	return `${hours}h ${minutes}m left`;
+	return `${hours}h ${minutes}m`;
 }
 
-function getStatusColor(status: string): string {
+function getStatusStyles(status: string): { bg: string; text: string; border: string } {
 	switch (status) {
 		case 'active':
-			return 'bg-green-500';
+			return { bg: 'bg-emerald-500', text: 'text-white', border: 'border-emerald-600' };
 		case 'completed':
-			return 'bg-gray-500';
+			return { bg: 'bg-gray-500', text: 'text-white', border: 'border-gray-600' };
 		case 'pending':
-			return 'bg-yellow-500';
+			return { bg: 'bg-amber-500', text: 'text-white', border: 'border-amber-600' };
 		default:
-			return 'bg-gray-400';
+			return { bg: 'bg-gray-400', text: 'text-white', border: 'border-gray-500' };
 	}
 }
 
 export default function BattleCard({ battle, onClick }: BattleCardProps) {
 	const totalPixels = battle.challenger.pixelsOwned + battle.opponent.pixelsOwned;
 	const challengerPercent = totalPixels > 0 ? (battle.challenger.pixelsOwned / totalPixels) * 100 : 50;
+	const statusStyles = getStatusStyles(battle.status);
 
 	return (
 		<div
 			onClick={onClick}
-			className="p-4 bg-white/80 backdrop-blur rounded-lg border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,0.2)] cursor-pointer hover:shadow-[6px_6px_0_0_rgba(0,0,0,0.2)] hover:-translate-y-0.5 transition-all"
+			className="p-4 bg-white dark:bg-gray-800 border-2 border-black dark:border-white/20 shadow-[3px_3px_0px_rgba(0,0,0,0.2)] cursor-pointer hover:shadow-[4px_4px_0px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 transition-all"
 		>
 			{/* Header */}
 			<div className="flex items-center justify-between mb-3">
-				<h3 className="font-semibold text-gray-800 truncate">{battle.name}</h3>
-				<span className={`px-2 py-0.5 text-xs text-white rounded ${getStatusColor(battle.status)}`}>
-					{battle.status}
+				<h3 className="font-medium text-black dark:text-white truncate">{battle.name || 'Battle'}</h3>
+				<span className={`px-2 py-0.5 text-xs font-medium border ${statusStyles.bg} ${statusStyles.text} ${statusStyles.border}`}>
+					{battle.status.toUpperCase()}
 				</span>
 			</div>
 
@@ -59,25 +61,31 @@ export default function BattleCard({ battle, onClick }: BattleCardProps) {
 			<div className="flex items-center justify-between mb-3">
 				<div className="flex items-center gap-2">
 					<div
-						className="w-4 h-4 border border-black"
+						className="w-5 h-5 border-2 border-black"
 						style={{ backgroundColor: battle.challenger.color }}
 					/>
-					<span className="text-sm font-medium">{battle.challenger.groupName}</span>
+					<span className="text-sm font-medium text-black dark:text-white truncate max-w-[80px]">
+						{battle.challenger.groupName}
+					</span>
 				</div>
-				<span className="text-gray-400 text-sm">vs</span>
+				<div className="px-2 py-0.5 bg-red-500 border border-black text-white text-[10px] font-bold">
+					VS
+				</div>
 				<div className="flex items-center gap-2">
-					<span className="text-sm font-medium">{battle.opponent.groupName}</span>
+					<span className="text-sm font-medium text-black dark:text-white truncate max-w-[80px]">
+						{battle.opponent.groupName}
+					</span>
 					<div
-						className="w-4 h-4 border border-black"
+						className="w-5 h-5 border-2 border-black"
 						style={{ backgroundColor: battle.opponent.color }}
 					/>
 				</div>
 			</div>
 
 			{/* Progress Bar */}
-			{battle.status === 'active' || battle.status === 'completed' ? (
+			{(battle.status === 'active' || battle.status === 'completed') && (
 				<>
-					<div className="h-3 bg-gray-200 rounded-full overflow-hidden border border-black mb-2">
+					<div className="h-3 bg-gray-200 dark:bg-gray-700 overflow-hidden border border-black dark:border-white/20 mb-2">
 						<div className="h-full flex">
 							<div
 								className="h-full transition-all duration-500"
@@ -97,25 +105,36 @@ export default function BattleCard({ battle, onClick }: BattleCardProps) {
 					</div>
 
 					{/* Stats */}
-					<div className="flex justify-between text-xs text-gray-600">
-						<span>{battle.challenger.pixelsOwned} px</span>
+					<div className="flex justify-between items-center text-xs">
+						<span className="text-black/60 dark:text-white/60 font-medium">
+							{battle.challenger.pixelsOwned} px
+						</span>
+
 						{battle.status === 'active' && (
-							<span className="text-orange-600 font-medium">
+							<span className="flex items-center gap-1 text-orange-600 dark:text-orange-400 font-medium">
+								<Clock className="h-3 w-3" />
 								{formatTimeRemaining(battle.endDate)}
 							</span>
 						)}
+
 						{battle.status === 'completed' && battle.winnerId && (
-							<span className="text-emerald-600 font-medium">
-								Winner: {battle.winnerId === battle.challenger.groupId
+							<span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+								<Trophy className="h-3 w-3" />
+								{battle.winnerId === battle.challenger.groupId
 									? battle.challenger.groupName
 									: battle.opponent.groupName}
 							</span>
 						)}
-						<span>{battle.opponent.pixelsOwned} px</span>
+
+						<span className="text-black/60 dark:text-white/60 font-medium">
+							{battle.opponent.pixelsOwned} px
+						</span>
 					</div>
 				</>
-			) : (
-				<div className="text-sm text-gray-500 text-center py-2">
+			)}
+
+			{battle.status === 'pending' && (
+				<div className="text-sm text-black/50 dark:text-white/50 text-center py-2 border-t border-black/10 dark:border-white/10">
 					Waiting for response...
 				</div>
 			)}

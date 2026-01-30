@@ -9,17 +9,9 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { useMyContext } from '@/context/AppContext';
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import {
-	format,
-	isAfter,
-	startOfToday,
-	isSameDay,
-	addDays,
-	startOfWeek,
-	endOfWeek,
-} from 'date-fns';
+import { format, isAfter, startOfToday, isSameDay, addDays, endOfWeek } from 'date-fns';
 import { toast } from 'sonner';
-import { Trophy, Calendar, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 // Pixel art icons
 function CheckIcon({ className }: { className?: string }) {

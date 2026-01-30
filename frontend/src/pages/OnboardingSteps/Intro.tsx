@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { PixelCard } from '@/components/ui/pixel-card';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

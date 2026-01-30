@@ -188,7 +188,7 @@ function PixelLogoutIcon({ className }: { className?: string }) {
 
 export default function Sidebar() {
 	const { myUser, pixelArt } = useMyContext();
-	const { user, logout } = useAuth0();
+	const { logout } = useAuth0();
 	const [pixelAvatarUrl, setPixelAvatarUrl] = useState<string | null>(null);
 
 	useEffect(() => {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
+import { ArrowLeft, Clock, Trophy, Crosshair } from 'lucide-react';
 import type { Battle, PixelBoard, BattleLiveScore, BattleMember } from '../../../../../shared/sharedTypes';
 
 interface BattleArenaProps {
@@ -195,32 +196,36 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 	};
 
-	const userColor = userGroupId === battle.challenger.groupId
-		? battle.challenger.color
-		: battle.opponent.color;
+	const userColor =
+		userGroupId === battle.challenger.groupId ? battle.challenger.color : battle.opponent.color;
 
 	return (
-		<div className="h-full flex flex-col">
+		<div className="h-full flex flex-col gap-4">
 			{/* Header */}
-			<div className="flex items-center justify-between mb-4">
+			<div className="flex items-center justify-between">
 				<button
 					onClick={onBack}
-					className="px-4 py-2 border-2 border-black rounded-lg hover:bg-gray-50 transition-colors"
+					className="flex items-center gap-2 px-4 py-2 border-2 border-black bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
 				>
+					<ArrowLeft className="h-4 w-4" />
 					Back
 				</button>
 
-				<h1 className="text-2xl font-bold text-gray-800">{battle.name}</h1>
+				<h1 className="font-pixel text-xl text-black dark:text-white">
+					{battle.name || 'Pixel Battle'}
+				</h1>
 
 				{/* Timer */}
 				{liveScore && battle.status === 'active' && (
-					<div className="text-xl font-mono bg-black text-white px-4 py-2 rounded-lg">
+					<div className="flex items-center gap-2 px-4 py-2 bg-black border-2 border-black text-white font-mono text-lg">
+						<Clock className="h-4 w-4" />
 						{formatTime(liveScore.timeRemaining)}
 					</div>
 				)}
 
 				{battle.status === 'completed' && (
-					<div className="text-lg font-bold text-emerald-600">
+					<div className="flex items-center gap-2 px-4 py-2 bg-emerald-500 border-2 border-black text-white font-medium">
+						<Trophy className="h-4 w-4" />
 						Battle Ended
 					</div>
 				)}
@@ -228,28 +233,39 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 
 			{/* Score Bar */}
 			{liveScore && (
-				<div className="mb-4 p-4 bg-white/80 rounded-lg border-2 border-black">
-					<div className="flex justify-between mb-2">
+				<div className="p-4 bg-white dark:bg-gray-800 border-2 border-black shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
+					<div className="flex justify-between mb-3">
 						<div className="flex items-center gap-2">
 							<div
-								className="w-4 h-4 border border-black"
+								className="w-5 h-5 border-2 border-black"
 								style={{ backgroundColor: battle.challenger.color }}
 							/>
-							<span className="font-medium">{battle.challenger.groupName}</span>
-							<span className="text-gray-600">({liveScore.challenger.pixels} px)</span>
+							<span className="font-medium text-black dark:text-white">
+								{battle.challenger.groupName}
+							</span>
+							<span className="text-black/60 dark:text-white/60 text-sm">
+								({liveScore.challenger.pixels} px)
+							</span>
+						</div>
+						<div className="px-2 py-0.5 bg-red-500 border border-black text-white text-[10px] font-bold">
+							VS
 						</div>
 						<div className="flex items-center gap-2">
-							<span className="text-gray-600">({liveScore.opponent.pixels} px)</span>
-							<span className="font-medium">{battle.opponent.groupName}</span>
+							<span className="text-black/60 dark:text-white/60 text-sm">
+								({liveScore.opponent.pixels} px)
+							</span>
+							<span className="font-medium text-black dark:text-white">
+								{battle.opponent.groupName}
+							</span>
 							<div
-								className="w-4 h-4 border border-black"
+								className="w-5 h-5 border-2 border-black"
 								style={{ backgroundColor: battle.opponent.color }}
 							/>
 						</div>
 					</div>
 
 					{/* Progress Bar */}
-					<div className="h-6 bg-gray-200 rounded-full overflow-hidden border-2 border-black">
+					<div className="h-6 bg-gray-200 dark:bg-gray-700 overflow-hidden border-2 border-black">
 						<div className="h-full flex">
 							<div
 								className="h-full transition-all duration-500 flex items-center justify-end pr-2"
@@ -258,7 +274,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 									backgroundColor: battle.challenger.color,
 								}}
 							>
-								<span className="text-xs font-bold text-white drop-shadow">
+								<span className="text-xs font-bold text-white drop-shadow-sm">
 									{liveScore.challenger.percentage.toFixed(1)}%
 								</span>
 							</div>
@@ -269,7 +285,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 									backgroundColor: battle.opponent.color,
 								}}
 							>
-								<span className="text-xs font-bold text-white drop-shadow">
+								<span className="text-xs font-bold text-white drop-shadow-sm">
 									{liveScore.opponent.percentage.toFixed(1)}%
 								</span>
 							</div>
@@ -279,21 +295,21 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 			)}
 
 			{/* Canvas Area */}
-			<div className="flex-1 relative bg-white/50 rounded-lg border-2 border-black overflow-hidden">
+			<div className="flex-1 relative bg-white/50 dark:bg-gray-900/50 border-2 border-black overflow-hidden shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
 				{/* Zoom Controls */}
 				<div className="absolute top-4 right-4 z-10 flex gap-2">
 					<button
 						onClick={() => setZoom((z) => Math.max(1, z - 1))}
-						className="w-8 h-8 bg-white border-2 border-black rounded font-bold hover:bg-gray-50"
+						className="w-8 h-8 bg-white dark:bg-gray-800 border-2 border-black text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700"
 					>
 						-
 					</button>
-					<span className="px-2 py-1 bg-white border-2 border-black rounded text-sm">
+					<span className="px-3 py-1 bg-white dark:bg-gray-800 border-2 border-black text-black dark:text-white text-sm font-medium">
 						{zoom}x
 					</span>
 					<button
 						onClick={() => setZoom((z) => Math.min(10, z + 1))}
-						className="w-8 h-8 bg-white border-2 border-black rounded font-bold hover:bg-gray-50"
+						className="w-8 h-8 bg-white dark:bg-gray-800 border-2 border-black text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700"
 					>
 						+
 					</button>
@@ -301,20 +317,25 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 
 				{/* User Info Panel */}
 				{userGroupId && (
-					<div className="absolute top-4 left-4 z-10 flex flex-col gap-2 bg-white px-3 py-2 border-2 border-black rounded">
-						<div className="flex items-center gap-2">
-							<span className="text-sm">Your color:</span>
+					<div className="absolute top-4 left-4 z-10 bg-white dark:bg-gray-800 p-3 border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,0.2)]">
+						<div className="flex items-center gap-2 mb-2">
+							<Crosshair className="h-4 w-4 text-black/60 dark:text-white/60" />
+							<span className="text-sm text-black dark:text-white font-medium">Your Team</span>
+						</div>
+						<div className="flex items-center gap-3">
 							<div
-								className="w-6 h-6 border-2 border-black"
+								className="w-8 h-8 border-2 border-black"
 								style={{ backgroundColor: userColor }}
 							/>
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="text-sm">Available pixels:</span>
-							<span className="font-bold text-lg">{userMember?.pixelsAvailable ?? 0}</span>
+							<div>
+								<div className="text-2xl font-bold text-black dark:text-white">
+									{userMember?.pixelsAvailable ?? 0}
+								</div>
+								<div className="text-xs text-black/50 dark:text-white/50">pixels available</div>
+							</div>
 						</div>
 						{(!userMember || userMember.pixelsAvailable === 0) && (
-							<div className="text-xs text-orange-600">
+							<div className="mt-2 text-xs text-orange-600 dark:text-orange-400 border-t border-black/10 dark:border-white/10 pt-2">
 								Complete exercises to earn pixels!
 							</div>
 						)}
@@ -340,7 +361,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 						<canvas
 							ref={canvasRef}
 							onClick={handleCanvasClick}
-							className="border-2 border-black shadow-lg"
+							className="border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,0.3)]"
 							style={{
 								imageRendering: 'pixelated',
 							}}
@@ -350,20 +371,23 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 
 				{/* Status Overlay */}
 				{battle.status !== 'active' && (
-					<div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-						<div className="bg-white p-6 rounded-lg border-4 border-black text-center">
-							<h2 className="text-2xl font-bold mb-2">
+					<div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+						<div className="bg-white dark:bg-gray-800 p-8 border-4 border-black text-center shadow-[6px_6px_0px_rgba(0,0,0,0.3)]">
+							<h2 className="font-pixel text-2xl text-black dark:text-white mb-4">
 								{battle.status === 'completed' ? 'Battle Ended!' : 'Battle Not Started'}
 							</h2>
 							{battle.winnerId && (
-								<p className="text-lg">
-									Winner:{' '}
-									<span className="font-bold">
-										{battle.winnerId === battle.challenger.groupId
-											? battle.challenger.groupName
-											: battle.opponent.groupName}
+								<div className="flex items-center justify-center gap-3">
+									<Trophy className="h-6 w-6 text-amber-500" />
+									<span className="text-lg text-black dark:text-white">
+										Winner:{' '}
+										<span className="font-bold">
+											{battle.winnerId === battle.challenger.groupId
+												? battle.challenger.groupName
+												: battle.opponent.groupName}
+										</span>
 									</span>
-								</p>
+								</div>
 							)}
 						</div>
 					</div>

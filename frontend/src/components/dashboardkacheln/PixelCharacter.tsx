@@ -71,8 +71,6 @@ export default function PixelCharacter() {
 		};
 	}, [myUser?.points, myUser?.score]);
 
-	const characterColor = myUser?.characterColor ?? '#10B981';
-
 	return (
 		<PixelCard>
 			<PixelCardHeader>

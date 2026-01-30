@@ -26,7 +26,6 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useMyContext } from '@/context/AppContext';
-import { Checkbox } from '@/components/ui/checkbox';
 
 const WEEKDAYS = [
 	{ value: 0, label: 'Sunday' },
@@ -106,7 +105,7 @@ function TrashIcon({ className }: { className?: string }) {
 }
 
 export default function HabitsArea() {
-	const { myUser, habits, setHabits, entries, setEntries } = useMyContext();
+	const { myUser, habits, setHabits, entries } = useMyContext();
 	const auth0Id = myUser?.auth0Id;
 
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -126,36 +125,6 @@ export default function HabitsArea() {
 			.filter((e: any) => e.habitId && e.date?.startsWith(todayStr) && e.completed)
 			.map((e: any) => e.habitId);
 	}, [entries, todayStr]);
-
-	async function completeHabit(habitId: string) {
-		if (!auth0Id) return;
-
-		try {
-			const res = await fetch('http://localhost:3000/api/entries', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					auth0Id,
-					habitId,
-					date: new Date().toISOString(),
-					plannedExercises: [],
-					completed_exercises: [],
-					completed: true,
-					score: 1,
-				}),
-			});
-
-			if (!res.ok) {
-				throw new Error('Failed to complete habit');
-			}
-
-			const newEntry = await res.json();
-			setEntries((prev: any[]) => [...prev, newEntry]);
-			toast.success('Habit completed! +10 XP');
-		} catch (err) {
-			toast.error('Failed to complete habit');
-		}
-	}
 
 	async function createHabit() {
 		if (!auth0Id || !newHabitName.trim()) {
@@ -360,7 +329,6 @@ export default function HabitsArea() {
 										key={habit._id}
 										habit={habit}
 										onDelete={() => deleteHabit(habit._id)}
-										onComplete={() => completeHabit(habit._id)}
 										isToday={true}
 										isCompleted={completedHabitIds.includes(habit._id)}
 									/>
@@ -402,7 +370,6 @@ export default function HabitsArea() {
 										key={habit._id}
 										habit={habit}
 										onDelete={() => deleteHabit(habit._id)}
-										onComplete={() => completeHabit(habit._id)}
 										isToday={habit.weekday === today}
 										isCompleted={completedHabitIds.includes(habit._id)}
 									/>
@@ -419,13 +386,11 @@ export default function HabitsArea() {
 function HabitItem({
 	habit,
 	onDelete,
-	onComplete,
 	isToday,
 	isCompleted,
 }: {
 	habit: any;
 	onDelete: () => void;
-	onComplete: () => void;
 	isToday: boolean;
 	isCompleted: boolean;
 }) {

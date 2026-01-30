@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import ProgressBar from '../components/ProgressBar';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import PixelBackground from '@/components/pixel/PixelBackground';
 import { PixelCard, PixelCardContent, PixelCardHeader } from '@/components/ui/pixel-card';
 

@@ -1,4 +1,14 @@
 import { useState } from 'react';
+import { Users } from 'lucide-react';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface CreateGroupModalProps {
 	onClose: () => void;
@@ -11,9 +21,18 @@ interface CreateGroupModalProps {
 }
 
 const PRESET_COLORS = [
-	'#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
-	'#98D8C8', '#F7B731', '#5F27CD', '#00D2D3',
-	'#FF6348', '#1dd1a1', '#feca57', '#ff9ff3',
+	'#FF6B6B',
+	'#4ECDC4',
+	'#45B7D1',
+	'#FFA07A',
+	'#98D8C8',
+	'#F7B731',
+	'#5F27CD',
+	'#00D2D3',
+	'#FF6348',
+	'#1dd1a1',
+	'#feca57',
+	'#ff9ff3',
 ];
 
 export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModalProps) {
@@ -29,27 +48,33 @@ export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModal
 				name: name.trim(),
 				description: description.trim() || undefined,
 				color,
-				isPublic
+				isPublic,
 			});
 		}
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-			<div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
-				<h2 className="text-2xl font-bold text-gray-800 mb-4">Create New Group</h2>
+		<Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+			<DialogContent className="sm:max-w-lg border-4 border-black bg-white text-black">
+				<DialogHeader>
+					<DialogTitle className="font-pixel text-lg flex items-center gap-2">
+						<div className="w-6 h-6 bg-violet-500 border-2 border-black flex items-center justify-center">
+							<Users className="w-3 h-3 text-white" />
+						</div>
+						Create New Group
+					</DialogTitle>
+					<DialogDescription>Create a group to compete in Pixel Wars!</DialogDescription>
+				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="space-y-4">
+				<form onSubmit={handleSubmit} className="space-y-5 mt-4">
 					{/* Name */}
-					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
-							Group Name *
-						</label>
-						<input
+					<div className="space-y-2">
+						<Label className="font-medium text-sm">Group Name *</Label>
+						<Input
 							type="text"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+							className="w-full p-3 border-2 border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-violet-500"
 							placeholder="Enter group name"
 							required
 							maxLength={50}
@@ -57,14 +82,12 @@ export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModal
 					</div>
 
 					{/* Description */}
-					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-1">
-							Description
-						</label>
+					<div className="space-y-2">
+						<Label className="font-medium text-sm">Description</Label>
 						<textarea
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
-							className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+							className="w-full p-3 border-2 border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
 							placeholder="Enter group description (optional)"
 							rows={3}
 							maxLength={200}
@@ -72,18 +95,18 @@ export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModal
 					</div>
 
 					{/* Color */}
-					<div>
-						<label className="block text-sm font-medium text-gray-700 mb-2">
-							Group Color
-						</label>
+					<div className="space-y-2">
+						<Label className="font-medium text-sm">Group Color</Label>
 						<div className="grid grid-cols-6 gap-2">
 							{PRESET_COLORS.map((presetColor) => (
 								<button
 									key={presetColor}
 									type="button"
 									onClick={() => setColor(presetColor)}
-									className={`w-10 h-10 rounded-lg transition-transform hover:scale-110 ${
-										color === presetColor ? 'ring-2 ring-gray-800 ring-offset-2' : ''
+									className={`w-10 h-10 border-2 transition-all hover:scale-105 ${
+										color === presetColor
+											? 'border-black scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.3)]'
+											: 'border-black/30 hover:border-black'
 									}`}
 									style={{ backgroundColor: presetColor }}
 								/>
@@ -92,41 +115,42 @@ export default function CreateGroupModal({ onClose, onCreate }: CreateGroupModal
 					</div>
 
 					{/* Visibility */}
-					<div>
-						<label className="flex items-center gap-2 cursor-pointer">
+					<div className="space-y-2">
+						<label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-black hover:bg-violet-50 transition-colors">
 							<input
 								type="checkbox"
 								checked={isPublic}
 								onChange={(e) => setIsPublic(e.target.checked)}
-								className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
+								className="w-5 h-5 border-2 border-black accent-violet-500"
 							/>
-							<span className="text-sm font-medium text-gray-700">
-								Make this group public
-							</span>
+							<div>
+								<span className="text-sm font-medium text-black">Make this group public</span>
+								<p className="text-xs text-black/50 mt-0.5">
+									Public groups can be discovered and joined by anyone
+								</p>
+							</div>
 						</label>
-						<p className="text-xs text-gray-500 mt-1 ml-6">
-							Public groups can be discovered and joined by anyone
-						</p>
 					</div>
 
-					{/* Buttons */}
+					{/* Actions */}
 					<div className="flex gap-3 pt-2">
 						<button
 							type="button"
 							onClick={onClose}
-							className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+							className="flex-1 p-3 border-2 border-black bg-white text-black hover:bg-gray-50 transition-colors font-medium"
 						>
 							Cancel
 						</button>
 						<button
 							type="submit"
-							className="flex-1 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors"
+							disabled={!name.trim()}
+							className="flex-1 p-3 bg-violet-500 text-white border-2 border-black hover:bg-violet-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-[2px_2px_0px_rgba(0,0,0,0.2)]"
 						>
 							Create Group
 						</button>
 					</div>
 				</form>
-			</div>
-		</div>
+			</DialogContent>
+		</Dialog>
 	);
 }

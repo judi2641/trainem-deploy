@@ -96,12 +96,6 @@ export default function WorkoutsArea() {
 		setEditOpen(true);
 	}
 
-	function openSchedule(w: Workout) {
-		setSchedulingWorkout(w);
-		setScheduleDate(isoDateOnly(new Date()));
-		setScheduleOpen(true);
-	}
-
 	function resetForm() {
 		setName('');
 		setDescription('');

@@ -1,3 +1,4 @@
+import { Users, Zap, Globe, Lock } from 'lucide-react';
 import type { Group } from '../../../../shared/sharedTypes';
 
 interface GroupCardProps {
@@ -15,18 +16,18 @@ export default function GroupCard({
 	onLeave,
 	currentUserId,
 	showJoinButton,
-	showLeaveButton
+	showLeaveButton,
 }: GroupCardProps) {
-	const isOwner = group.members.find(m => m.userId === currentUserId)?.role === 'owner';
+	const isOwner = group.members.find((m) => m.userId === currentUserId)?.role === 'owner';
 	const memberCount = group.members.length;
 	const isFull = memberCount >= group.maxMembers;
 
 	return (
-		<div className="bg-white/60 backdrop-blur-sm rounded-xl border border-white/40 shadow-lg p-4 hover:shadow-xl transition-shadow">
+		<div className="bg-white dark:bg-gray-800 border-2 border-black dark:border-white/20 p-4 shadow-[3px_3px_0px_rgba(0,0,0,0.2)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 transition-all">
 			<div className="flex items-start gap-4">
 				{/* Color indicator */}
 				<div
-					className="w-12 h-12 rounded-lg shrink-0"
+					className="w-10 h-10 border-2 border-black shrink-0"
 					style={{ backgroundColor: group.color }}
 				/>
 
@@ -34,11 +35,11 @@ export default function GroupCard({
 				<div className="flex-1 min-w-0">
 					<div className="flex items-start justify-between gap-2">
 						<div className="flex-1">
-							<h3 className="text-lg font-semibold text-gray-800 truncate">
+							<h3 className="text-base font-medium text-black dark:text-white truncate">
 								{group.name}
 							</h3>
 							{group.description && (
-								<p className="text-sm text-gray-600 mt-1 line-clamp-2">
+								<p className="text-xs text-black/60 dark:text-white/60 mt-1 line-clamp-2">
 									{group.description}
 								</p>
 							)}
@@ -49,20 +50,20 @@ export default function GroupCard({
 							{showJoinButton && onJoin && !isFull && (
 								<button
 									onClick={() => onJoin(group._id)}
-									className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm rounded-lg transition-colors"
+									className="px-3 py-1.5 bg-emerald-500 border-2 border-black text-white text-sm font-medium hover:bg-emerald-600 transition-colors shadow-[2px_2px_0px_rgba(0,0,0,0.2)]"
 								>
 									Join
 								</button>
 							)}
 							{showJoinButton && isFull && (
-								<span className="px-3 py-1.5 bg-gray-300 text-gray-600 text-sm rounded-lg cursor-not-allowed">
+								<span className="px-3 py-1.5 bg-gray-300 dark:bg-gray-600 border-2 border-black dark:border-white/20 text-black/50 dark:text-white/50 text-sm font-medium cursor-not-allowed">
 									Full
 								</span>
 							)}
 							{showLeaveButton && onLeave && !isOwner && (
 								<button
 									onClick={() => onLeave(group._id)}
-									className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm rounded-lg transition-colors"
+									className="px-3 py-1.5 bg-red-500 border-2 border-black text-white text-sm font-medium hover:bg-red-600 transition-colors shadow-[2px_2px_0px_rgba(0,0,0,0.2)]"
 								>
 									Leave
 								</button>
@@ -71,27 +72,29 @@ export default function GroupCard({
 					</div>
 
 					{/* Stats */}
-					<div className="flex items-center gap-4 mt-3 text-sm text-gray-600">
-						<div className="flex items-center gap-1">
-							<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-							</svg>
-							<span>{memberCount}/{group.maxMembers}</span>
+					<div className="flex items-center gap-3 mt-3 flex-wrap">
+						<div className="flex items-center gap-1 px-2 py-1 bg-violet-100 dark:bg-violet-900/40 border border-black dark:border-white/20 text-xs">
+							<Users className="h-3 w-3 text-violet-600" />
+							<span className="text-black dark:text-white font-medium">
+								{memberCount}/{group.maxMembers}
+							</span>
 						</div>
-						<div className="flex items-center gap-1">
-							<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-							</svg>
-							<span>{group.currentSeasonXP.toLocaleString()} XP</span>
+						<div className="flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 border border-black dark:border-white/20 text-xs">
+							<Zap className="h-3 w-3 text-amber-600" />
+							<span className="text-black dark:text-white font-medium">
+								{group.currentSeasonXP.toLocaleString()} XP
+							</span>
 						</div>
 						{group.isPublic ? (
-							<span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-xs">
-								Public
-							</span>
+							<div className="flex items-center gap-1 px-2 py-1 bg-emerald-100 dark:bg-emerald-900/40 border border-black dark:border-white/20 text-xs">
+								<Globe className="h-3 w-3 text-emerald-600" />
+								<span className="text-black dark:text-white font-medium">Public</span>
+							</div>
 						) : (
-							<span className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded text-xs">
-								Private
-							</span>
+							<div className="flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 border border-black dark:border-white/20 text-xs">
+								<Lock className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+								<span className="text-black dark:text-white font-medium">Private</span>
+							</div>
 						)}
 					</div>
 				</div>

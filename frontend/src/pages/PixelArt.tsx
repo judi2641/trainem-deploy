@@ -26,37 +26,8 @@ function SaveIcon({ className }: { className?: string }) {
 	);
 }
 
-function SparkleIcon({ className }: { className?: string }) {
-	return (
-		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
-			<rect x="7" y="0" width="2" height="4" />
-			<rect x="7" y="12" width="2" height="4" />
-			<rect x="0" y="7" width="4" height="2" />
-			<rect x="12" y="7" width="4" height="2" />
-			<rect x="3" y="3" width="2" height="2" />
-			<rect x="11" y="3" width="2" height="2" />
-			<rect x="3" y="11" width="2" height="2" />
-			<rect x="11" y="11" width="2" height="2" />
-			<rect x="6" y="6" width="4" height="4" />
-		</svg>
-	);
-}
-
-function PaletteIcon({ className }: { className?: string }) {
-	return (
-		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
-			<rect x="2" y="2" width="12" height="12" />
-			<rect x="4" y="4" width="3" height="3" fill="#ef4444" />
-			<rect x="9" y="4" width="3" height="3" fill="#3b82f6" />
-			<rect x="4" y="9" width="3" height="3" fill="#22c55e" />
-			<rect x="9" y="9" width="3" height="3" fill="#eab308" />
-		</svg>
-	);
-}
-
 export default function PixelArt() {
 	const { myUser, setPixelArt, entries } = useMyContext();
-	const [pixelImage, setPixelImage] = useState<string | null>(null);
 	const [pixels, setPixels] = useState<PixelData[]>([]);
 	const [gridSize, setGridSize] = useState(64);
 	const [isSaving, setIsSaving] = useState(false);
@@ -66,7 +37,6 @@ export default function PixelArt() {
 	const completedEntries = entries?.filter((e: any) => e.completed)?.length ?? 0;
 	const level = Math.floor(completedEntries / 5);
 	const unlockedPixels = 12 + level * 4;
-	const progressToNext = ((completedEntries % 5) / 5) * 100;
 
 	useEffect(() => {
 		let isMounted = true;
@@ -212,8 +182,8 @@ export default function PixelArt() {
 														gridSize={gridSize}
 														maxPixels={unlockedPixels}
 														initialPixels={pixels}
-														onChange={(dataUrl, _count, pixelData, size) => {
-															setPixelImage(dataUrl || null);
+														onChange={(_dataUrl, _count, pixelData, size) => {
+															
 															setPixels(pixelData);
 															setGridSize(size);
 														}}
