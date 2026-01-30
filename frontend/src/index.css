@@ -172,10 +172,16 @@ svg [stroke='currentColor'] {
 
 .pixel-btn {
 	border-radius: 0 !important;
+	background-color: #10b981; /* emerald-500 */
+	color: white;
 	box-shadow:
 		0 0 0 3px #0a0a0a,
 		0 6px 0 0 rgba(0, 0, 0, 0.35);
 	transform: translateY(0);
+	transition: background-color 0.15s ease;
+}
+.pixel-btn:hover {
+	background-color: #059669; /* emerald-600 */
 }
 .pixel-btn:active {
 	transform: translateY(4px);

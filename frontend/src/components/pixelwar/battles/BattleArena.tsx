@@ -295,29 +295,34 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 			)}
 
 			{/* Canvas Area */}
-			<div className="flex-1 relative bg-white/50 dark:bg-gray-900/50 border-2 border-black overflow-hidden shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
-				{/* Zoom Controls */}
-				<div className="absolute top-4 right-4 z-10 flex gap-2">
+			<div className="flex-1 relative bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-800 dark:to-gray-900 border-2 border-black overflow-hidden shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
+				{/* Zoom Controls - matching PixelCanvas style */}
+				<div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-white dark:bg-gray-800 p-2 border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,0.15)]">
+					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Zoom</span>
 					<button
 						onClick={() => setZoom((z) => Math.max(1, z - 1))}
-						className="w-8 h-8 bg-white dark:bg-gray-800 border-2 border-black text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700"
+						className="h-6 w-6 p-0 border-2 border-black bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-bold text-xs text-black dark:text-white"
 					>
 						-
 					</button>
-					<span className="px-3 py-1 bg-white dark:bg-gray-800 border-2 border-black text-black dark:text-white text-sm font-medium">
-						{zoom}x
-					</span>
+					<div className="w-12 h-1.5 bg-black/10 dark:bg-white/10 border border-black/20 relative">
+						<div
+							className="absolute top-0 left-0 h-full bg-emerald-400"
+							style={{ width: `${((zoom - 1) / 9) * 100}%` }}
+						/>
+					</div>
 					<button
 						onClick={() => setZoom((z) => Math.min(10, z + 1))}
-						className="w-8 h-8 bg-white dark:bg-gray-800 border-2 border-black text-black dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-700"
+						className="h-6 w-6 p-0 border-2 border-black bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-bold text-xs text-black dark:text-white"
 					>
 						+
 					</button>
+					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 w-6">{zoom}x</span>
 				</div>
 
 				{/* User Info Panel */}
 				{userGroupId && (
-					<div className="absolute top-4 left-4 z-10 bg-white dark:bg-gray-800 p-3 border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,0.2)]">
+					<div className="absolute top-4 left-4 z-10 bg-white dark:bg-gray-800 p-3 border-3 border-black shadow-[3px_3px_0px_rgba(0,0,0,0.15)]">
 						<div className="flex items-center gap-2 mb-2">
 							<Crosshair className="h-4 w-4 text-black/60 dark:text-white/60" />
 							<span className="text-sm text-black dark:text-white font-medium">Your Team</span>
@@ -344,7 +349,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 
 				{/* Canvas Container */}
 				<div
-					className="absolute inset-0 overflow-auto flex items-center justify-center"
+					className="absolute inset-0 overflow-auto flex items-center justify-center p-8"
 					style={{
 						cursor: battle.status === 'active' ? 'crosshair' : 'default',
 					}}
@@ -358,14 +363,24 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 							transform: `translate(${offset.x}px, ${offset.y}px)`,
 						}}
 					>
-						<canvas
-							ref={canvasRef}
-							onClick={handleCanvasClick}
-							className="border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,0.3)]"
-							style={{
-								imageRendering: 'pixelated',
-							}}
-						/>
+						{/* Canvas frame - matching PixelCanvas style */}
+						<div className="relative">
+							{/* Canvas glow effect */}
+							<div className="absolute -inset-3 bg-gradient-to-br from-emerald-200/40 to-amber-200/40 dark:from-emerald-500/20 dark:to-amber-500/20 blur-lg" />
+							{/* Canvas border frame */}
+							<div className="relative bg-gradient-to-br from-emerald-100 to-amber-50 dark:from-emerald-900/40 dark:to-amber-900/40 p-1.5 border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,0.25)]">
+								<div className="bg-white/5 p-0.5">
+									<canvas
+										ref={canvasRef}
+										onClick={handleCanvasClick}
+										className="border-2 border-black/30"
+										style={{
+											imageRendering: 'pixelated',
+										}}
+									/>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 

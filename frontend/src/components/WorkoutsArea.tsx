@@ -255,10 +255,9 @@ export default function WorkoutsArea() {
 	}, [auth0Id, setWorkouts]);
 
 	return (
-		<div className="h-full  w-full flex flex-col ">
-			{/* Header - Fixed */}
-
-			<div className="flex items-center justify-between gap-4 shrink-0 mb-4 mr-4">
+		<div className="h-full w-full flex flex-col gap-4">
+			{/* Header */}
+			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-3">
 					<div className="h-8 w-8 bg-blue-400 border-3 border-black flex items-center justify-center">
 						<PixelDumbbellIcon className="h-5 w-5 text-white" />

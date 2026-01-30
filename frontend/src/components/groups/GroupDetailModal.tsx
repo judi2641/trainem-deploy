@@ -181,84 +181,105 @@ export default function GroupDetailModal({
 					)}
 
 					{/* Canvas Section */}
-					<div className="border-2 border-black dark:border-white/20 p-4 bg-gray-50 dark:bg-gray-800">
-						<div className="flex items-center justify-between mb-3">
+					<div className="space-y-3">
+						{/* Header */}
+						<div className="flex items-center justify-between">
 							<h3 className="font-medium text-sm flex items-center gap-2">
 								<Grid3X3 className="h-4 w-4" />
 								Group Canvas
 							</h3>
 							{pixelArtInfo && (
-								<span className="text-xs text-black/50 dark:text-white/50">
-									{pixelArtInfo.availablePixels} pixels available
-								</span>
+								<div className="flex items-center gap-2">
+									<div
+										className="h-3 w-3 border-2 border-black"
+										style={{ backgroundColor: selectedColor }}
+									/>
+									<span className="text-xs font-medium text-black/70 dark:text-white/70">
+										<span className="font-bold text-emerald-600">{pixelArtInfo.usedPixels}</span>
+										<span className="text-black/40 dark:text-white/40">/{pixelArtInfo.unlockedPixels} pixels</span>
+									</span>
+								</div>
 							)}
 						</div>
+
+						{/* Progress Bar */}
+						{pixelArtInfo && pixelArtInfo.unlockedPixels > 0 && (
+							<div className="h-2 bg-emerald-100 dark:bg-emerald-900/30 border-2 border-black overflow-hidden">
+								<div
+									className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-300"
+									style={{ width: `${(pixelArtInfo.usedPixels / pixelArtInfo.unlockedPixels) * 100}%` }}
+								/>
+							</div>
+						)}
 
 						{/* Canvas Grid */}
 						{pixelArtInfo && grid.length > 0 ? (
 							<div className="flex flex-col items-center gap-3">
-								<div
-									className="border-2 border-black bg-white dark:bg-gray-700 overflow-hidden"
-									style={{ padding: 2 }}
-								>
-									<div
-										className="inline-grid"
-										style={{
-											gridTemplateColumns: `repeat(${pixelArtInfo.gridSize}, ${cellSize}px)`,
-											gridAutoRows: `${cellSize}px`,
-										}}
-									>
-										{grid.map((row, y) =>
-											row.map((color, x) => {
-												const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
-												return (
-													<button
-														key={`${x}-${y}`}
-														type="button"
-														disabled={!isMember || pixelArtInfo.availablePixels <= 0}
-														onClick={() => handlePlacePixel(x, y)}
-														onMouseEnter={() => setHoveredCell({ x, y })}
-														onMouseLeave={() => setHoveredCell(null)}
-														className="transition-all duration-75"
-														style={{
-															backgroundColor: color || '#ffffff',
-															boxShadow: isHovered
-																? `inset 0 0 0 2px ${selectedColor}`
-																: 'inset 0 0 0 0.5px rgba(0,0,0,0.08)',
-															transform: isHovered ? 'scale(1.15)' : 'scale(1)',
-															zIndex: isHovered ? 10 : 1,
-															cursor:
-																isMember && pixelArtInfo.availablePixels > 0
-																	? 'pointer'
-																	: 'default',
-														}}
-													/>
-												);
-											})
-										)}
+								{/* Canvas frame - matching PixelCanvas style */}
+								<div className="bg-gradient-to-br from-emerald-100 to-amber-50 dark:from-emerald-900/30 dark:to-amber-900/30 border-3 border-black p-2 shadow-[3px_3px_0px_rgba(0,0,0,0.15)]">
+									<div className="bg-white dark:bg-gray-800 border-2 border-black/30 overflow-auto max-w-[280px] max-h-[280px]">
+										<div
+											className="inline-grid"
+											style={{
+												gridTemplateColumns: `repeat(${pixelArtInfo.gridSize}, ${cellSize}px)`,
+												gridAutoRows: `${cellSize}px`,
+											}}
+										>
+											{grid.map((row, y) =>
+												row.map((color, x) => {
+													const isHovered = hoveredCell?.x === x && hoveredCell?.y === y;
+													return (
+														<button
+															key={`${x}-${y}`}
+															type="button"
+															disabled={!isMember || pixelArtInfo.availablePixels <= 0}
+															onClick={() => handlePlacePixel(x, y)}
+															onMouseEnter={() => setHoveredCell({ x, y })}
+															onMouseLeave={() => setHoveredCell(null)}
+															className="transition-all duration-75"
+															style={{
+																backgroundColor: color || '#ffffff',
+																boxShadow: isHovered
+																	? `inset 0 0 0 2px ${selectedColor}`
+																	: 'inset 0 0 0 0.5px rgba(0,0,0,0.08)',
+																transform: isHovered ? 'scale(1.15)' : 'scale(1)',
+																zIndex: isHovered ? 10 : 1,
+																cursor:
+																	isMember && pixelArtInfo.availablePixels > 0
+																		? 'pointer'
+																		: 'default',
+															}}
+														/>
+													);
+												})
+											)}
+										</div>
 									</div>
 								</div>
 
-								{/* Color Palette */}
+								{/* Color Palette - matching PixelCanvas style */}
 								{isMember && pixelArtInfo.availablePixels > 0 && (
-									<div className="flex items-center gap-2">
-										<span className="text-xs text-black/50 dark:text-white/50">Color:</span>
-										{CANVAS_COLORS.map((color) => (
-											<button
-												key={color}
-												type="button"
-												onClick={() => setSelectedColor(color)}
-												className={`h-5 w-5 border transition-all ${
-													selectedColor === color
-														? 'border-black dark:border-white scale-110 shadow-md'
-														: 'border-black/30 dark:border-white/30 hover:scale-105'
-												}`}
-												style={{ backgroundColor: color }}
-											/>
-										))}
+									<div className="space-y-2">
+										<div className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Colors</div>
+										<div className="flex flex-wrap items-center gap-1.5">
+											{CANVAS_COLORS.map((color) => (
+												<button
+													key={color}
+													type="button"
+													onClick={() => setSelectedColor(color)}
+													className={`h-6 w-6 border-2 transition-all ${
+														selectedColor === color
+															? 'border-black dark:border-white scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]'
+															: 'border-black/30 dark:border-white/30 hover:border-black hover:scale-105'
+													}`}
+													style={{ backgroundColor: color }}
+												/>
+											))}
+										</div>
 									</div>
 								)}
 
+								{/* Status Messages */}
 								{!isMember && (
 									<p className="text-xs text-black/50 dark:text-white/50">
 										Join this group to place pixels
@@ -279,7 +300,10 @@ export default function GroupDetailModal({
 							</div>
 						) : (
 							<div className="h-32 flex items-center justify-center text-black/40 dark:text-white/40 text-sm">
-								Loading canvas...
+								<div className="flex items-center gap-3">
+									<div className="h-4 w-4 bg-emerald-500 border border-black animate-pulse" />
+									<span>Loading canvas...</span>
+								</div>
 							</div>
 						)}
 					</div>

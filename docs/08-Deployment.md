@@ -268,6 +268,47 @@ app.use(cors({
 
 ---
 
+## ⚔️ Pixel Wars Deployment
+
+### Datenbank-Kompatibilität
+
+**Ja, Pixel Wars funktioniert vollständig mit MongoDB Atlas!**
+
+Die folgenden Collections werden automatisch erstellt:
+
+| Collection | Beschreibung | Speicherverbrauch |
+|------------|--------------|-------------------|
+| `battles` | 1v1 Battle-Daten, Pixel-Koordinaten | ~10 KB pro Battle |
+| `pixelboards` | Canvas-Daten für Battles | ~50 KB pro Board (50x50) |
+| `groups.pixelArt` | Gruppen-Canvas (eingebettet) | ~5 KB pro Gruppe |
+
+### Keine Migration nötig
+
+Mongoose erstellt alle Collections und Indexes automatisch bei erster Nutzung:
+
+```javascript
+// Automatisch erstellt:
+// - battles Collection mit indexes auf status, challenger.groupId, opponent.groupId
+// - pixelboards Collection mit index auf battleId
+// - groups.pixelArt embedded document
+```
+
+### Geschätzte Datenbankgröße
+
+| Szenario | Battles | Speicher |
+|----------|---------|----------|
+| Klein (10 User) | ~50 | ~5 MB |
+| Mittel (100 User) | ~500 | ~50 MB |
+| Groß (1000 User) | ~5000 | ~500 MB |
+
+**MongoDB Atlas M0 (Free Tier, 512 MB)** reicht für kleine bis mittlere Nutzung.
+
+### Environment Variables für Pixel Wars
+
+Keine zusätzlichen Variablen nötig - verwendet die bestehende `DATABASE_URI`.
+
+---
+
 ## 📊 Health Checks
 
 ### Backend Health Endpoint

@@ -190,9 +190,9 @@ export default function HabitsArea() {
 	const today = new Date().getDay();
 
 	return (
-		<div className="h-full">
+		<div className="h-full flex flex-col gap-4">
 			{/* Header */}
-			<div className="flex items-center justify-between mb-6">
+			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-3">
 					<div className="h-8 w-8 bg-pink-400 border-3 border-black flex items-center justify-center">
 						<CheckIcon className="h-5 w-5 text-white" />
@@ -202,7 +202,7 @@ export default function HabitsArea() {
 
 				<Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
 					<DialogTrigger asChild>
-						<button className="pixel-btn flex items-center gap-2 p-2">
+						<button className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium">
 							<PlusIcon className="h-4 w-4" />
 							New Habit
 						</button>
