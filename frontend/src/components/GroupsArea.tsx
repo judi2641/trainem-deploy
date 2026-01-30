@@ -169,7 +169,7 @@ export default function GroupsArea() {
 	return (
 		<div className="h-full flex flex-col gap-4 overflow-hidden">
 			{/* Header */}
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between pt-2">
 				<div className="flex items-center gap-3">
 					<div className="h-8 w-8 bg-violet-500 border-3 border-black flex items-center justify-center">
 						<PixelUsersIcon className="h-5 w-5 text-white" />
@@ -178,7 +178,7 @@ export default function GroupsArea() {
 				</div>
 				<button
 					onClick={() => setIsCreateModalOpen(true)}
-					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium mr-2"
 				>
 					<Users className="h-4 w-4" />
 					Create Group

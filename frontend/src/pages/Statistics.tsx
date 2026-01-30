@@ -204,9 +204,11 @@ export default function Statistics() {
 			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden p-4 pr-6">
 				<main className="flex-1 overflow-y-auto">
 					{/* Header */}
-					<div className="flex items-center gap-3 mb-6">
-						<div className="h-6 w-6 bg-sky-400 border-2 border-black" />
-						<h1 className="font-pixel text-xl text-black dark:text-white">Statistics</h1>
+					<div className="flex items-center gap-3 pt-2 mb-4">
+						<div className="h-8 w-8 bg-sky-400 border-3 border-black flex items-center justify-center">
+							<ChartIcon className="h-5 w-5 text-white" />
+						</div>
+						<h1 className="font-pixel text-2xl text-black dark:text-white">Statistics</h1>
 					</div>
 
 					{/* Stats Grid */}

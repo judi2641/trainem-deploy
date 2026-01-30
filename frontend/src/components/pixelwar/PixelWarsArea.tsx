@@ -198,7 +198,7 @@ export default function PixelWarsArea() {
 	return (
 		<div className="h-full flex flex-col gap-4 overflow-hidden">
 			{/* Header */}
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between pt-2">
 				<div className="flex items-center gap-3">
 					<div className="h-8 w-8 bg-orange-500 border-3 border-black flex items-center justify-center">
 						<PixelSwordsIcon className="h-5 w-5 text-white" />
@@ -207,7 +207,7 @@ export default function PixelWarsArea() {
 				</div>
 				<button
 					onClick={() => setIsChallengeModalOpen(true)}
-					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
+					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium mr-2"
 					disabled={myGroups.length === 0}
 					title={myGroups.length === 0 ? 'Join a group first' : ''}
 				>

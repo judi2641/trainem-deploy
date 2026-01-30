@@ -10,7 +10,6 @@ import {
 	PixelCardTitle,
 	PixelCardContent,
 } from '@/components/ui/pixel-card';
-import { Button } from '@/components/ui/button';
 import { useMyContext } from '@/context/AppContext';
 import { toast } from 'sonner';
 
@@ -136,26 +135,35 @@ export default function PixelArt() {
 			{/* Sidebar */}
 			<Sidebar />
 
-			{/* Main content - flex layout, no scrolling */}
-			<div className="flex-1 z-10 flex h-full overflow-hidden p-4 gap-4">
-				{/* Main Canvas Card */}
-				<div className="flex-1 min-w-0">
+			{/* Main content */}
+			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden">
+				<main className="flex-1 p-4 overflow-hidden flex flex-col gap-4">
+					{/* Header */}
+					<div className="flex items-center gap-3 pt-2">
+						<div className="h-8 w-8 bg-amber-400 border-3 border-black flex items-center justify-center">
+							<SaveIcon className="h-5 w-5 text-white" />
+						</div>
+						<h1 className="font-pixel text-2xl text-black dark:text-white">Pixel Studio</h1>
+					</div>
+
+					{/* Main Canvas Card */}
+					<div className="flex-1 min-w-0 min-h-0">
 					<PixelCard>
 						<PixelCardHeader>
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-2">
-									<div className="h-4 w-4 bg-amber-400 border-2 border-black" />
-									<PixelCardTitle className="text-base">Pixel Studio</PixelCardTitle>
+									<div className="h-4 w-4 bg-emerald-500 border-2 border-black" />
+									<PixelCardTitle className="text-base">Canvas</PixelCardTitle>
 								</div>
-								<Button
+								<button
 									type="button"
 									onClick={handleSave}
 									disabled={isSaving}
-									className="pixel-btn bg-emerald-500 hover:bg-emerald-600 text-white border-2 border-black rounded-none px-4 py-2 font-pixel text-xs h-auto"
+									className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
 								>
-									<SaveIcon className="h-3 w-3 mr-1.5" />
-									{isSaving ? 'SAVING...' : 'SAVE'}
-								</Button>
+									<SaveIcon className="h-4 w-4" />
+									{isSaving ? 'Saving...' : 'Save'}
+								</button>
 							</div>
 						</PixelCardHeader>
 						<PixelCardContent>
@@ -196,7 +204,8 @@ export default function PixelArt() {
 							)}
 						</PixelCardContent>
 					</PixelCard>
-				</div>
+					</div>
+				</main>
 			</div>
 		</div>
 	);

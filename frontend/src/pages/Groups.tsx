@@ -27,7 +27,7 @@ export default function Groups() {
 
 			{/* Main content */}
 			<div className="relative z-10 flex-1 flex flex-col min-w-0 overflow-hidden">
-				<main className="flex-1 p-4 pr-6 overflow-hidden">
+				<main className="flex-1 p-4 overflow-hidden">
 					<GroupsArea />
 				</main>
 			</div>
