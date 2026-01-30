@@ -222,4 +222,72 @@ router.patch('/:groupId/members/:targetUserId/role', async (req: Request, res: R
 	}
 });
 
+// ==================== GROUP PIXEL ART ====================
+
+/**
+ * GET /api/groups/:groupId/pixel-art
+ * Holt Gruppen-Pixel-Art Info
+ */
+router.get('/:groupId/pixel-art', async (req: Request, res: Response) => {
+	try {
+		const { groupId } = req.params;
+
+		if (!isValidObjectId(groupId)) {
+			throw new HttpError(400, 'Invalid group ID format');
+		}
+
+		const pixelArtInfo = await GroupService.getGroupPixelArt(groupId);
+		res.json(pixelArtInfo);
+	} catch (error: any) {
+		const statusCode = error.status || 500;
+		res.status(statusCode).json({ error: error.message });
+	}
+});
+
+/**
+ * POST /api/groups/:groupId/pixel-art
+ * Platziert einen Pixel auf dem Gruppen-Canvas
+ */
+router.post('/:groupId/pixel-art', async (req: Request, res: Response) => {
+	try {
+		const { groupId } = req.params;
+		const { userId, x, y, color } = req.body;
+
+		if (!isValidObjectId(groupId)) {
+			throw new HttpError(400, 'Invalid group ID format');
+		}
+
+		if (!userId) {
+			throw new HttpError(400, 'Missing userId');
+		}
+
+		if (typeof x !== 'number' || typeof y !== 'number') {
+			throw new HttpError(400, 'Missing or invalid coordinates (x, y)');
+		}
+
+		if (!color || !isValidColor(color)) {
+			throw new HttpError(400, 'Invalid color format. Must be hex color like #FF5733');
+		}
+
+		const group = await GroupService.placeGroupPixel({
+			groupId,
+			userId,
+			x,
+			y,
+			color,
+		});
+
+		// Rückgabe mit aktueller Pixel-Info
+		const pixelArtInfo = await GroupService.getGroupPixelArt(groupId);
+		res.json({
+			...pixelArtInfo,
+			wins: group.wins,
+			losses: group.losses,
+		});
+	} catch (error: any) {
+		const statusCode = error.status || 500;
+		res.status(statusCode).json({ error: error.message });
+	}
+});
+
 export default router;

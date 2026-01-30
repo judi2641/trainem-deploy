@@ -7,6 +7,19 @@ export interface IGroupMember {
 	contributedXP: number; // XP beigetragen in aktueller Season
 }
 
+export interface IGroupPixel {
+	x: number;
+	y: number;
+	color: string;
+	placedBy?: string; // userId who placed the pixel
+	placedAt?: Date;
+}
+
+export interface IGroupPixelArt {
+	gridSize: number; // z.B. 16x16
+	pixels: IGroupPixel[];
+}
+
 export interface IGroup extends Document {
 	name: string;
 	description?: string;
@@ -18,6 +31,11 @@ export interface IGroup extends Document {
 	updatedAt: Date;
 	totalXP: number; // Gesamt-XP aller Mitglieder (all-time)
 	currentSeasonXP: number; // XP in aktueller Season
+	// Neues Feature: Gruppen-Canvas
+	wins: number; // Anzahl gewonnener Battles
+	losses: number; // Anzahl verlorener Battles
+	unlockedPixels: number; // Verfügbare Pixel (1 pro Sieg)
+	pixelArt: IGroupPixelArt; // Gruppen-Pixelbild
 }
 
 const GroupMemberSchema = new Schema<IGroupMember>({
@@ -30,6 +48,19 @@ const GroupMemberSchema = new Schema<IGroupMember>({
 	},
 	joinedAt: { type: Date, required: true, default: Date.now },
 	contributedXP: { type: Number, default: 0 },
+});
+
+const GroupPixelSchema = new Schema<IGroupPixel>({
+	x: { type: Number, required: true },
+	y: { type: Number, required: true },
+	color: { type: String, required: true, match: /^#[0-9A-F]{6}$/i },
+	placedBy: { type: String },
+	placedAt: { type: Date, default: Date.now },
+});
+
+const GroupPixelArtSchema = new Schema<IGroupPixelArt>({
+	gridSize: { type: Number, required: true, default: 16, min: 8, max: 32 },
+	pixels: { type: [GroupPixelSchema], default: [] },
 });
 
 const GroupSchema = new Schema<IGroup>(
@@ -83,6 +114,26 @@ const GroupSchema = new Schema<IGroup>(
 			type: Number,
 			default: 0,
 			min: 0,
+		},
+		// Gruppen-Canvas Feature
+		wins: {
+			type: Number,
+			default: 0,
+			min: 0,
+		},
+		losses: {
+			type: Number,
+			default: 0,
+			min: 0,
+		},
+		unlockedPixels: {
+			type: Number,
+			default: 0,
+			min: 0,
+		},
+		pixelArt: {
+			type: GroupPixelArtSchema,
+			default: () => ({ gridSize: 16, pixels: [] }),
 		},
 	},
 	{

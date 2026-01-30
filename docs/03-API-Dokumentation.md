@@ -918,6 +918,81 @@ PATCH /api/groups/:groupId/members/:targetUserId/role
 
 ---
 
+### 9. Gruppen-Canvas Info abrufen
+
+```http
+GET /api/groups/:groupId/pixel-art
+```
+
+**Response** (200 OK):
+```json
+{
+  "gridSize": 16,
+  "pixels": [
+    {
+      "x": 5,
+      "y": 3,
+      "color": "#FF6B6B",
+      "placedBy": "auth0|123",
+      "placedAt": "2026-01-30T10:00:00.000Z"
+    }
+  ],
+  "usedPixels": 1,
+  "unlockedPixels": 3,
+  "availablePixels": 2
+}
+```
+
+**Felder**:
+- `gridSize`: Canvas-Größe (16x16)
+- `usedPixels`: Bereits platzierte Pixel
+- `unlockedPixels`: Durch Battle-Siege freigeschaltete Pixel
+- `availablePixels`: Noch platzierbare Pixel (`unlockedPixels - usedPixels`)
+
+---
+
+### 10. Pixel auf Gruppen-Canvas platzieren
+
+```http
+POST /api/groups/:groupId/pixel-art
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|123",
+  "x": 5,
+  "y": 3,
+  "color": "#FF6B6B"
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "gridSize": 16,
+  "pixels": [...],
+  "usedPixels": 2,
+  "unlockedPixels": 3,
+  "availablePixels": 1,
+  "wins": 3,
+  "losses": 1
+}
+```
+
+**Logik**:
+- User muss Mitglied der Gruppe sein
+- Gruppe muss `availablePixels > 0` haben
+- Existierende Pixel können überschrieben werden (zählt nicht als neuer Pixel)
+- Pro Battle-Sieg wird `unlockedPixels` um 1 erhöht
+
+**Errors**:
+- `400 Bad Request`: Keine Pixel verfügbar, ungültige Koordinaten/Farbe
+- `403 Forbidden`: User ist kein Gruppenmitglied
+- `404 Not Found`: Gruppe existiert nicht
+
+---
+
 ## 🎮 PixelWar Endpoints
 
 ### 1. Season erstellen
@@ -1408,12 +1483,13 @@ curl -X GET http://localhost:3000/api/exercises
 
 | Version | Datum | Änderungen |
 |---------|-------|-----------|
+| **1.3** | 2026-01-30 | Gruppen-Canvas Feature (Pixel Art pro Battle-Sieg) |
 | **1.2** | 2026-01-29 | CRUD-Operationen für Habits/Workouts/Entries, Gruppen-XP |
 | **1.1** | 2026-01-25 | Pixel Wars Battle Endpoints hinzugefügt (1v1 Duelle) |
 | **1.0** | 2026-01-24 | Initial API Release |
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-29
+**Letzte Aktualisierung**: 2026-01-30
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Architektur & Design →](04-Architektur-Design.md)

@@ -1,10 +1,11 @@
-import { Users, Zap, Globe, Lock } from 'lucide-react';
+import { Users, Zap, Globe, Lock, Trophy, Grid3X3 } from 'lucide-react';
 import type { Group } from '../../../../shared/sharedTypes';
 
 interface GroupCardProps {
 	group: Group;
 	onJoin?: (groupId: string) => void;
 	onLeave?: (groupId: string) => void;
+	onClick?: (group: Group) => void;
 	currentUserId?: string;
 	showJoinButton?: boolean;
 	showLeaveButton?: boolean;
@@ -14,6 +15,7 @@ export default function GroupCard({
 	group,
 	onJoin,
 	onLeave,
+	onClick,
 	currentUserId,
 	showJoinButton,
 	showLeaveButton,
@@ -21,15 +23,28 @@ export default function GroupCard({
 	const isOwner = group.members.find((m) => m.userId === currentUserId)?.role === 'owner';
 	const memberCount = group.members.length;
 	const isFull = memberCount >= group.maxMembers;
+	const wins = group.wins || 0;
+	const unlockedPixels = group.unlockedPixels || 0;
+	const usedPixels = group.pixelArt?.pixels?.length || 0;
 
 	return (
-		<div className="bg-white dark:bg-gray-800 border-2 border-black dark:border-white/20 p-4 shadow-[3px_3px_0px_rgba(0,0,0,0.2)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 transition-all">
+		<div
+			className={`bg-white dark:bg-gray-800 border-2 border-black dark:border-white/20 p-4 shadow-[3px_3px_0px_rgba(0,0,0,0.2)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 transition-all ${onClick ? 'cursor-pointer' : ''}`}
+			onClick={() => onClick?.(group)}
+		>
 			<div className="flex items-start gap-4">
-				{/* Color indicator */}
-				<div
-					className="w-10 h-10 border-2 border-black shrink-0"
-					style={{ backgroundColor: group.color }}
-				/>
+				{/* Color indicator / Mini Canvas Preview */}
+				<div className="relative">
+					<div
+						className="w-10 h-10 border-2 border-black shrink-0"
+						style={{ backgroundColor: group.color }}
+					/>
+					{usedPixels > 0 && (
+						<div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border border-black flex items-center justify-center">
+							<Grid3X3 className="w-2.5 h-2.5 text-white" />
+						</div>
+					)}
+				</div>
 
 				{/* Content */}
 				<div className="flex-1 min-w-0">
@@ -79,6 +94,22 @@ export default function GroupCard({
 								{memberCount}/{group.maxMembers}
 							</span>
 						</div>
+						{wins > 0 && (
+							<div className="flex items-center gap-1 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/40 border border-black dark:border-white/20 text-xs">
+								<Trophy className="h-3 w-3 text-yellow-600" />
+								<span className="text-black dark:text-white font-medium">
+									{wins} {wins === 1 ? 'Win' : 'Wins'}
+								</span>
+							</div>
+						)}
+						{unlockedPixels > 0 && (
+							<div className="flex items-center gap-1 px-2 py-1 bg-pink-100 dark:bg-pink-900/40 border border-black dark:border-white/20 text-xs">
+								<Grid3X3 className="h-3 w-3 text-pink-600" />
+								<span className="text-black dark:text-white font-medium">
+									{usedPixels}/{unlockedPixels} px
+								</span>
+							</div>
+						)}
 						<div className="flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 border border-black dark:border-white/20 text-xs">
 							<Zap className="h-3 w-3 text-amber-600" />
 							<span className="text-black dark:text-white font-medium">

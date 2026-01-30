@@ -286,12 +286,16 @@ export class BattleService {
 		}
 
 		// Gewinner ist die andere Gruppe
-		battle.winnerId = isChallenger ? battle.opponent.groupId : battle.challenger.groupId;
+		const winnerId = isChallenger ? battle.opponent.groupId : battle.challenger.groupId;
+		battle.winnerId = winnerId;
 		battle.status = 'completed';
 		battle.actualEndDate = new Date();
 
 		await battle.save();
 		logger.info(`Battle surrendered: ${battle._id} - Winner: ${battle.winnerId}`);
+
+		// Update Gruppen-Statistiken
+		await this.updateGroupBattleStats(battle, winnerId);
 
 		return battle;
 	}
@@ -310,7 +314,39 @@ export class BattleService {
 		await battle.save();
 		logger.info(`Battle completed: ${battle._id} - Winner: ${winnerId}`);
 
+		// Update Gruppen-Statistiken (Wins/Losses/Pixels)
+		await this.updateGroupBattleStats(battle, winnerId);
+
 		return battle;
+	}
+
+	/**
+	 * Aktualisiert die Gruppen-Statistiken nach Battle-Ende
+	 * Gewinner: +1 Win, +1 unlockedPixel
+	 * Verlierer: +1 Loss
+	 */
+	private static async updateGroupBattleStats(battle: IBattle, winnerId?: string): Promise<void> {
+		const challengerGroupId = battle.challenger.groupId;
+		const opponentGroupId = battle.opponent.groupId;
+
+		if (winnerId) {
+			const loserId = winnerId === challengerGroupId ? opponentGroupId : challengerGroupId;
+
+			// Gewinner: +1 Win, +1 Pixel
+			await GroupModel.findByIdAndUpdate(winnerId, {
+				$inc: { wins: 1, unlockedPixels: 1 },
+			});
+			logger.info(`Group ${winnerId} won battle ${battle._id} - +1 win, +1 pixel`);
+
+			// Verlierer: +1 Loss
+			await GroupModel.findByIdAndUpdate(loserId, {
+				$inc: { losses: 1 },
+			});
+			logger.info(`Group ${loserId} lost battle ${battle._id}`);
+		} else {
+			// Unentschieden - keine Änderungen
+			logger.info(`Battle ${battle._id} ended in a draw`);
+		}
 	}
 
 	/**

@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Users } from 'lucide-react';
 import GroupList from './groups/GroupList';
 import CreateGroupModal from './groups/CreateGroupModal';
+import GroupDetailModal from './groups/GroupDetailModal';
 import {
 	PixelCard,
 	PixelCardContent,
@@ -36,6 +37,7 @@ export default function GroupsArea() {
 	const [myGroups, setMyGroups] = useState<Group[]>([]);
 	const [publicGroups, setPublicGroups] = useState<Group[]>([]);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -143,6 +145,16 @@ export default function GroupsArea() {
 		}
 	};
 
+	const handleGroupClick = (group: Group) => {
+		setSelectedGroup(group);
+	};
+
+	const handleGroupUpdate = (updatedGroup: Group) => {
+		setMyGroups((prev) => prev.map((g) => (g._id === updatedGroup._id ? updatedGroup : g)));
+		setPublicGroups((prev) => prev.map((g) => (g._id === updatedGroup._id ? updatedGroup : g)));
+		setSelectedGroup(updatedGroup);
+	};
+
 	if (loading) {
 		return (
 			<div className="h-full flex items-center justify-center">
@@ -191,6 +203,7 @@ export default function GroupsArea() {
 							groups={myGroups}
 							onJoin={handleJoinGroup}
 							onLeave={handleLeaveGroup}
+							onClick={handleGroupClick}
 							currentUserId={user?.sub}
 							showLeaveButton
 						/>
@@ -212,6 +225,7 @@ export default function GroupsArea() {
 						<GroupList
 							groups={publicGroups}
 							onJoin={handleJoinGroup}
+							onClick={handleGroupClick}
 							currentUserId={user?.sub}
 							showJoinButton
 						/>
@@ -224,6 +238,16 @@ export default function GroupsArea() {
 				<CreateGroupModal
 					onClose={() => setIsCreateModalOpen(false)}
 					onCreate={handleCreateGroup}
+				/>
+			)}
+
+			{/* Group Detail Modal */}
+			{selectedGroup && (
+				<GroupDetailModal
+					group={selectedGroup}
+					currentUserId={user?.sub}
+					onClose={() => setSelectedGroup(null)}
+					onGroupUpdate={handleGroupUpdate}
 				/>
 			)}
 		</div>

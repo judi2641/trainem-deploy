@@ -99,6 +99,21 @@ export interface GroupMember {
   contributedXP: number;
 }
 
+// Group Pixel (für Gruppen-Canvas)
+export interface GroupPixel {
+  x: number;
+  y: number;
+  color: string;
+  placedBy?: string;
+  placedAt?: string;
+}
+
+// Group Pixel Art (Gruppen-Canvas)
+export interface GroupPixelArt {
+  gridSize: number;
+  pixels: GroupPixel[];
+}
+
 // Group
 export interface Group {
   _id: string;
@@ -110,6 +125,11 @@ export interface Group {
   maxMembers: number;
   totalXP: number;
   currentSeasonXP: number;
+  // Gruppen-Canvas Feature
+  wins: number;
+  losses: number;
+  unlockedPixels: number;
+  pixelArt: GroupPixelArt;
   createdAt: string;
   updatedAt: string;
 }

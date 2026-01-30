@@ -5,6 +5,7 @@ interface GroupListProps {
 	groups: Group[];
 	onJoin?: (groupId: string) => void;
 	onLeave?: (groupId: string) => void;
+	onClick?: (group: Group) => void;
 	currentUserId?: string;
 	showJoinButton?: boolean;
 	showLeaveButton?: boolean;
@@ -30,6 +31,7 @@ export default function GroupList({
 	groups,
 	onJoin,
 	onLeave,
+	onClick,
 	currentUserId,
 	showJoinButton = false,
 	showLeaveButton = false,
@@ -53,6 +55,7 @@ export default function GroupList({
 					group={group}
 					onJoin={onJoin}
 					onLeave={onLeave}
+					onClick={onClick}
 					currentUserId={currentUserId}
 					showJoinButton={showJoinButton}
 					showLeaveButton={showLeaveButton}

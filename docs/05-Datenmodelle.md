@@ -230,10 +230,32 @@ Trainem nutzt **MongoDB** mit **Mongoose ODM** für die Datenpersistenz. Alle Mo
   totalXP: Number (default: 0)
   currentSeasonXP: Number (default: 0)
 
+  // Battle Statistiken
+  wins: Number (default: 0)
+  losses: Number (default: 0)
+  unlockedPixels: Number (default: 0)  // +1 pro Battle-Sieg
+
+  // Gruppen-Canvas (Pixel Art)
+  pixelArt: {
+    gridSize: Number (default: 16)
+    pixels: [{
+      x: Number (required)
+      y: Number (required)
+      color: String (required, hex)
+      placedBy: String  // auth0Id
+      placedAt: Date
+    }]
+  }
+
   createdAt: Date (auto)
   updatedAt: Date (auto)
 }
 ```
+
+**Gruppen-Canvas Logik**:
+- Pro Battle-Sieg erhält die Gruppe +1 `unlockedPixels`
+- Mitglieder können Pixel auf dem Gruppen-Canvas platzieren (solange `availablePixels > 0`)
+- `availablePixels = unlockedPixels - usedPixels`
 
 ---
 
@@ -352,6 +374,6 @@ Battle
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-29
+**Letzte Aktualisierung**: 2026-01-30
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Frontend-Struktur →](06-Frontend-Struktur.md)

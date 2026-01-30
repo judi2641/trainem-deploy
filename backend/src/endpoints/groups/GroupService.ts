@@ -1,5 +1,6 @@
-import { GroupModel, IGroup, IGroupMember } from './GroupModel';
+import { GroupModel, IGroup, IGroupMember, IGroupPixel } from './GroupModel';
 import { HttpError } from '../../errors/HttpError';
+import { logger } from '../../utils/logger';
 
 export class GroupService {
 	static async createGroup(data: {
@@ -149,5 +150,110 @@ export class GroupService {
 		targetMember.role = newRole;
 		await group.save();
 		return group;
+	}
+
+	// ==================== GROUP PIXEL ART ====================
+
+	/**
+	 * Platziert einen Pixel auf dem Gruppen-Canvas
+	 * Nur möglich wenn die Gruppe noch unlockedPixels hat
+	 */
+	static async placeGroupPixel(data: {
+		groupId: string;
+		userId: string;
+		x: number;
+		y: number;
+		color: string;
+	}): Promise<IGroup> {
+		const { groupId, userId, x, y, color } = data;
+
+		const group = await GroupModel.findById(groupId);
+		if (!group) {
+			throw new HttpError(404, 'Group not found');
+		}
+
+		// Prüfe ob User Mitglied der Gruppe ist
+		const member = group.members.find((m) => m.userId === userId);
+		if (!member) {
+			throw new HttpError(403, 'User is not a member of this group');
+		}
+
+		// Prüfe ob Gruppe noch Pixel übrig hat
+		const usedPixels = group.pixelArt?.pixels?.length || 0;
+		const availablePixels = group.unlockedPixels - usedPixels;
+
+		if (availablePixels <= 0) {
+			throw new HttpError(400, 'No pixels available. Win more battles to unlock pixels!');
+		}
+
+		// Prüfe Grid-Bounds
+		const gridSize = group.pixelArt?.gridSize || 16;
+		if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) {
+			throw new HttpError(400, `Invalid coordinates. Grid is ${gridSize}x${gridSize}`);
+		}
+
+		// Validiere Farbe
+		if (!/^#[0-9A-F]{6}$/i.test(color)) {
+			throw new HttpError(400, 'Invalid color format. Use hex color (e.g. #FF5733)');
+		}
+
+		// Initialisiere pixelArt falls nicht vorhanden
+		if (!group.pixelArt) {
+			group.pixelArt = { gridSize: 16, pixels: [] };
+		}
+
+		// Prüfe ob Pixel bereits existiert (überschreiben)
+		const existingIndex = group.pixelArt.pixels.findIndex((p) => p.x === x && p.y === y);
+
+		const newPixel: IGroupPixel = {
+			x,
+			y,
+			color,
+			placedBy: userId,
+			placedAt: new Date(),
+		};
+
+		if (existingIndex >= 0) {
+			// Pixel überschreiben (zählt nicht als neuer Pixel)
+			group.pixelArt.pixels[existingIndex] = newPixel;
+			logger.info(`Group ${groupId}: Pixel at (${x},${y}) overwritten by ${userId}`);
+		} else {
+			// Neuen Pixel hinzufügen
+			group.pixelArt.pixels.push(newPixel);
+			logger.info(`Group ${groupId}: New pixel placed at (${x},${y}) by ${userId}`);
+		}
+
+		await group.save();
+		return group;
+	}
+
+	/**
+	 * Holt Gruppen-Canvas Info
+	 */
+	static async getGroupPixelArt(groupId: string): Promise<{
+		gridSize: number;
+		pixels: IGroupPixel[];
+		usedPixels: number;
+		unlockedPixels: number;
+		availablePixels: number;
+	}> {
+		const group = await GroupModel.findById(groupId);
+		if (!group) {
+			throw new HttpError(404, 'Group not found');
+		}
+
+		const gridSize = group.pixelArt?.gridSize || 16;
+		const pixels = group.pixelArt?.pixels || [];
+		const usedPixels = pixels.length;
+		const unlockedPixels = group.unlockedPixels || 0;
+		const availablePixels = Math.max(0, unlockedPixels - usedPixels);
+
+		return {
+			gridSize,
+			pixels,
+			usedPixels,
+			unlockedPixels,
+			availablePixels,
+		};
 	}
 }
