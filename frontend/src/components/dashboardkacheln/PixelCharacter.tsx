@@ -108,11 +108,11 @@ export default function PixelCharacter() {
 				{/* XP Progress */}
 				<div className="w-full">
 					<div className="flex items-center justify-between text-xs mb-1">
-						<span className="text-black/60 flex items-center gap-1">
+						<span className="text-black/60 dark:text-white/60 flex items-center gap-1">
 							<Zap className="h-3 w-3" />
 							XP
 						</span>
-						<span className="text-black font-medium">
+						<span className="text-black dark:text-white font-medium">
 							{characterData.xpInCurrentLevel}/{characterData.xpToNextLevel}
 						</span>
 					</div>

@@ -172,6 +172,7 @@ export interface BattleMember {
   userId: string;
   contributedXP: number;
   pixelsPlaced: number;
+  pixelsAvailable: number; // Verdiente Pixel durch Training (noch nicht gesetzt)
 }
 
 // Battle Participant (a team in the battle)

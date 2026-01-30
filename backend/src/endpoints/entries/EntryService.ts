@@ -50,6 +50,12 @@ export async function createEntry(
       score: 10
     } as Entry);
 
+    // Update user points
+    await UserModel.findOneAndUpdate(
+      { auth0Id },
+      { $inc: { points: 10 } }
+    );
+
     // Grant pixel rights and add XP to user's groups
     try {
       const groups = await GroupService.getUserGroups(auth0Id);
@@ -181,13 +187,27 @@ export async function abortEntry(entryId: string) {
     throw new HttpError(500, 'failed to abort entry');
   }
 }
-export async function deleteEntry(id:string){
-  try{
-    EntryModel.findByIdAndDelete(id);
-  }
-   catch (error) {
-  logger.error('deleteEntrys failed', error);
-  if (error instanceof HttpError) throw error;
-  throw new HttpError(500, 'failed delete Entry');
+
+/**
+ * Delete an entry
+ * @param entryId
+ * @param auth0Id - for authorization check
+ */
+export async function deleteEntry(entryId: string, auth0Id: string) {
+  try {
+    const entry = await EntryModel.findById(entryId);
+    if (!entry) {
+      throw new HttpError(404, 'Entry not found');
+    }
+    if (entry.auth0Id !== auth0Id) {
+      throw new HttpError(403, 'Not authorized to delete this entry');
+    }
+
+    await EntryModel.findByIdAndDelete(entryId);
+    logger.info(`deleted entry ${entryId}`);
+  } catch (error) {
+    logger.error('deleteEntry failed', error);
+    if (error instanceof HttpError) throw error;
+    throw new HttpError(500, 'failed to delete entry');
   }
 }

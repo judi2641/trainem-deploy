@@ -7,7 +7,6 @@ import {
 	PixelCardHeader,
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -107,7 +106,7 @@ function TrashIcon({ className }: { className?: string }) {
 }
 
 export default function HabitsArea() {
-	const { myUser, habits, setHabits } = useMyContext();
+	const { myUser, habits, setHabits, entries, setEntries } = useMyContext();
 	const auth0Id = myUser?.auth0Id;
 
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -119,6 +118,44 @@ export default function HabitsArea() {
 
 	const dailyHabits = useMemo(() => habits.filter((h: any) => h.type === 'daily'), [habits]);
 	const weeklyHabits = useMemo(() => habits.filter((h: any) => h.type === 'weekly'), [habits]);
+
+	// Check which habits are completed today
+	const todayStr = new Date().toISOString().split('T')[0];
+	const completedHabitIds = useMemo(() => {
+		return entries
+			.filter((e: any) => e.habitId && e.date?.startsWith(todayStr) && e.completed)
+			.map((e: any) => e.habitId);
+	}, [entries, todayStr]);
+
+	async function completeHabit(habitId: string) {
+		if (!auth0Id) return;
+
+		try {
+			const res = await fetch('http://localhost:3000/api/entries', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					auth0Id,
+					habitId,
+					date: new Date().toISOString(),
+					plannedExercises: [],
+					completed_exercises: [],
+					completed: true,
+					score: 1,
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to complete habit');
+			}
+
+			const newEntry = await res.json();
+			setEntries((prev: any[]) => [...prev, newEntry]);
+			toast.success('Habit completed! +10 XP');
+		} catch (err) {
+			toast.error('Failed to complete habit');
+		}
+	}
 
 	async function createHabit() {
 		if (!auth0Id || !newHabitName.trim()) {
@@ -165,6 +202,8 @@ export default function HabitsArea() {
 		try {
 			const res = await fetch(`http://localhost:3000/api/habits/${habitId}`, {
 				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ auth0Id }),
 			});
 
 			if (!res.ok) {
@@ -189,17 +228,17 @@ export default function HabitsArea() {
 					<div className="h-8 w-8 bg-pink-400 border-3 border-black flex items-center justify-center">
 						<CheckIcon className="h-5 w-5 text-white" />
 					</div>
-					<h1 className="font-pixel text-2xl text-black">Habits</h1>
+					<h1 className="font-pixel text-2xl text-black dark:text-white">Habits</h1>
 				</div>
 
 				<Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
 					<DialogTrigger asChild>
 						<button className="pixel-btn flex items-center gap-2 p-2">
 							<PlusIcon className="h-4 w-4" />
-							<span>New Habit</span>
+							New Habit
 						</button>
 					</DialogTrigger>
-					<DialogContent className="border-3 border-black bg-white">
+					<DialogContent className="border-3 border-black bg-white text-black">
 						<DialogHeader>
 							<DialogTitle className="font-pixel text-lg">Create New Habit</DialogTitle>
 							<DialogDescription>
@@ -297,7 +336,7 @@ export default function HabitsArea() {
 								<SunIcon className="h-3 w-3 text-black" />
 							</div>
 							<PixelCardTitle>Daily Habits</PixelCardTitle>
-							<span className="ml-auto text-xs text-black/50 font-medium">
+							<span className="ml-auto text-xs text-black/50 dark:text-white/50 font-medium">
 								{dailyHabits.length} habits
 							</span>
 						</div>
@@ -307,9 +346,11 @@ export default function HabitsArea() {
 						{dailyHabits.length === 0 ? (
 							<div className="h-40 flex items-center justify-center">
 								<div className="text-center">
-									<SunIcon className="h-10 w-10 text-black/20 mx-auto mb-2" />
-									<p className="text-sm text-black/50">No daily habits yet</p>
-									<p className="text-xs text-black/40 mt-1">Create one to get started!</p>
+									<SunIcon className="h-10 w-10 text-black/20 dark:text-white/20 mx-auto mb-2" />
+									<p className="text-sm text-black/50 dark:text-white/50">No daily habits yet</p>
+									<p className="text-xs text-black/40 dark:text-white/40 mt-1">
+										Create one to get started!
+									</p>
 								</div>
 							</div>
 						) : (
@@ -319,7 +360,9 @@ export default function HabitsArea() {
 										key={habit._id}
 										habit={habit}
 										onDelete={() => deleteHabit(habit._id)}
+										onComplete={() => completeHabit(habit._id)}
 										isToday={true}
+										isCompleted={completedHabitIds.includes(habit._id)}
 									/>
 								))}
 							</div>
@@ -335,7 +378,7 @@ export default function HabitsArea() {
 								<CalendarIcon className="h-3 w-3 text-black" />
 							</div>
 							<PixelCardTitle>Weekly Habits</PixelCardTitle>
-							<span className="ml-auto text-xs text-black/50 font-medium">
+							<span className="ml-auto text-xs text-black/50 dark:text-white/50 font-medium">
 								{weeklyHabits.length} habits
 							</span>
 						</div>
@@ -345,9 +388,11 @@ export default function HabitsArea() {
 						{weeklyHabits.length === 0 ? (
 							<div className="h-40 flex items-center justify-center">
 								<div className="text-center">
-									<CalendarIcon className="h-10 w-10 text-black/20 mx-auto mb-2" />
-									<p className="text-sm text-black/50">No weekly habits yet</p>
-									<p className="text-xs text-black/40 mt-1">Create one to get started!</p>
+									<CalendarIcon className="h-10 w-10 text-black/20 dark:text-white/20 mx-auto mb-2" />
+									<p className="text-sm text-black/50 dark:text-white/50">No weekly habits yet</p>
+									<p className="text-xs text-black/40 dark:text-white/40 mt-1">
+										Create one to get started!
+									</p>
 								</div>
 							</div>
 						) : (
@@ -357,7 +402,9 @@ export default function HabitsArea() {
 										key={habit._id}
 										habit={habit}
 										onDelete={() => deleteHabit(habit._id)}
+										onComplete={() => completeHabit(habit._id)}
 										isToday={habit.weekday === today}
+										isCompleted={completedHabitIds.includes(habit._id)}
 									/>
 								))}
 							</div>
@@ -372,18 +419,24 @@ export default function HabitsArea() {
 function HabitItem({
 	habit,
 	onDelete,
+	onComplete,
 	isToday,
+	isCompleted,
 }: {
 	habit: any;
 	onDelete: () => void;
+	onComplete: () => void;
 	isToday: boolean;
+	isCompleted: boolean;
 }) {
 	return (
 		<div
 			className={`flex items-center gap-3 p-3 border-2 transition-colors ${
-				isToday
-					? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-300'
-					: 'bg-white/50 border-black/20'
+				isCompleted
+					? 'bg-gradient-to-r from-emerald-100 to-emerald-50 border-emerald-400'
+					: isToday
+						? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-300'
+						: 'bg-white/50 border-black/20'
 			}`}
 		>
 			<div className="flex-1 min-w-0">
@@ -391,17 +444,19 @@ function HabitItem({
 					<span className="text-sm font-medium text-black truncate">{habit.name}</span>
 				</div>
 				{habit.description && (
-					<p className="text-xs text-black/50 truncate mt-0.5">{habit.description}</p>
+					<p className="text-xs text-black/50 dark:text-white/50 truncate mt-0.5">
+						{habit.description}
+					</p>
 				)}
 				{habit.type === 'weekly' && (
-					<p className="text-xs text-black/40 mt-0.5">
+					<p className="text-xs text-black/40 dark:text-white/40 mt-0.5">
 						Every {WEEKDAYS.find((d) => d.value === habit.weekday)?.label}
 					</p>
 				)}
 			</div>
 			<button
 				onClick={onDelete}
-				className="p-1.5 text-black/40 hover:text-red-500 hover:bg-red-50 transition-colors"
+				className="p-1.5 text-black/40 dark:text-white/40 hover:text-red-500 hover:bg-red-50 transition-colors"
 			>
 				<TrashIcon className="h-4 w-4" />
 			</button>

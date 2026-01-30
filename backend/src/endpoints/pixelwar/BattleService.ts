@@ -352,6 +352,7 @@ export class BattleService {
 
 	/**
 	 * Pixel im Battle setzen
+	 * User kann nur Pixel setzen, die durch Training verdient wurden
 	 */
 	static async setPixelsInBattle(data: {
 		battleId: string;
@@ -384,6 +385,8 @@ export class BattleService {
 			throw new HttpError(403, 'Group is not participating in this battle');
 		}
 
+		const participant = isChallenger ? battle.challenger : battle.opponent;
+
 		// Prüfe ob User Mitglied der Gruppe ist
 		const group = await GroupModel.findById(groupId);
 		if (!group) {
@@ -393,6 +396,22 @@ export class BattleService {
 		const isMember = group.members.some((m) => m.userId === userId);
 		if (!isMember) {
 			throw new HttpError(403, 'User is not a member of this group');
+		}
+
+			// Finde Member im Battle
+		const memberIndex = participant.members.findIndex((m) => m.userId === userId);
+		if (memberIndex < 0) {
+			throw new HttpError(400, 'Complete exercises first to earn pixels and join the battle!');
+		}
+
+		const member = participant.members[memberIndex];
+
+		// Prüfe ob User genug Pixel hat
+		if (member.pixelsAvailable < coordinates.length) {
+			throw new HttpError(
+				400,
+				`Not enough pixels! You have ${member.pixelsAvailable} available, trying to place ${coordinates.length}. Complete more exercises to earn pixels!`
+			);
 		}
 
 		// Hole PixelBoard
@@ -433,7 +452,12 @@ export class BattleService {
 			}
 		}
 
+		// Deduct pixels from available count
+		participant.members[memberIndex].pixelsAvailable -= coordinates.length;
+		participant.members[memberIndex].pixelsPlaced += coordinates.length;
+
 		await board.save();
+		await battle.save();
 
 		// Update Battle Stats
 		await this.updateBattleStats(battle, board);
@@ -443,6 +467,7 @@ export class BattleService {
 
 	/**
 	 * XP zum Battle hinzufügen (aufgerufen von EntryService)
+	 * Pro abgeschlossene Übung (67 XP) = 1 Pixel verdient
 	 */
 	static async addBattleXP(battleId: string, groupId: string, userId: string, xp: number): Promise<void> {
 		const battle = await BattleModel.findById(battleId);
@@ -461,19 +486,29 @@ export class BattleService {
 		// Update Team XP
 		participant.totalXP += xp;
 
+		// Pixel-Berechnung:
+		// - Übungen: 67 XP pro Übung = 1 Pixel pro Übung
+		// - Habits: 10 XP = 1 Pixel (jede Aktivität gibt mindestens 1 Pixel)
+		const pixelsEarned = xp >= 67 ? Math.floor(xp / 67) : xp > 0 ? 1 : 0;
+
 		// Update oder erstelle Member-Eintrag
 		const memberIndex = participant.members.findIndex((m) => m.userId === userId);
 		if (memberIndex >= 0) {
 			participant.members[memberIndex].contributedXP += xp;
+			participant.members[memberIndex].pixelsAvailable += pixelsEarned;
 		} else {
 			participant.members.push({
 				userId,
 				contributedXP: xp,
 				pixelsPlaced: 0,
+				pixelsAvailable: pixelsEarned,
 			});
 		}
 
 		await battle.save();
+		if (pixelsEarned > 0) {
+			logger.info(`${pixelsEarned} pixel(s) earned for user ${userId} in battle ${battleId}`);
+		}
 	}
 
 	/**

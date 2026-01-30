@@ -15,11 +15,13 @@ Fitness und Selbstverbesserung sollen Spaß machen! Trainem kombiniert klassisch
 - ✅ Erstellen und Verwalten von Workout-Plänen
 - ✅ Habit-Tracking (täglich & wöchentlich)
 - ✅ 50+ vordefinierte Übungen mit Video-Anleitungen
-- ✅ XP-System & Level-Progression
+- ✅ XP-System & Level-Progression (67 XP pro Übung, 10 XP pro Habit)
 - ✅ Personalisierter Pixel-Art-Avatar (32x32 Grid)
 - ✅ Statistiken & Performance-Analytics
 - ✅ Kalenderansicht für Training-History
 - ✅ Streak-Tracking (aufeinanderfolgende Trainingstage)
+- ✅ **Gruppen**: Teams erstellen, beitreten, gemeinsam XP sammeln
+- ✅ **Pixel Wars**: Kompetitive 1v1 Battles zwischen Gruppen auf geteiltem Canvas
 
 ---
 
@@ -128,6 +130,9 @@ Fitness und Selbstverbesserung sollen Spaß machen! Trainem kombiniert klassisch
 | **auth0Id** | Eindeutige User-ID von Auth0 (Format: `auth0|...`) |
 | **shadcn/ui** | Komponentenbibliothek basierend auf Radix UI + Tailwind CSS |
 | **Protected Route** | React-Route, die nur für authentifizierte Nutzer zugänglich ist |
+| **Group** | Team von Nutzern, die gemeinsam XP sammeln und an Pixel Wars teilnehmen |
+| **Pixel Wars / Battle** | 1v1 Wettbewerb zwischen zwei Gruppen auf einem geteilten Pixel-Canvas |
+| **Challenge** | Anfrage einer Gruppe an eine andere für ein Pixel Wars Battle |
 
 ---
 
@@ -192,7 +197,7 @@ Alle verwendeten Open-Source-Libraries sind in `package.json` (Frontend/Backend)
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-24
+**Letzte Aktualisierung**: 2026-01-29
 **Nächste Review**: [Datum eintragen]
 
 [← Zurück zum Wiki](../WIKI.md)

@@ -145,10 +145,10 @@ export default function PixelArt() {
 	};
 
 	return (
-		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
+		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			{/* Subtle grid */}
 			<div
-				className="absolute inset-0 pointer-events-none opacity-20"
+				className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-10"
 				style={{
 					backgroundImage:
 						'linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)',
@@ -157,8 +157,8 @@ export default function PixelArt() {
 			/>
 
 			{/* Glow effects */}
-			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 blur-3xl" />
-			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 blur-3xl" />
+			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 dark:bg-emerald-500/10 blur-3xl" />
+			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 dark:bg-amber-500/10 blur-3xl" />
 
 			{/* Pixel background */}
 			<PixelBackground count={100} seed={88} />
@@ -192,8 +192,10 @@ export default function PixelArt() {
 							{isLoading ? (
 								<div className="flex items-center justify-center h-full">
 									<div className="flex items-center gap-3">
-										<div className="h-4 w-4 bg-emerald-500 border border-black animate-pulse" />
-										<span className="text-sm text-black/50">Loading pixel art...</span>
+										<div className="h-4 w-4 bg-emerald-500 border border-black dark:border-white/30 animate-pulse" />
+										<span className="text-sm text-black/50 dark:text-white/50">
+											Loading pixel art...
+										</span>
 									</div>
 								</div>
 							) : (

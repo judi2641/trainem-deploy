@@ -4,10 +4,11 @@ import { abortEntry, createEntry, deleteEntry, getAllEntriesFromUser, updateEntr
 const router = express.Router();
 
 function sendError(res: any, err: any) {
-  const status = err?.statusCode ?? 500;
+  const status = err?.statusCode ?? err?.status ?? 500;
   res.status(status).json({ message: err?.message ?? 'Internal Server Error' });
 }
-// GET /entries?auth0Id=xxx
+
+// GET /entries/:auth0Id - Alle Entries eines Users
 router.get('/:auth0Id', async (req: Request, res: Response) => {
   try {
     const auth0Id = req.params.auth0Id;
@@ -18,7 +19,7 @@ router.get('/:auth0Id', async (req: Request, res: Response) => {
   }
 });
 
-// POST /entries  { auth0Id, workoutId? , habitId? , date? }
+// POST /entries - Neue Entry erstellen
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { auth0Id, workoutId, habitId, date } = req.body;
@@ -29,7 +30,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-// PATCH /entries/:entryId/complete-exercise  { exerciseName, weight? }
+// PATCH /entries/:entryId/complete-exercise - Übung abschließen
 router.patch('/:entryId/complete-exercise', async (req: Request, res: Response) => {
   try {
     const { exerciseName, weight } = req.body;
@@ -40,6 +41,7 @@ router.patch('/:entryId/complete-exercise', async (req: Request, res: Response) 
   }
 });
 
+// PATCH /entries/:entryId/abort - Entry abbrechen
 router.patch('/:entryId/abort', async (req: Request, res: Response) => {
   try {
     const entry = await abortEntry(req.params.entryId);
@@ -48,14 +50,23 @@ router.patch('/:entryId/abort', async (req: Request, res: Response) => {
     sendError(res, err);
   }
 });
-router.delete('/:entryId', async (req: Request, res: Response) => {
+
+// DELETE /entries/:entryId - Entry löschen
+router.delete('/:entryId', async (req: Request, res: Response): Promise<void> => {
   try {
-    const entryId = req.params.entryId;
-    await deleteEntry(entryId);
-    res.status(204).send();
+    const { entryId } = req.params;
+    const { auth0Id } = req.body;
+
+    if (!auth0Id) {
+      res.status(400).json({ message: 'auth0Id is required' });
+      return;
     }
-    catch (err) {
+
+    await deleteEntry(entryId, auth0Id);
+    res.status(204).send();
+  } catch (err) {
     sendError(res, err);
   }
-  })
+});
+
 export default router;

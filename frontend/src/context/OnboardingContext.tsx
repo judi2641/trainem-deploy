@@ -99,19 +99,22 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/user/${user.sub}/basic`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
+			const res = await fetch(
+				`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}/basic`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						firstname: userData.firstname,
+						lastname: userData.lastname,
+						birthDate: userData.birthDate,
+						gender: userData.gender,
+						img: userData.img,
+					}),
 				},
-				body: JSON.stringify({
-					firstname: userData.firstname,
-					lastname: userData.lastname,
-					birthDate: userData.birthDate,
-					gender: userData.gender,
-					img: userData.img,
-				}),
-			});
+			);
 
 			if (!res.ok) throw new Error('Error saving user basic info');
 
@@ -144,27 +147,30 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/trainingsplan/${user.sub}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					onboarding: {
-						goal: planData.goal,
-						experience: planData.experience,
-						trainingDays: planData.trainingDays,
-						weight: planData.weight,
-						height: planData.height,
-						daysPerWeek: planData.daysPerWeek,
-						minutesPerSession: planData.minutesPerSession,
-						equipment: planData.equipment,
-						limitations: planData.limitations,
-						preferredSplit: planData.preferredSplit,
-						priorities: planData.priorities,
+			const res = await fetch(
+				`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
 					},
-				}),
-			});
+					body: JSON.stringify({
+						onboarding: {
+							goal: planData.goal,
+							experience: planData.experience,
+							trainingDays: planData.trainingDays,
+							weight: planData.weight,
+							height: planData.height,
+							daysPerWeek: planData.daysPerWeek,
+							minutesPerSession: planData.minutesPerSession,
+							equipment: planData.equipment,
+							limitations: planData.limitations,
+							preferredSplit: planData.preferredSplit,
+							priorities: planData.priorities,
+						},
+					}),
+				},
+			);
 
 			if (!res.ok) {
 				throw new Error('Error creating training plan');

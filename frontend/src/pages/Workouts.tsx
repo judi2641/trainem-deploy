@@ -4,10 +4,10 @@ import PixelBackground from '@/components/pixel/PixelBackground';
 
 export default function Workouts() {
 	return (
-		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
+		<div className="relative flex h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			{/* Subtle grid */}
 			<div
-				className="absolute inset-0 pointer-events-none opacity-20"
+				className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-10"
 				style={{
 					backgroundImage:
 						'linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)',
@@ -16,8 +16,8 @@ export default function Workouts() {
 			/>
 
 			{/* Glow effects */}
-			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 blur-3xl" />
-			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 blur-3xl" />
+			<div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-emerald-300/30 dark:bg-emerald-500/10 blur-3xl" />
+			<div className="absolute -bottom-32 -right-32 h-[380px] w-[380px] rounded-full bg-amber-300/35 dark:bg-amber-500/10 blur-3xl" />
 
 			{/* Pixel background */}
 			<PixelBackground count={120} seed={42} />

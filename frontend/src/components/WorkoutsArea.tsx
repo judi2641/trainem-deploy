@@ -164,12 +164,15 @@ export default function WorkoutsArea() {
 		}
 	}
 
-	async function removeExerciseFromWorkout(workoutId: string, exerciseName: string) {
+	async function removeExerciseFromWorkout(workoutId: string, exerciseIndex: number) {
+		if (!auth0Id) return;
 		try {
 			const res = await fetch(
-				`http://localhost:3000/api/workouts/${workoutId}/exercises/${encodeURIComponent(exerciseName)}`,
+				`http://localhost:3000/api/workouts/${workoutId}/exercises/${exerciseIndex}`,
 				{
 					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ auth0Id }),
 				},
 			);
 			if (!res.ok) throw new Error('Exercise could not be removed');
@@ -202,12 +205,12 @@ export default function WorkoutsArea() {
 	}
 
 	async function saveWorkoutEdits() {
-		if (!activeWorkout) return;
+		if (!activeWorkout || !auth0Id) return;
 		try {
 			const res = await fetch(`http://localhost:3000/api/workouts/${activeWorkout._id}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, description }),
+				body: JSON.stringify({ auth0Id, name, description }),
 			});
 
 			if (res.ok) {
@@ -216,26 +219,23 @@ export default function WorkoutsArea() {
 					prev.map((w: any) => (w._id === activeWorkout._id ? updated : w)),
 				);
 			} else {
-				// Fallback to local update if API doesn't exist yet
-				setWorkouts((prev: any) =>
-					prev.map((w: any) => (w._id === activeWorkout._id ? { ...w, name, description } : w)),
-				);
+				throw new Error('Failed to update workout');
 			}
-		} catch {
-			// Fallback to local update
-			setWorkouts((prev: any) =>
-				prev.map((w: any) => (w._id === activeWorkout._id ? { ...w, name, description } : w)),
-			);
+		} catch (e: any) {
+			setError(e?.message ?? 'Failed to update workout');
 		}
 		setEditOpen(false);
 		resetForm();
 	}
 
 	async function deleteWorkout(workoutId: string) {
+		if (!auth0Id) return;
 		if (!confirm('Are you sure you want to delete this workout?')) return;
 		try {
 			const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
 				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ auth0Id }),
 			});
 			if (!res.ok) throw new Error('Workout could not be deleted');
 			setWorkouts((prev: any) => prev.filter((w: any) => w._id !== workoutId));
@@ -303,8 +303,12 @@ export default function WorkoutsArea() {
 							<div className="w-16 h-16 bg-emerald-100 border-2 border-black mx-auto mb-4 flex items-center justify-center">
 								<Dumbbell className="w-8 h-8 text-emerald-600" />
 							</div>
-							<h3 className="font-pixel text-lg text-black mb-2">No Workouts Yet</h3>
-							<p className="text-black/60 mb-4">Create your first workout to get started.</p>
+							<h3 className="font-pixel text-lg text-black dark:text-white mb-2">
+								No Workouts Yet
+							</h3>
+							<p className="text-black/60 dark:text-white/60 mb-4">
+								Create your first workout to get started.
+							</p>
 							<button
 								onClick={() => setCreateOpen(true)}
 								className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
@@ -326,7 +330,7 @@ export default function WorkoutsArea() {
 											</div>
 											<PixelCardTitle className="truncate">{w.name}</PixelCardTitle>
 										</div>
-										<p className="text-xs text-black/60 line-clamp-1">
+										<p className="text-xs text-black/60 dark:text-white/60 line-clamp-1">
 											{w.description || 'No description'}
 										</p>
 									</div>
@@ -375,29 +379,33 @@ export default function WorkoutsArea() {
 														<Dumbbell className="w-3 h-3 text-black" />
 													)}
 												</div>
-												<span className="truncate text-black/80 flex-1">
+												<span className="truncate text-black/80 dark:text-white/80 flex-1">
 													{ex.exercise?.name || 'Unknown'}
 												</span>
-												<span className="text-xs text-black/50 shrink-0">
+												<span className="text-xs text-black/50 dark:text-white/50 shrink-0">
 													{ex.sets && ex.reps
 														? `${ex.sets}x${ex.reps}`
 														: ex.duration
 															? `${ex.duration}s`
 															: ''}
 												</span>
-												<ChevronRight className="w-3 h-3 text-black/30 group-hover:text-black/60 shrink-0 transition-colors" />
+												<ChevronRight className="w-3 h-3 text-black/30 dark:text-white/30 group-hover:text-black/60 shrink-0 transition-colors" />
 											</button>
 										))}
 										{(w.exercises?.length || 0) > 3 && (
-											<p className="text-xs text-black/50 pl-2">+{w.exercises.length - 3} more</p>
+											<p className="text-xs text-black/50 dark:text-white/50 pl-2">
+												+{w.exercises.length - 3} more
+											</p>
 										)}
 										{(!w.exercises || w.exercises.length === 0) && (
-											<p className="text-xs text-black/50 italic">No exercises added yet</p>
+											<p className="text-xs text-black/50 dark:text-white/50 italic">
+												No exercises added yet
+											</p>
 										)}
 									</div>
 
 									{/* Actions */}
-									<div className="flex gap-2 pt-3 border-t-2 border-black/10">
+									<div className="flex gap-2 pt-3 border-t-2 border-black/10 dark:border-white/10">
 										<button
 											onClick={() => openEdit(w)}
 											className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-primary border-2 border-black hover:bg-gray-50 transition-colors"
@@ -526,7 +534,7 @@ export default function WorkoutsArea() {
 						<div className="space-y-4">
 							<div className="flex items-center justify-between">
 								<h3 className="font-pixel text-sm">Exercises</h3>
-								<span className="text-xs text-black/50">
+								<span className="text-xs text-black/50 dark:text-white/50">
 									{activeWorkout?.exercises?.length || 0} exercises
 								</span>
 							</div>
@@ -536,7 +544,7 @@ export default function WorkoutsArea() {
 								{(activeWorkout?.exercises || []).map((ex: any, i: number) => (
 									<div
 										key={i}
-										className="flex items-center gap-3 p-3 bg-gray-50 border-2 border-black group hover:bg-gray-100 transition-colors"
+										className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 border-2 border-black dark:border-white/20 group hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
 									>
 										<button
 											type="button"
@@ -555,18 +563,19 @@ export default function WorkoutsArea() {
 												)}
 											</div>
 											<div className="flex-1 min-w-0">
-												<p className="font-medium text-sm truncate">{ex.exercise?.name}</p>
-												<p className="text-xs text-black/50">
+												<p className="font-medium text-sm truncate text-black dark:text-white">
+													{ex.exercise?.name}
+												</p>
+												<p className="text-xs text-black/50 dark:text-white/50">
 													{ex.sets && ex.reps ? `${ex.sets} sets x ${ex.reps} reps` : ''}
 													{ex.duration ? `${ex.duration} seconds` : ''}
 												</p>
 											</div>
-											<Info className="w-4 h-4 text-black/30 group-hover:text-black/60 shrink-0" />
+											<Info className="w-4 h-4 text-black/30 dark:text-white/30 group-hover:text-black/60 shrink-0" />
 										</button>
 										<button
 											onClick={() =>
-												activeWorkout &&
-												removeExerciseFromWorkout(activeWorkout._id, ex.exercise?.name)
+												activeWorkout && removeExerciseFromWorkout(activeWorkout._id, i)
 											}
 											className="p-1.5 text-red-500 hover:bg-red-50 border-2 border-transparent hover:border-red-200 shrink-0"
 										>
@@ -575,7 +584,9 @@ export default function WorkoutsArea() {
 									</div>
 								))}
 								{(!activeWorkout?.exercises || activeWorkout.exercises.length === 0) && (
-									<p className="text-sm text-black/50 text-center py-4">No exercises added yet</p>
+									<p className="text-sm text-black/50 dark:text-white/50 text-center py-4">
+										No exercises added yet
+									</p>
 								)}
 							</div>
 
@@ -586,7 +597,7 @@ export default function WorkoutsArea() {
 								{!selectedExercise ? (
 									<>
 										<div className="relative">
-											<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
+											<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40 dark:text-white/40" />
 											<Input
 												value={exerciseSearch}
 												onChange={(e) => setExerciseSearch(e.target.value)}
@@ -595,7 +606,7 @@ export default function WorkoutsArea() {
 											/>
 										</div>
 										{exerciseSearch && (
-											<div className="max-h-40 overflow-auto border-2 border-black bg-white">
+											<div className="max-h-40 overflow-auto border-2 border-black bg-white text-black">
 												{filteredExercises.length === 0 ? (
 													<p className="p-3 text-sm text-black/50">No exercises found</p>
 												) : (
@@ -641,7 +652,7 @@ export default function WorkoutsArea() {
 											<span className="font-medium text-sm">{selectedExercise.name}</span>
 											<button
 												onClick={() => setSelectedExercise(null)}
-												className="ml-auto text-black/40 hover:text-black"
+												className="ml-auto text-black/40 dark:text-white/40 hover:text-black"
 											>
 												<X className="w-4 h-4" />
 											</button>
@@ -732,7 +743,7 @@ export default function WorkoutsArea() {
 					<div className="py-4 space-y-4">
 						<div className="p-3 bg-gray-50 border-2 border-black">
 							<p className="font-medium">{schedulingWorkout?.name}</p>
-							<p className="text-xs text-black/50">
+							<p className="text-xs text-black/50 dark:text-white/50">
 								{schedulingWorkout?.exercises?.length || 0} exercises
 							</p>
 						</div>

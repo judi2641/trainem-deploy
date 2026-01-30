@@ -40,13 +40,62 @@ try {
 	throw new HttpError(500, 'failed to get habits');
   }
 }
-export async function deleteHabit(id:string){
-	try{
-		HabitModel.findByIdAndDelete(id);
+
+/**
+ * Update a habit
+ * @param habitId
+ * @param auth0Id - for authorization check
+ * @param updates - fields to update
+ * @returns updated habit
+ */
+export async function updateHabit(
+	habitId: string,
+	auth0Id: string,
+	updates: { name?: string; description?: string; type?: string; weekday?: number }
+) {
+	try {
+		const habit = await HabitModel.findById(habitId);
+		if (!habit) {
+			throw new HttpError(404, 'Habit not found');
+		}
+		if (habit.auth0Id !== auth0Id) {
+			throw new HttpError(403, 'Not authorized to update this habit');
+		}
+
+		const updatedHabit = await HabitModel.findByIdAndUpdate(
+			habitId,
+			{ $set: updates },
+			{ new: true }
+		);
+		logger.info(`updated habit ${habitId}`);
+		return updatedHabit;
+	} catch (error) {
+		logger.error('updateHabit failed', error);
+		if (error instanceof HttpError) throw error;
+		throw new HttpError(500, 'failed to update habit');
 	}
-	 catch (error) {
-	logger.error('deleteHabits failed', error);
-	if (error instanceof HttpError) throw error;
-	throw new HttpError(500, 'failed delete Habit');
-  }
+}
+
+/**
+ * Delete a habit
+ * @param habitId
+ * @param auth0Id - for authorization check
+ */
+export async function deleteHabit(habitId: string, auth0Id: string) {
+	try {
+		const habit = await HabitModel.findById(habitId);
+		if (!habit) {
+			throw new HttpError(404, 'Habit not found');
+		}
+		if (habit.auth0Id !== auth0Id) {
+			throw new HttpError(403, 'Not authorized to delete this habit');
+		}
+
+		await HabitModel.findByIdAndDelete(habitId);
+		logger.info(`deleted habit ${habitId}`);
+	} catch (error) {
+		logger.error('deleteHabit failed', error);
+		if (error instanceof HttpError) throw error;
+		throw new HttpError(500, 'failed to delete habit');
+	}
 }

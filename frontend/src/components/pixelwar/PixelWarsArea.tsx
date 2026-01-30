@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { toast } from 'sonner';
 import BattleList from './battles/BattleList';
 import ChallengeModal from './battles/ChallengeModal';
 import PendingChallenges from './battles/PendingChallenges';
@@ -28,21 +29,21 @@ export default function PixelWarsArea() {
 	const fetchData = async () => {
 		try {
 			// Fetch user's battles
-			const battlesRes = await fetch(`http://localhost:3000/api/pixelwar/battles?userId=${user?.sub}`);
+			const battlesRes = await fetch(`http://localhost:3000/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`);
 			if (battlesRes.ok) {
 				const data = await battlesRes.json();
 				setBattles(data);
 			}
 
 			// Fetch pending challenges
-			const pendingRes = await fetch(`http://localhost:3000/api/pixelwar/battles/pending?userId=${user?.sub}`);
+			const pendingRes = await fetch(`http://localhost:3000/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`);
 			if (pendingRes.ok) {
 				const data = await pendingRes.json();
 				setPendingChallenges(data);
 			}
 
 			// Fetch user's groups
-			const groupsRes = await fetch(`http://localhost:3000/api/groups/user/${user?.sub}`);
+			const groupsRes = await fetch(`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`);
 			if (groupsRes.ok) {
 				const data = await groupsRes.json();
 				setMyGroups(data);
@@ -83,10 +84,15 @@ export default function PixelWarsArea() {
 
 			if (res.ok) {
 				setIsChallengeModalOpen(false);
+				toast.success('Challenge sent!');
 				fetchData();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to create challenge');
 			}
 		} catch (error) {
 			console.error('Failed to create challenge:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 
@@ -99,10 +105,15 @@ export default function PixelWarsArea() {
 			});
 
 			if (res.ok) {
+				toast.success('Challenge accepted! Battle started!');
 				fetchData();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to accept challenge');
 			}
 		} catch (error) {
 			console.error('Failed to accept challenge:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 
@@ -115,10 +126,15 @@ export default function PixelWarsArea() {
 			});
 
 			if (res.ok) {
+				toast.success('Challenge declined');
 				fetchData();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to decline challenge');
 			}
 		} catch (error) {
 			console.error('Failed to decline challenge:', error);
+			toast.error('Network error - please try again');
 		}
 	};
 

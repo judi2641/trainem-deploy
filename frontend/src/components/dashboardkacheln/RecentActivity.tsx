@@ -49,8 +49,8 @@ export default function RecentActivity() {
 				{recentEntries.length === 0 ? (
 					<div className="h-full flex items-center justify-center">
 						<div className="text-center">
-							<Activity className="h-6 w-6 text-black/30 mx-auto mb-1" />
-							<p className="text-xs text-black/50">No activity</p>
+							<Activity className="h-6 w-6 text-black/30 dark:text-white/30 mx-auto mb-1" />
+							<p className="text-xs text-black/50 dark:text-white/50">No activity</p>
 						</div>
 					</div>
 				) : (

@@ -4,6 +4,7 @@ export interface IBattleMember {
 	userId: string;
 	contributedXP: number;
 	pixelsPlaced: number;
+	pixelsAvailable: number; // Verdiente Pixel durch Training (noch nicht gesetzt)
 }
 
 export interface IBattleParticipant {
@@ -47,6 +48,7 @@ const BattleMemberSchema = new Schema<IBattleMember>(
 		userId: { type: String, required: true },
 		contributedXP: { type: Number, default: 0, min: 0 },
 		pixelsPlaced: { type: Number, default: 0, min: 0 },
+		pixelsAvailable: { type: Number, default: 0, min: 0 },
 	},
 	{ _id: false },
 );
@@ -72,16 +74,16 @@ const BattleSettingsSchema = new Schema<IBattleSettings>(
 		duration: {
 			type: Number,
 			required: true,
-			default: 1440, // 24 Stunden
-			min: 60, // Mindestens 1 Stunde
-			max: 10080, // Max 1 Woche
+			default: 10080, // 7 Tage (in Minuten)
+			min: 1440, // Mindestens 1 Tag
+			max: 20160, // Max 2 Wochen
 		},
 		gridSize: {
 			type: Number,
 			required: true,
-			default: 50,
-			min: 20,
-			max: 200,
+			default: 15, // 15x15 = 225 Pixel
+			min: 10,
+			max: 50,
 		},
 		winCondition: {
 			type: String,

@@ -207,6 +207,87 @@ Trainem nutzt **MongoDB** mit **Mongoose ODM** für die Datenpersistenz. Alle Mo
 
 ---
 
+## 👥 Group Model
+
+**Datei**: `backend/src/endpoints/groups/GroupModel.ts`
+
+```typescript
+{
+  name: String (required)
+  description: String
+  color: String (required, hex)
+  ownerId: String (required)  // auth0Id des Owners
+  isPublic: Boolean (default: true)
+  maxMembers: Number (default: 50)
+
+  members: [{
+    userId: String (required)
+    role: 'owner' | 'admin' | 'member'
+    joinedAt: Date
+    contributedXP: Number (default: 0)
+  }]
+
+  totalXP: Number (default: 0)
+  currentSeasonXP: Number (default: 0)
+
+  createdAt: Date (auto)
+  updatedAt: Date (auto)
+}
+```
+
+---
+
+## ⚔️ Battle Model (Pixel Wars 1v1)
+
+**Datei**: `backend/src/endpoints/pixelwar/BattleModel.ts`
+
+```typescript
+{
+  name: String
+  description: String
+
+  challenger: {
+    groupId: ObjectId (required)
+    groupName: String
+    color: String
+    pixelsOwned: Number (default: 0)
+    totalXP: Number (default: 0)
+    members: [{ userId: String, contributedXP: Number, pixelsPlaced: Number }]
+  }
+
+  opponent: {
+    groupId: ObjectId (required)
+    groupName: String
+    color: String
+    pixelsOwned: Number (default: 0)
+    totalXP: Number (default: 0)
+    members: [...]
+  }
+
+  status: 'pending' | 'accepted' | 'active' | 'completed' | 'declined' | 'cancelled'
+
+  // Zeitsteuerung
+  challengedAt: Date (auto)
+  acceptedAt: Date
+  startDate: Date
+  endDate: Date
+
+  // Einstellungen
+  settings: {
+    duration: Number (Minuten, 60-10080)
+    gridSize: Number (20-200)
+    winCondition: 'pixels' | 'xp' | 'hybrid'
+    xpPerPixel: Number (default: 10)
+    allowOverwrite: Boolean (default: true)
+  }
+
+  winnerId: ObjectId
+  pixelBoardId: ObjectId (ref: PixelBoard)
+}
+```
+
+---
+
 ## 🔗 Beziehungen (ER-Diagramm)
 
 ```
@@ -214,7 +295,8 @@ User
 ├── 1:N → Workouts (via auth0Id)
 ├── 1:N → Habits (via auth0Id)
 ├── 1:N → Entries (via auth0Id)
-└── 1:1 → PixelArt (via auth0ID)
+├── 1:1 → PixelArt (via auth0ID)
+└── N:N → Groups (via members[].userId)
 
 Entry
 ├── N:1 → Workout (via workoutId)
@@ -222,6 +304,15 @@ Entry
 
 Workout
 └── N:N → Exercises (embedded, nicht referenziert)
+
+Group
+├── 1:N → Members (embedded)
+└── N:N → Battles (via challenger/opponent.groupId)
+
+Battle
+├── N:1 → Challenger Group
+├── N:1 → Opponent Group
+└── 1:1 → PixelBoard
 ```
 
 **Embedded vs. Referenced**:
@@ -261,6 +352,6 @@ Workout
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-24
+**Letzte Aktualisierung**: 2026-01-29
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Frontend-Struktur →](06-Frontend-Struktur.md)
