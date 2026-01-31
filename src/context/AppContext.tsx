@@ -18,7 +18,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			if (isLoading || !user?.sub) return;
 			try {
 				const res = await fetch(
-					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}`,
 				);
 				if (!res.ok) return;
 				const data = await res.json();

@@ -127,20 +127,17 @@ export default function HabitsArea() {
 
 		setIsSubmitting(true);
 		try {
-			const res = await fetch(
-				'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/habits',
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						auth0Id,
-						name: newHabitName.trim(),
-						type: newHabitType,
-						description: newHabitDescription.trim() || undefined,
-						weekday: newHabitType === 'weekly' ? newHabitWeekday : undefined,
-					}),
-				},
-			);
+			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/habits', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					auth0Id,
+					name: newHabitName.trim(),
+					type: newHabitType,
+					description: newHabitDescription.trim() || undefined,
+					weekday: newHabitType === 'weekly' ? newHabitWeekday : undefined,
+				}),
+			});
 
 			if (!res.ok) {
 				throw new Error('Failed to create habit');
@@ -166,7 +163,7 @@ export default function HabitsArea() {
 
 		try {
 			const res = await fetch(
-				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/habits/${habitId}`,
+				`https://trainem-deploy-production.up.railway.app/api/habits/${habitId}`,
 				{
 					method: 'DELETE',
 				},

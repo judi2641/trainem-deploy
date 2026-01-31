@@ -97,7 +97,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 		try {
 			const res = await fetch(
-				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user/${user.sub}/basic`,
+				`https://trainem-deploy-production.up.railway.app/api/user/${user.sub}/basic`,
 				{
 					method: 'POST',
 					headers: {
@@ -118,7 +118,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			console.log('✔ User basic info saved successfully');
 
 			const res_onboarding_workout = await fetch(
-				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workout/onboarding`,
+				`https://trainem-deploy-production.up.railway.app/api/workout/onboarding`,
 				{
 					method: 'POST',
 					headers: {
@@ -148,7 +148,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 		try {
 			const res = await fetch(
-				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/trainingsplan/${user.sub}`,
+				`https://trainem-deploy-production.up.railway.app/api/trainingsplan/${user.sub}`,
 				{
 					method: 'POST',
 					headers: {

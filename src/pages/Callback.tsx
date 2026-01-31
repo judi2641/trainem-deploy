@@ -12,7 +12,7 @@ export default function Callback() {
 		if (!isLoading && user) {
 			if (user.sub) {
 				const res_user = await fetch(
-					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}`,
 				);
 				let contextUser;
 				if (res_user.ok) {
@@ -21,7 +21,7 @@ export default function Callback() {
 				}
 				if (!res_user.ok) {
 					const res_newuser = await fetch(
-						`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user`,
+						`https://trainem-deploy-production.up.railway.app/api/user`,
 						{
 							method: 'POST',
 							headers: {
@@ -55,7 +55,7 @@ export default function Callback() {
 		if (!isLoading && user) {
 			if (user.sub) {
 				const res_entries = await fetch(
-					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries/${user.sub}`,
+					`https://trainem-deploy-production.up.railway.app/api/entries/${user.sub}`,
 					{
 						headers: {
 							'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export default function Callback() {
 		if (!isLoading && user) {
 			if (user.sub) {
 				const res_workouts = await fetch(
-					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${user.sub}`,
+					`https://trainem-deploy-production.up.railway.app/api/workouts/${user.sub}`,
 					{
 						headers: {
 							'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export default function Callback() {
 		if (!isLoading && user) {
 			if (user.sub) {
 				const res_exercises = await fetch(
-					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/exercises`,
+					`https://trainem-deploy-production.up.railway.app/api/exercises`,
 					{
 						headers: {
 							'Content-Type': 'application/json',

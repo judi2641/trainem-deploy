@@ -320,18 +320,15 @@ export default function ActiveWorkout() {
 	async function scheduleWorkout() {
 		if (!auth0Id || !selectedWorkoutId) return;
 
-		const res = await fetch(
-			'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries',
-			{
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					auth0Id,
-					workoutId: selectedWorkoutId,
-					date: new Date().toISOString(),
-				}),
-			},
-		);
+		const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				auth0Id,
+				workoutId: selectedWorkoutId,
+				date: new Date().toISOString(),
+			}),
+		});
 
 		if (!res.ok) {
 			toast.error('Workout could not be scheduled');
@@ -358,7 +355,7 @@ export default function ActiveWorkout() {
 			await sleep(3000);
 		}
 		const res = await fetch(
-			`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries/${entryId}/complete-exercise`,
+			`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/complete-exercise`,
 			{
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
@@ -398,7 +395,7 @@ export default function ActiveWorkout() {
 
 	async function abortEntry(entryId: string) {
 		const res = await fetch(
-			`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries/${entryId}/abort`,
+			`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/abort`,
 			{
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },

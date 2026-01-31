@@ -49,7 +49,7 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 			console.log(entryId);
 			console.log(exercise);
 			const res = await fetch(
-				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries/${entryId}/complete-exercise`,
+				`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/complete-exercise`,
 				{
 					method: 'PATCH',
 					headers: { 'Content-Type': 'application/json' },
@@ -115,18 +115,15 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 		if (!auth0Id || !selectedWorkoutId || !scheduleDate) return;
 
 		try {
-			const res = await fetch(
-				'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries',
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						auth0Id,
-						workoutId: selectedWorkoutId,
-						date: scheduleDate.toISOString(),
-					}),
-				},
-			);
+			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					auth0Id,
+					workoutId: selectedWorkoutId,
+					date: scheduleDate.toISOString(),
+				}),
+			});
 
 			if (res.ok) {
 				const newEntry = await res.json();

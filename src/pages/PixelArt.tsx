@@ -61,7 +61,7 @@ export default function PixelArt() {
 
 			try {
 				const res = await fetch(
-					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/pixel-art/${myUser.auth0Id}`,
+					`https://trainem-deploy-production.up.railway.app/api/pixel-art/${myUser.auth0Id}`,
 				);
 				if (res.status === 404) {
 					if (isMounted) setIsLoading(false);
@@ -103,7 +103,7 @@ export default function PixelArt() {
 
 		try {
 			const res = await fetch(
-				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/pixel-art/${myUser.auth0Id}`,
+				`https://trainem-deploy-production.up.railway.app/api/pixel-art/${myUser.auth0Id}`,
 				{
 					method: 'POST',
 					headers: {
