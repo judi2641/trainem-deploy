@@ -13,7 +13,7 @@ root.render(
 		domain="dev-wmcuuu42i1iqwc5e.us.auth0.com"
 		clientId="g8BoaEXH4lB7gRMqRc8F0ruGLvy9OXkD"
 		authorizationParams={{
-			redirect_uri: window.location.origin + '/callback',
+			redirect_uri: 'https://trainem-deploy.vercel.app/callback',
 			audience: 'https://trainem.authentication',
 		}}
 		cacheLocation="localstorage"
