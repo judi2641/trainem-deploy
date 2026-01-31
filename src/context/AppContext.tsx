@@ -17,7 +17,9 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		async function loadUser() {
 			if (isLoading || !user?.sub) return;
 			try {
-				const res = await fetch(`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`);
+				const res = await fetch(
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user/${encodeURIComponent(user.sub)}`,
+				);
 				if (!res.ok) return;
 				const data = await res.json();
 				if (isMounted) {

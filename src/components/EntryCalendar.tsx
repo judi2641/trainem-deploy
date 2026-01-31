@@ -48,14 +48,17 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 		try {
 			console.log(entryId);
 			console.log(exercise);
-			const res = await fetch(`http://localhost:3000/api/entries/${entryId}/complete-exercise`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					exerciseName: exercise.exercise.name,
-					weight,
-				}),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries/${entryId}/complete-exercise`,
+				{
+					method: 'PATCH',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						exerciseName: exercise.exercise.name,
+						weight,
+					}),
+				},
+			);
 
 			if (res.ok) {
 				const updatedEntry = await res.json();
@@ -81,10 +84,8 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 
 									return (
 										<>
-								<span className="text-sm text-muted-foreground">
-											Level {level}
-								</span>
-										<Progress value={(currentXp / nextLevelXp) * 100} className="h-2" />
+											<span className="text-sm text-muted-foreground">Level {level}</span>
+											<Progress value={(currentXp / nextLevelXp) * 100} className="h-2" />
 										</>
 									);
 								})()}
@@ -114,15 +115,18 @@ export function EntryCalendar({ weekStart, onEntryUpdated }: EntryCalendarProps)
 		if (!auth0Id || !selectedWorkoutId || !scheduleDate) return;
 
 		try {
-			const res = await fetch('http://localhost:3000/api/entries', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					auth0Id,
-					workoutId: selectedWorkoutId,
-					date: scheduleDate.toISOString(),
-				}),
-			});
+			const res = await fetch(
+				'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries',
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						auth0Id,
+						workoutId: selectedWorkoutId,
+						date: scheduleDate.toISOString(),
+					}),
+				},
+			);
 
 			if (res.ok) {
 				const newEntry = await res.json();

@@ -115,15 +115,18 @@ export default function WorkoutsArea() {
 	async function scheduleWorkout() {
 		if (!auth0Id || !schedulingWorkout) return;
 		try {
-			const res = await fetch('http://localhost:3000/api/entries', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					auth0Id,
-					workoutId: schedulingWorkout._id,
-					date: new Date(scheduleDate).toISOString(),
-				}),
-			});
+			const res = await fetch(
+				'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries',
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						auth0Id,
+						workoutId: schedulingWorkout._id,
+						date: new Date(scheduleDate).toISOString(),
+					}),
+				},
+			);
 			if (!res.ok) throw new Error('Entry could not be created');
 
 			const newEntry = await res.json();
@@ -146,11 +149,14 @@ export default function WorkoutsArea() {
 				if (duration) body.duration = Number(duration);
 			}
 
-			const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(body),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${workoutId}/exercises`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(body),
+				},
+			);
 			if (!res.ok) throw new Error('Exercise could not be added');
 
 			const updatedWorkout = await res.json();
@@ -166,7 +172,7 @@ export default function WorkoutsArea() {
 	async function removeExerciseFromWorkout(workoutId: string, exerciseName: string) {
 		try {
 			const res = await fetch(
-				`http://localhost:3000/api/workouts/${workoutId}/exercises/${encodeURIComponent(exerciseName)}`,
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${workoutId}/exercises/${encodeURIComponent(exerciseName)}`,
 				{
 					method: 'DELETE',
 				},
@@ -184,11 +190,14 @@ export default function WorkoutsArea() {
 	async function createWorkout() {
 		if (!auth0Id) return;
 		try {
-			const res = await fetch('http://localhost:3000/api/workouts', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ auth0Id, name, description }),
-			});
+			const res = await fetch(
+				'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts',
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ auth0Id, name, description }),
+				},
+			);
 			if (!res.ok) throw new Error('Workout could not be created');
 
 			const newWorkout = await res.json();
@@ -203,11 +212,14 @@ export default function WorkoutsArea() {
 	async function saveWorkoutEdits() {
 		if (!activeWorkout) return;
 		try {
-			const res = await fetch(`http://localhost:3000/api/workouts/${activeWorkout._id}`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, description }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${activeWorkout._id}`,
+				{
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ name, description }),
+				},
+			);
 
 			if (res.ok) {
 				const updated = await res.json();
@@ -233,9 +245,12 @@ export default function WorkoutsArea() {
 	async function deleteWorkout(workoutId: string) {
 		if (!confirm('Are you sure you want to delete this workout?')) return;
 		try {
-			const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
-				method: 'DELETE',
-			});
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${workoutId}`,
+				{
+					method: 'DELETE',
+				},
+			);
 			if (!res.ok) throw new Error('Workout could not be deleted');
 			setWorkouts((prev: any) => prev.filter((w: any) => w._id !== workoutId));
 		} catch (e: any) {
@@ -247,9 +262,12 @@ export default function WorkoutsArea() {
 		async function loadWorkouts() {
 			if (!auth0Id) return;
 			try {
-				const response = await fetch(`http://localhost:3000/api/workouts/${auth0Id}`, {
-					headers: { 'Content-Type': 'application/json' },
-				});
+				const response = await fetch(
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${auth0Id}`,
+					{
+						headers: { 'Content-Type': 'application/json' },
+					},
+				);
 				const workoutsData = await response.json();
 				setWorkouts(workoutsData);
 			} catch (e) {

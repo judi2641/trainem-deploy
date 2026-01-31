@@ -96,35 +96,41 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/user/${user.sub}/basic`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user/${user.sub}/basic`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						firstname: userData.firstname,
+						lastname: userData.lastname,
+						birthDate: userData.birthDate,
+						gender: userData.gender,
+						img: userData.img,
+					}),
 				},
-				body: JSON.stringify({
-					firstname: userData.firstname,
-					lastname: userData.lastname,
-					birthDate: userData.birthDate,
-					gender: userData.gender,
-					img: userData.img,
-				}),
-			});
+			);
 
 			if (!res.ok) throw new Error('Error saving user basic info');
 
 			console.log('✔ User basic info saved successfully');
 
-			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workout/onboarding`, {
-				method: 'POST',
-				headers: {
-					'Content-type': 'application/json',
+			const res_onboarding_workout = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workout/onboarding`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-type': 'application/json',
+					},
+					body: JSON.stringify({
+						auth0Id: user.sub,
+						name: 'onboarding workout',
+						description: 'created in onboarding',
+					}),
 				},
-				body: JSON.stringify({
-					auth0Id: user.sub,
-					name: 'onboarding workout',
-					description: 'created in onboarding',
-				}),
-			});
+			);
 			if (!res_onboarding_workout.ok) throw new Error('Error creating inital workout');
 			const new_workout = await res_onboarding_workout.json();
 			setWorkouts((prev: any) => [...prev, new_workout]);
@@ -141,27 +147,30 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/trainingsplan/${user.sub}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					onboarding: {
-						goal: planData.goal,
-						experience: planData.experience,
-						trainingDays: planData.trainingDays,
-						weight: planData.weight,
-						height: planData.height,
-						daysPerWeek: planData.daysPerWeek,
-						minutesPerSession: planData.minutesPerSession,
-						equipment: planData.equipment,
-						limitations: planData.limitations,
-						preferredSplit: planData.preferredSplit,
-						priorities: planData.priorities,
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/trainingsplan/${user.sub}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
 					},
-				}),
-			});
+					body: JSON.stringify({
+						onboarding: {
+							goal: planData.goal,
+							experience: planData.experience,
+							trainingDays: planData.trainingDays,
+							weight: planData.weight,
+							height: planData.height,
+							daysPerWeek: planData.daysPerWeek,
+							minutesPerSession: planData.minutesPerSession,
+							equipment: planData.equipment,
+							limitations: planData.limitations,
+							preferredSplit: planData.preferredSplit,
+							priorities: planData.priorities,
+						},
+					}),
+				},
+			);
 
 			if (!res.ok) {
 				throw new Error('Error creating training plan');

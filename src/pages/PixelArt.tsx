@@ -60,7 +60,9 @@ export default function PixelArt() {
 			}
 
 			try {
-				const res = await fetch(`http://localhost:3000/api/pixel-art/${myUser.auth0Id}`);
+				const res = await fetch(
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/pixel-art/${myUser.auth0Id}`,
+				);
 				if (res.status === 404) {
 					if (isMounted) setIsLoading(false);
 					return;
@@ -100,16 +102,19 @@ export default function PixelArt() {
 		setIsSaving(true);
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixel-art/${myUser.auth0Id}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/pixel-art/${myUser.auth0Id}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						gridSize,
+						pixels,
+					}),
 				},
-				body: JSON.stringify({
-					gridSize,
-					pixels,
-				}),
-			});
+			);
 
 			if (!res.ok) {
 				throw new Error('Failed to save pixel art');

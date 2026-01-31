@@ -127,17 +127,20 @@ export default function HabitsArea() {
 
 		setIsSubmitting(true);
 		try {
-			const res = await fetch('http://localhost:3000/api/habits', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					auth0Id,
-					name: newHabitName.trim(),
-					type: newHabitType,
-					description: newHabitDescription.trim() || undefined,
-					weekday: newHabitType === 'weekly' ? newHabitWeekday : undefined,
-				}),
-			});
+			const res = await fetch(
+				'https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/habits',
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						auth0Id,
+						name: newHabitName.trim(),
+						type: newHabitType,
+						description: newHabitDescription.trim() || undefined,
+						weekday: newHabitType === 'weekly' ? newHabitWeekday : undefined,
+					}),
+				},
+			);
 
 			if (!res.ok) {
 				throw new Error('Failed to create habit');
@@ -162,9 +165,12 @@ export default function HabitsArea() {
 		if (!confirm('Are you sure you want to delete this habit?')) return;
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/habits/${habitId}`, {
-				method: 'DELETE',
-			});
+			const res = await fetch(
+				`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/habits/${habitId}`,
+				{
+					method: 'DELETE',
+				},
+			);
 
 			if (!res.ok) {
 				throw new Error('Failed to delete habit');

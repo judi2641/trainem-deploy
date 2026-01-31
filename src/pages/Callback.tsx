@@ -12,7 +12,7 @@ export default function Callback() {
 		if (!isLoading && user) {
 			if (user.sub) {
 				const res_user = await fetch(
-					`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user/${encodeURIComponent(user.sub)}`,
 				);
 				let contextUser;
 				if (res_user.ok) {
@@ -20,13 +20,16 @@ export default function Callback() {
 					console.log('Backend user');
 				}
 				if (!res_user.ok) {
-					const res_newuser = await fetch(`http://localhost:3000/api/user`, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
+					const res_newuser = await fetch(
+						`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/user`,
+						{
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
 						},
-						body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
-					});
+					);
 
 					if (!res_newuser.ok) {
 						console.log('fehler beim erstellen');
@@ -51,11 +54,14 @@ export default function Callback() {
 	async function setEntriesData() {
 		if (!isLoading && user) {
 			if (user.sub) {
-				const res_entries = await fetch(`http://localhost:3000/api/entries/${user.sub}`, {
-					headers: {
-						'Content-Type': 'application/json',
+				const res_entries = await fetch(
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/entries/${user.sub}`,
+					{
+						headers: {
+							'Content-Type': 'application/json',
+						},
 					},
-				});
+				);
 
 				if (!res_entries.ok) {
 					console.log('fehler beim fetch von entries');
@@ -71,11 +77,14 @@ export default function Callback() {
 	async function setWorkoutsData() {
 		if (!isLoading && user) {
 			if (user.sub) {
-				const res_workouts = await fetch(`http://localhost:3000/api/workouts/${user.sub}`, {
-					headers: {
-						'Content-Type': 'application/json',
+				const res_workouts = await fetch(
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/workouts/${user.sub}`,
+					{
+						headers: {
+							'Content-Type': 'application/json',
+						},
 					},
-				});
+				);
 
 				if (!res_workouts.ok) {
 					console.log('fehler beim fetch von workouts');
@@ -91,11 +100,14 @@ export default function Callback() {
 	async function setExercisesData() {
 		if (!isLoading && user) {
 			if (user.sub) {
-				const res_exercises = await fetch(`http://localhost:3000/api/exercises`, {
-					headers: {
-						'Content-Type': 'application/json',
+				const res_exercises = await fetch(
+					`https://trainem-deploy-ccij2dm4s-julius-projects-c59e7d1a.vercel.app/api/exercises`,
+					{
+						headers: {
+							'Content-Type': 'application/json',
+						},
 					},
-				});
+				);
 
 				if (!res_exercises.ok) {
 					console.log('fehler beim fetch von Exercises');
