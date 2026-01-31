@@ -1,8 +1,5 @@
 import { createContext, useContext, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import type { TrainingsGoals } from '../../../shared/types/other/TrainingsGoal';
-import type { TrainingsExperience } from '../../../shared/types/other/TrainingsExperience';
-import type { TrainingDays } from '../../../shared/types/other/TrainingDays';
 import { useMyContext } from '../context/AppContext';
 
 // ------------------------------------------------------
@@ -18,9 +15,9 @@ export interface IUserInfo {
 }
 
 export interface IPlanInfo {
-	goal: TrainingsGoals | null;
-	experience: TrainingsExperience | null;
-	trainingDays: TrainingDays[];
+	goal: any | null;
+	experience: any | null;
+	trainingDays: any[];
 	weight?: number | null;
 	height?: number | null;
 	daysPerWeek?: number | null;

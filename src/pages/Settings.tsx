@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import PixelBackground from '@/components/pixel/PixelBackground';
-import { Button } from '@/components/ui/button';
 import { type ThemeMode, applyTheme, loadStoredTheme } from '../util/theme';
 
 // Pixel icons

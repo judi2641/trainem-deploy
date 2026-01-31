@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { TrainingsExperience } from '../../../../shared/types/other/TrainingsExperience';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,13 +10,13 @@ export default function Experience() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData } = useOnboarding();
 
-	const [selectedExperience, setSelectedExperience] = useState<TrainingsExperience | null>(
-		planData.experience ?? null,
-	);
+	const [selectedExperience, setSelectedExperience] = useState(planData.experience ?? null);
 	const [weight, setWeight] = useState(planData.weight ?? '');
 	const [height, setHeight] = useState(planData.height ?? '');
 	const [equipment, setEquipment] = useState<string | null>(planData.equipment ?? null);
-	const [preferredSplit, setPreferredSplit] = useState<string | null>(planData.preferredSplit ?? null);
+	const [preferredSplit, setPreferredSplit] = useState<string | null>(
+		planData.preferredSplit ?? null,
+	);
 	const initialLimitations = planData.limitations === 'None' ? '' : (planData.limitations ?? '');
 	const [limitations, setLimitations] = useState(initialLimitations);
 	const [noLimitations, setNoLimitations] = useState(planData.limitations === 'None');
@@ -117,7 +116,7 @@ export default function Experience() {
 						<Button
 							key={lvl.key}
 							variant={selectedExperience === lvl.key ? 'default' : 'outline'}
-							onClick={() => setSelectedExperience(lvl.key as TrainingsExperience)}
+							onClick={() => setSelectedExperience(lvl.key as any)}
 							className={`px-6 py-3 text-lg rounded-lg transition ${
 								selectedExperience === lvl.key
 									? 'bg-indigo-600 text-white border-indigo-600'
@@ -133,7 +132,7 @@ export default function Experience() {
 			{/* Equipment */}
 			<div>
 				<h2 className="text-xl font-bold mb-2">Equipment</h2>
-					<p className="text-gray-600 mb-4">What equipment do you have access to?</p>
+				<p className="text-gray-600 mb-4">What equipment do you have access to?</p>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 					{equipmentOptions.map((option) => {
@@ -183,9 +182,7 @@ export default function Experience() {
 			{/* Limitations */}
 			<div>
 				<h2 className="text-xl font-bold mb-2">Limitations</h2>
-				<p className="text-gray-600 mb-4">
-					Injuries or pain, and what you cannot do.
-				</p>
+				<p className="text-gray-600 mb-4">Injuries or pain, and what you cannot do.</p>
 
 				<label className="flex items-center gap-2 text-sm text-gray-700 mb-3">
 					<input

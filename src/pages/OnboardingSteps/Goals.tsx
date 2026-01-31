@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { TrainingsGoals } from '../../../../shared/types/other/TrainingsGoal';
 
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -10,10 +9,10 @@ export default function Goals() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData } = useOnboarding();
 
-	const [selected, setSelected] = useState<TrainingsGoals | null>(planData.goal || null);
+	const [selected, setSelected] = useState(planData.goal || null);
 	const [priorities, setPriorities] = useState<string[]>(planData.priorities ?? []);
 
-	const options: { key: TrainingsGoals; label: string }[] = [
+	const options: { key: any; label: string }[] = [
 		{ key: 'Muskelaufbau', label: 'Muscle Gain' },
 		{ key: 'Kraft', label: 'Strength' },
 		{ key: 'Abnehmen', label: 'Weight Loss' },
