@@ -1,0 +1,14 @@
+POST http://localhost:3000/api/trainingsplan/auth0|691343d8c21036492a17e01e
+Content-Type: application/json
+
+{
+    "onboarding": {
+        "goal": "Muskelaufbau: Gewicht senken",
+        "experience": "starter",
+        "trainingDays": [
+            "Mon", "Tue", "Wed"
+        ],
+        "weight": 90,
+        "height": 190    
+    }
+}

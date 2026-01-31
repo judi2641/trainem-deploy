@@ -1,0 +1,5 @@
+{
+	"db": {
+		"connectionString": "mongodb+srv://trainem-user:trainem-user@cluster0.qrnr6e9.mongodb.net/?appName=Cluster0"
+	}
+}
