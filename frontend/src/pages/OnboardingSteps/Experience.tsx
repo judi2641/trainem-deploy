@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { TrainingsExperience } from '../../../../shared/types/other/TrainingsExperience';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +10,7 @@ export default function Experience() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData } = useOnboarding();
 
-	const [selectedExperience, setSelectedExperience] = useState<TrainingsExperience | null>(
+	const [selectedExperience, setSelectedExperience] = useState<any | null>(
 		planData.experience ?? null,
 	);
 	const [weight, setWeight] = useState(planData.weight ?? '');
@@ -119,7 +118,7 @@ export default function Experience() {
 						<Button
 							key={lvl.key}
 							variant={selectedExperience === lvl.key ? 'default' : 'outline'}
-							onClick={() => setSelectedExperience(lvl.key as TrainingsExperience)}
+							onClick={() => setSelectedExperience(lvl.key as any)}
 							className={`px-6 py-3 text-lg rounded-lg transition ${
 								selectedExperience === lvl.key
 									? 'bg-primary text-white border-primary'

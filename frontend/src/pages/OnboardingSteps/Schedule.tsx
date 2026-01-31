@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
-import type { TrainingDays } from '../../../../shared/types/other/TrainingDays';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 
-const daysOfWeek: { key: TrainingDays; label: string }[] = [
+const daysOfWeek: { key: any; label: string }[] = [
 	{ key: 'Mon', label: 'Mon' },
 	{ key: 'Tue', label: 'Tue' },
 	{ key: 'Wed', label: 'Wed' },
@@ -22,19 +21,19 @@ export default function Schedule() {
 	const navigate = useNavigate();
 	const { planData, updatePlanData } = useOnboarding();
 
-	const [selected, setSelected] = useState<TrainingDays[]>(planData.trainingDays || []);
+	const [selected, setSelected] = useState<any[]>(planData.trainingDays || []);
 	const [daysPerWeek, setDaysPerWeek] = useState<number | null>(planData.daysPerWeek ?? null);
 	const [minutesPerSession, setMinutesPerSession] = useState<number | null>(
 		planData.minutesPerSession ?? null,
 	);
 
-	const toggleDay = (day: TrainingDays) => {
+	const toggleDay = (day: any) => {
 		if (!daysPerWeek) {
 			alert('Please choose the number of days per week first.');
 			return;
 		}
 
-		let updatedDays: TrainingDays[];
+		let updatedDays: any[];
 
 		if (selected.includes(day)) {
 			updatedDays = selected.filter((d) => d !== day);

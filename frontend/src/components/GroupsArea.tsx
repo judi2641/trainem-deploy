@@ -13,7 +13,6 @@ import {
 	PixelCardHeader,
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
-import type { Group } from '../../../shared/sharedTypes';
 
 // Pixel-style icon
 function PixelUsersIcon({ className }: { className?: string }) {
@@ -34,10 +33,10 @@ function PixelUsersIcon({ className }: { className?: string }) {
 
 export default function GroupsArea() {
 	const { user } = useAuth0();
-	const [myGroups, setMyGroups] = useState<Group[]>([]);
-	const [publicGroups, setPublicGroups] = useState<Group[]>([]);
+	const [myGroups, setMyGroups] = useState<any[]>([]);
+	const [publicGroups, setPublicGroups] = useState<any[]>([]);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-	const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+	const [selectedGroup, setSelectedGroup] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -50,9 +49,9 @@ export default function GroupsArea() {
 		try {
 			// Fetch user's groups
 			const myGroupsRes = await fetch(
-				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`
+				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
 			);
-			let userGroups: Group[] = [];
+			let userGroups: any[] = [];
 			if (myGroupsRes.ok) {
 				userGroups = await myGroupsRes.json();
 				setMyGroups(userGroups);
@@ -64,7 +63,7 @@ export default function GroupsArea() {
 				const data = await publicRes.json();
 				// Filter uses local userGroups, not stale state
 				const userGroupIds = userGroups.map((g) => g._id);
-				setPublicGroups(data.filter((g: Group) => !userGroupIds.includes(g._id)));
+				setPublicGroups(data.filter((g: any) => !userGroupIds.includes(g._id)));
 			}
 		} catch (error) {
 			console.error('Failed to fetch groups:', error);
@@ -145,11 +144,11 @@ export default function GroupsArea() {
 		}
 	};
 
-	const handleGroupClick = (group: Group) => {
+	const handleGroupClick = (group: any) => {
 		setSelectedGroup(group);
 	};
 
-	const handleGroupUpdate = (updatedGroup: Group) => {
+	const handleGroupUpdate = (updatedGroup: any) => {
 		setMyGroups((prev) => prev.map((g) => (g._id === updatedGroup._id ? updatedGroup : g)));
 		setPublicGroups((prev) => prev.map((g) => (g._id === updatedGroup._id ? updatedGroup : g)));
 		setSelectedGroup(updatedGroup);

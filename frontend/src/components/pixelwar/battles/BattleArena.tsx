@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { ArrowLeft, Clock, Trophy, Crosshair, Palette } from 'lucide-react';
-import type { Battle, PixelBoard, BattleLiveScore, BattleMember } from '../../../../../shared/sharedTypes';
 
 // Farben für den Canvas (gleich wie GroupDetailModal)
 const CANVAS_COLORS = [
@@ -17,28 +16,28 @@ const CANVAS_COLORS = [
 ];
 
 interface BattleArenaProps {
-	battle: Battle;
+	battle: any;
 	userId: string;
 	onBack: () => void;
 }
 
 export default function BattleArena({ battle: initialBattle, userId, onBack }: BattleArenaProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [battle, setBattle] = useState<Battle>(initialBattle);
-	const [board, setBoard] = useState<PixelBoard | null>(null);
-	const [liveScore, setLiveScore] = useState<BattleLiveScore | null>(null);
+	const [battle, setBattle] = useState(initialBattle);
+	const [board, setBoard] = useState<any | null>(null);
+	const [liveScore, setLiveScore] = useState<any | null>(null);
 	const [zoom, setZoom] = useState(4);
 	const [offset, setOffset] = useState({ x: 0, y: 0 });
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 	const [userGroupId, setUserGroupId] = useState<string | null>(null);
-	const [userMember, setUserMember] = useState<BattleMember | null>(null);
+	const [userMember, setUserMember] = useState<any | null>(null);
 	const [selectedColor, setSelectedColor] = useState(CANVAS_COLORS[0]);
 
 	// Determine which group the user belongs to and get member data
 	useEffect(() => {
-		const challengerMember = battle.challenger.members.find((m) => m.userId === userId);
-		const opponentMember = battle.opponent.members.find((m) => m.userId === userId);
+		const challengerMember = battle.challenger.members.find((m: any) => m.userId === userId);
+		const opponentMember = battle.opponent.members.find((m: any) => m.userId === userId);
 
 		if (challengerMember) {
 			setUserGroupId(battle.challenger.groupId);
@@ -310,7 +309,9 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 			<div className="flex-1 relative bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-800 dark:to-gray-900 border-2 border-black overflow-hidden shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
 				{/* Zoom Controls - matching PixelCanvas style */}
 				<div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-white dark:bg-gray-800 p-2 border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,0.15)]">
-					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Zoom</span>
+					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
+						Zoom
+					</span>
 					<button
 						onClick={() => setZoom((z) => Math.max(1, z - 1))}
 						className="h-6 w-6 p-0 border-2 border-black bg-white dark:bg-gray-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-bold text-xs text-black dark:text-white"
@@ -329,7 +330,9 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 					>
 						+
 					</button>
-					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 w-6">{zoom}x</span>
+					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 w-6">
+						{zoom}x
+					</span>
 				</div>
 
 				{/* User Info Panel with Color Palette */}
@@ -357,7 +360,9 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 							<div className="border-t border-black/10 dark:border-white/10 pt-3">
 								<div className="flex items-center gap-2 mb-2">
 									<Palette className="h-3 w-3 text-black/50 dark:text-white/50" />
-									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Colors</span>
+									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
+										Colors
+									</span>
 								</div>
 								<div className="grid grid-cols-5 gap-1.5">
 									{CANVAS_COLORS.map((color) => (

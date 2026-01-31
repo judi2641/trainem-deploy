@@ -1,19 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Users, Zap, Grid3X3 } from 'lucide-react';
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import type { Group, GroupPixelArt } from '../../../../shared/sharedTypes';
 
 interface GroupDetailModalProps {
-	group: Group;
+	group: any;
 	currentUserId?: string;
 	onClose: () => void;
-	onGroupUpdate?: (group: Group) => void;
+	onGroupUpdate?: (group: any) => void;
 }
 
 // Farben für den Gruppen-Canvas
@@ -37,7 +31,7 @@ export default function GroupDetailModal({
 }: GroupDetailModalProps) {
 	const [pixelArtInfo, setPixelArtInfo] = useState<{
 		gridSize: number;
-		pixels: GroupPixelArt['pixels'];
+		pixels: any['pixels'];
 		usedPixels: number;
 		unlockedPixels: number;
 		availablePixels: number;
@@ -46,7 +40,7 @@ export default function GroupDetailModal({
 	const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null);
 	const [isPlacing, setIsPlacing] = useState(false);
 
-	const isMember = group.members.some((m) => m.userId === currentUserId);
+	const isMember = group.members.some((m: any) => m.userId === currentUserId);
 
 	useEffect(() => {
 		fetchPixelArt();
@@ -123,7 +117,7 @@ export default function GroupDetailModal({
 		if (!pixelArtInfo) return [];
 		const size = pixelArtInfo.gridSize;
 		const result: (string | null)[][] = Array.from({ length: size }, () =>
-			Array.from({ length: size }, () => null)
+			Array.from({ length: size }, () => null),
 		);
 
 		for (const pixel of pixelArtInfo.pixels) {
@@ -196,7 +190,9 @@ export default function GroupDetailModal({
 									/>
 									<span className="text-xs font-medium text-black/70 dark:text-white/70">
 										<span className="font-bold text-emerald-600">{pixelArtInfo.usedPixels}</span>
-										<span className="text-black/40 dark:text-white/40">/{pixelArtInfo.unlockedPixels} pixels</span>
+										<span className="text-black/40 dark:text-white/40">
+											/{pixelArtInfo.unlockedPixels} pixels
+										</span>
 									</span>
 								</div>
 							)}
@@ -207,7 +203,9 @@ export default function GroupDetailModal({
 							<div className="h-2 bg-emerald-100 dark:bg-emerald-900/30 border-2 border-black overflow-hidden">
 								<div
 									className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-300"
-									style={{ width: `${(pixelArtInfo.usedPixels / pixelArtInfo.unlockedPixels) * 100}%` }}
+									style={{
+										width: `${(pixelArtInfo.usedPixels / pixelArtInfo.unlockedPixels) * 100}%`,
+									}}
 								/>
 							</div>
 						)}
@@ -251,7 +249,7 @@ export default function GroupDetailModal({
 															}}
 														/>
 													);
-												})
+												}),
 											)}
 										</div>
 									</div>
@@ -260,7 +258,9 @@ export default function GroupDetailModal({
 								{/* Color Palette - matching PixelCanvas style */}
 								{isMember && pixelArtInfo.availablePixels > 0 && (
 									<div className="space-y-2">
-										<div className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">Colors</div>
+										<div className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
+											Colors
+										</div>
 										<div className="flex flex-wrap items-center gap-1.5">
 											{CANVAS_COLORS.map((color) => (
 												<button

@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import type { IPixelArt } from '../../../../shared/types/database/user/PixelArt';
 
 const PixelSchema = new Schema(
 	{
@@ -10,7 +9,7 @@ const PixelSchema = new Schema(
 	{ _id: false },
 );
 
-const PixelArtSchema = new Schema<IPixelArt>(
+const PixelArtSchema = new Schema(
 	{
 		auth0ID: { type: String, required: true, unique: true },
 		gridSize: { type: Number, required: true },
@@ -21,4 +20,4 @@ const PixelArtSchema = new Schema<IPixelArt>(
 	},
 );
 
-export const PixelArtModel = model<IPixelArt>('PixelArt', PixelArtSchema);
+export const PixelArtModel = model('PixelArt', PixelArtSchema);

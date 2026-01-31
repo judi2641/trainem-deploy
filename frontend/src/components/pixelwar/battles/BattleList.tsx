@@ -1,9 +1,8 @@
-import type { Battle } from '../../../../../shared/sharedTypes';
 import BattleCard from './BattleCard';
 
 interface BattleListProps {
-	battles: Battle[];
-	onSelect: (battle: Battle) => void;
+	battles: any[];
+	onSelect: (battle: any) => void;
 	emptyMessage?: string;
 }
 
@@ -21,7 +20,11 @@ function PixelSwordsIcon({ className }: { className?: string }) {
 	);
 }
 
-export default function BattleList({ battles, onSelect, emptyMessage = 'No battles' }: BattleListProps) {
+export default function BattleList({
+	battles,
+	onSelect,
+	emptyMessage = 'No battles',
+}: BattleListProps) {
 	if (battles.length === 0) {
 		return (
 			<div className="h-full flex items-center justify-center">

@@ -1,8 +1,7 @@
 import { Clock, Trophy } from 'lucide-react';
-import type { Battle } from '../../../../../shared/sharedTypes';
 
 interface BattleCardProps {
-	battle: Battle;
+	battle: any;
 	onClick: () => void;
 }
 
@@ -41,7 +40,8 @@ function getStatusStyles(status: string): { bg: string; text: string; border: st
 
 export default function BattleCard({ battle, onClick }: BattleCardProps) {
 	const totalPixels = battle.challenger.pixelsOwned + battle.opponent.pixelsOwned;
-	const challengerPercent = totalPixels > 0 ? (battle.challenger.pixelsOwned / totalPixels) * 100 : 50;
+	const challengerPercent =
+		totalPixels > 0 ? (battle.challenger.pixelsOwned / totalPixels) * 100 : 50;
 	const statusStyles = getStatusStyles(battle.status);
 
 	return (
@@ -51,8 +51,12 @@ export default function BattleCard({ battle, onClick }: BattleCardProps) {
 		>
 			{/* Header */}
 			<div className="flex items-center justify-between mb-3">
-				<h3 className="font-medium text-black dark:text-white truncate">{battle.name || 'Battle'}</h3>
-				<span className={`px-2 py-0.5 text-xs font-medium border ${statusStyles.bg} ${statusStyles.text} ${statusStyles.border}`}>
+				<h3 className="font-medium text-black dark:text-white truncate">
+					{battle.name || 'Battle'}
+				</h3>
+				<span
+					className={`px-2 py-0.5 text-xs font-medium border ${statusStyles.bg} ${statusStyles.text} ${statusStyles.border}`}
+				>
 					{battle.status.toUpperCase()}
 				</span>
 			</div>
