@@ -110,7 +110,7 @@ export default function WorkoutsArea() {
 	async function scheduleWorkout() {
 		if (!auth0Id || !schedulingWorkout) return;
 		try {
-			const res = await fetch('http://localhost:3000/api/entries', {
+			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -141,11 +141,14 @@ export default function WorkoutsArea() {
 				if (duration) body.duration = Number(duration);
 			}
 
-			const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}/exercises`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(body),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/workouts/${workoutId}/exercises`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(body),
+				},
+			);
 			if (!res.ok) throw new Error('Exercise could not be added');
 
 			const updatedWorkout = await res.json();
@@ -162,7 +165,7 @@ export default function WorkoutsArea() {
 		if (!auth0Id) return;
 		try {
 			const res = await fetch(
-				`http://localhost:3000/api/workouts/${workoutId}/exercises/${exerciseIndex}`,
+				`https://trainem-deploy-production.up.railway.app/api/workouts/${workoutId}/exercises/${exerciseIndex}`,
 				{
 					method: 'DELETE',
 					headers: { 'Content-Type': 'application/json' },
@@ -182,7 +185,7 @@ export default function WorkoutsArea() {
 	async function createWorkout() {
 		if (!auth0Id) return;
 		try {
-			const res = await fetch('http://localhost:3000/api/workouts', {
+			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/workouts', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ auth0Id, name, description }),
@@ -201,11 +204,14 @@ export default function WorkoutsArea() {
 	async function saveWorkoutEdits() {
 		if (!activeWorkout || !auth0Id) return;
 		try {
-			const res = await fetch(`http://localhost:3000/api/workouts/${activeWorkout._id}`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ auth0Id, name, description }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/workouts/${activeWorkout._id}`,
+				{
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ auth0Id, name, description }),
+				},
+			);
 
 			if (res.ok) {
 				const updated = await res.json();
@@ -226,11 +232,14 @@ export default function WorkoutsArea() {
 		if (!auth0Id) return;
 		if (!confirm('Are you sure you want to delete this workout?')) return;
 		try {
-			const res = await fetch(`http://localhost:3000/api/workouts/${workoutId}`, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ auth0Id }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/workouts/${workoutId}`,
+				{
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ auth0Id }),
+				},
+			);
 			if (!res.ok) throw new Error('Workout could not be deleted');
 			setWorkouts((prev: any) => prev.filter((w: any) => w._id !== workoutId));
 		} catch (e: any) {
@@ -242,9 +251,12 @@ export default function WorkoutsArea() {
 		async function loadWorkouts() {
 			if (!auth0Id) return;
 			try {
-				const response = await fetch(`http://localhost:3000/api/workouts/${auth0Id}`, {
-					headers: { 'Content-Type': 'application/json' },
-				});
+				const response = await fetch(
+					`https://trainem-deploy-production.up.railway.app/api/workouts/${auth0Id}`,
+					{
+						headers: { 'Content-Type': 'application/json' },
+					},
+				);
 				const workoutsData = await response.json();
 				setWorkouts(workoutsData);
 			} catch (e) {

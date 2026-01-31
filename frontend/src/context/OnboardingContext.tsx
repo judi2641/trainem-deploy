@@ -97,7 +97,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 		try {
 			const res = await fetch(
-				`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}/basic`,
+				`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}/basic`,
 				{
 					method: 'POST',
 					headers: {
@@ -117,17 +117,20 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 			console.log('✔ User basic info saved successfully');
 
-			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workout/onboarding`, {
-				method: 'POST',
-				headers: {
-					'Content-type': 'application/json',
+			const res_onboarding_workout = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/workout/onboarding`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-type': 'application/json',
+					},
+					body: JSON.stringify({
+						auth0Id: user.sub,
+						name: 'onboarding workout',
+						description: 'created in onboarding',
+					}),
 				},
-				body: JSON.stringify({
-					auth0Id: user.sub,
-					name: 'onboarding workout',
-					description: 'created in onboarding',
-				}),
-			});
+			);
 			if (!res_onboarding_workout.ok) throw new Error('Error creating inital workout');
 			const new_workout = await res_onboarding_workout.json();
 			setWorkouts((prev: any) => [...prev, new_workout]);
@@ -145,7 +148,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 		try {
 			const res = await fetch(
-				`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
+				`https://trainem-deploy-production.up.railway.app/api/trainingsplan/${encodeURIComponent(user.sub)}`,
 				{
 					method: 'POST',
 					headers: {

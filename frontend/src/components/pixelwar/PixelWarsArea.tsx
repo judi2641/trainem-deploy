@@ -54,7 +54,7 @@ export default function PixelWarsArea() {
 	const fetchData = async () => {
 		try {
 			const battlesRes = await fetch(
-				`http://localhost:3000/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`,
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`,
 			);
 			if (battlesRes.ok) {
 				const data = await battlesRes.json();
@@ -62,7 +62,7 @@ export default function PixelWarsArea() {
 			}
 
 			const pendingRes = await fetch(
-				`http://localhost:3000/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`,
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`,
 			);
 			if (pendingRes.ok) {
 				const data = await pendingRes.json();
@@ -70,14 +70,16 @@ export default function PixelWarsArea() {
 			}
 
 			const groupsRes = await fetch(
-				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
+				`https://trainem-deploy-production.up.railway.app/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
 			);
 			if (groupsRes.ok) {
 				const data = await groupsRes.json();
 				setMyGroups(data);
 			}
 
-			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=50`);
+			const publicRes = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/groups/public?limit=50`,
+			);
 			if (publicRes.ok) {
 				const data = await publicRes.json();
 				setPublicGroups(data);
@@ -100,14 +102,17 @@ export default function PixelWarsArea() {
 		};
 	}) => {
 		try {
-			const res = await fetch('http://localhost:3000/api/pixelwar/battles', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					...data,
-					challengerUserId: user?.sub,
-				}),
-			});
+			const res = await fetch(
+				'https://trainem-deploy-production.up.railway.app/api/pixelwar/battles',
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						...data,
+						challengerUserId: user?.sub,
+					}),
+				},
+			);
 
 			if (res.ok) {
 				setIsChallengeModalOpen(false);
@@ -125,11 +130,14 @@ export default function PixelWarsArea() {
 
 	const handleAcceptChallenge = async (battleId: string) => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battleId}/accept`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ userId: user?.sub }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battleId}/accept`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ userId: user?.sub }),
+				},
+			);
 
 			if (res.ok) {
 				toast.success('Challenge accepted! Battle started!');
@@ -146,11 +154,14 @@ export default function PixelWarsArea() {
 
 	const handleDeclineChallenge = async (battleId: string) => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battleId}/decline`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ userId: user?.sub }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battleId}/decline`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ userId: user?.sub }),
+				},
+			);
 
 			if (res.ok) {
 				toast.success('Challenge declined');

@@ -134,7 +134,7 @@ export default function HabitsArea() {
 
 		setIsSubmitting(true);
 		try {
-			const res = await fetch('http://localhost:3000/api/habits', {
+			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/habits', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -169,11 +169,14 @@ export default function HabitsArea() {
 		if (!confirm('Are you sure you want to delete this habit?')) return;
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/habits/${habitId}`, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ auth0Id }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/habits/${habitId}`,
+				{
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ auth0Id }),
+				},
+			);
 
 			if (!res.ok) {
 				throw new Error('Failed to delete habit');

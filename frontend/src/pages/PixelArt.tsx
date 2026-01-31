@@ -47,7 +47,9 @@ export default function PixelArt() {
 			}
 
 			try {
-				const res = await fetch(`http://localhost:3000/api/pixel-art/${myUser.auth0Id}`);
+				const res = await fetch(
+					`https://trainem-deploy-production.up.railway.app/api/pixel-art/${myUser.auth0Id}`,
+				);
 				if (res.status === 404) {
 					if (isMounted) setIsLoading(false);
 					return;
@@ -87,16 +89,19 @@ export default function PixelArt() {
 		setIsSaving(true);
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixel-art/${myUser.auth0Id}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixel-art/${myUser.auth0Id}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						gridSize,
+						pixels,
+					}),
 				},
-				body: JSON.stringify({
-					gridSize,
-					pixels,
-				}),
-			});
+			);
 
 			if (!res.ok) {
 				throw new Error('Failed to save pixel art');
@@ -148,62 +153,61 @@ export default function PixelArt() {
 
 					{/* Main Canvas Card */}
 					<div className="flex-1 min-w-0 min-h-0">
-					<PixelCard>
-						<PixelCardHeader>
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-2">
-									<div className="h-4 w-4 bg-emerald-500 border-2 border-black" />
-									<PixelCardTitle className="text-base">Canvas</PixelCardTitle>
-								</div>
-								<button
-									type="button"
-									onClick={handleSave}
-									disabled={isSaving}
-									className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
-								>
-									<SaveIcon className="h-4 w-4" />
-									{isSaving ? 'Saving...' : 'Save'}
-								</button>
-							</div>
-						</PixelCardHeader>
-						<PixelCardContent>
-							{isLoading ? (
-								<div className="flex items-center justify-center h-full">
-									<div className="flex items-center gap-3">
-										<div className="h-4 w-4 bg-emerald-500 border border-black dark:border-white/30 animate-pulse" />
-										<span className="text-sm text-black/50 dark:text-white/50">
-											Loading pixel art...
-										</span>
+						<PixelCard>
+							<PixelCardHeader>
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-2">
+										<div className="h-4 w-4 bg-emerald-500 border-2 border-black" />
+										<PixelCardTitle className="text-base">Canvas</PixelCardTitle>
 									</div>
+									<button
+										type="button"
+										onClick={handleSave}
+										disabled={isSaving}
+										className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
+									>
+										<SaveIcon className="h-4 w-4" />
+										{isSaving ? 'Saving...' : 'Save'}
+									</button>
 								</div>
-							) : (
-								<div className="h-full flex flex-col">
-									{/* Canvas container with enhanced styling */}
-									<div className="flex-1 min-h-0 flex items-center justify-center">
-										<div className="relative">
-											{/* Canvas glow effect */}
-											<div className="absolute -inset-3 bg-gradient-to-br from-emerald-200/40 to-amber-200/40 blur-lg" />
-											{/* Canvas border frame */}
-											<div className="relative bg-gradient-to-br from-slate-100 to-slate-400 p-1.5 border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,0.25)]">
-												<div className="bg-white/5 p-0.5">
-													<PixelCanvas
-														gridSize={gridSize}
-														maxPixels={unlockedPixels}
-														initialPixels={pixels}
-														onChange={(_dataUrl, _count, pixelData, size) => {
-															
-															setPixels(pixelData);
-															setGridSize(size);
-														}}
-													/>
+							</PixelCardHeader>
+							<PixelCardContent>
+								{isLoading ? (
+									<div className="flex items-center justify-center h-full">
+										<div className="flex items-center gap-3">
+											<div className="h-4 w-4 bg-emerald-500 border border-black dark:border-white/30 animate-pulse" />
+											<span className="text-sm text-black/50 dark:text-white/50">
+												Loading pixel art...
+											</span>
+										</div>
+									</div>
+								) : (
+									<div className="h-full flex flex-col">
+										{/* Canvas container with enhanced styling */}
+										<div className="flex-1 min-h-0 flex items-center justify-center">
+											<div className="relative">
+												{/* Canvas glow effect */}
+												<div className="absolute -inset-3 bg-gradient-to-br from-emerald-200/40 to-amber-200/40 blur-lg" />
+												{/* Canvas border frame */}
+												<div className="relative bg-gradient-to-br from-slate-100 to-slate-400 p-1.5 border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,0.25)]">
+													<div className="bg-white/5 p-0.5">
+														<PixelCanvas
+															gridSize={gridSize}
+															maxPixels={unlockedPixels}
+															initialPixels={pixels}
+															onChange={(_dataUrl, _count, pixelData, size) => {
+																setPixels(pixelData);
+																setGridSize(size);
+															}}
+														/>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							)}
-						</PixelCardContent>
-					</PixelCard>
+								)}
+							</PixelCardContent>
+						</PixelCard>
 					</div>
 				</main>
 			</div>

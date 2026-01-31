@@ -33,7 +33,9 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 			// Fetch active season if no seasonId provided
 			let activeSeasonId = seasonId;
 			if (!activeSeasonId) {
-				const seasonRes = await fetch('http://localhost:3000/api/pixelwar/seasons/active');
+				const seasonRes = await fetch(
+					'https://trainem-deploy-production.up.railway.app/api/pixelwar/seasons/active',
+				);
 				if (seasonRes.ok) {
 					const seasonData = await seasonRes.json();
 					setSeason(seasonData);
@@ -44,7 +46,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 			if (activeSeasonId) {
 				// Fetch pixel board
 				const boardRes = await fetch(
-					`http://localhost:3000/api/pixelwar/seasons/${activeSeasonId}/board`,
+					`https://trainem-deploy-production.up.railway.app/api/pixelwar/seasons/${activeSeasonId}/board`,
 				);
 				if (boardRes.ok) {
 					const boardData = await boardRes.json();
@@ -119,15 +121,18 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 		if (x >= 0 && x < board.gridWidth && y >= 0 && y < board.gridHeight) {
 			try {
-				const res = await fetch(`http://localhost:3000/api/pixelwar/seasons/${season._id}/pixels`, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						groupId,
-						userId: user?.sub,
-						coordinates: [{ x, y }],
-					}),
-				});
+				const res = await fetch(
+					`https://trainem-deploy-production.up.railway.app/api/pixelwar/seasons/${season._id}/pixels`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							groupId,
+							userId: user?.sub,
+							coordinates: [{ x, y }],
+						}),
+					},
+				);
 
 				if (res.ok) {
 					fetchBoardData();

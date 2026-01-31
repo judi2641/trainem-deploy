@@ -49,7 +49,7 @@ export default function GroupsArea() {
 		try {
 			// Fetch user's groups
 			const myGroupsRes = await fetch(
-				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
+				`https://trainem-deploy-production.up.railway.app/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
 			);
 			let userGroups: any[] = [];
 			if (myGroupsRes.ok) {
@@ -58,7 +58,9 @@ export default function GroupsArea() {
 			}
 
 			// Fetch public groups
-			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=20`);
+			const publicRes = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/groups/public?limit=20`,
+			);
 			if (publicRes.ok) {
 				const data = await publicRes.json();
 				// Filter uses local userGroups, not stale state
@@ -79,7 +81,7 @@ export default function GroupsArea() {
 		isPublic: boolean;
 	}) => {
 		try {
-			const res = await fetch('http://localhost:3000/api/groups', {
+			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/groups', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -104,11 +106,14 @@ export default function GroupsArea() {
 
 	const handleJoinGroup = async (groupId: string) => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/groups/${groupId}/join`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ userId: user?.sub }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/groups/${groupId}/join`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ userId: user?.sub }),
+				},
+			);
 
 			if (res.ok) {
 				toast.success('Joined group!');
@@ -125,11 +130,14 @@ export default function GroupsArea() {
 
 	const handleLeaveGroup = async (groupId: string) => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/groups/${groupId}/leave`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ userId: user?.sub }),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/groups/${groupId}/leave`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ userId: user?.sub }),
+				},
+			);
 
 			if (res.ok) {
 				toast.success('Left group');

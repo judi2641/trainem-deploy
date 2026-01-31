@@ -163,7 +163,7 @@ export default function UpcomingHabits() {
 
 			try {
 				// Create a completed entry for this habit
-				const res = await fetch('http://localhost:3000/api/entries', {
+				const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
@@ -204,9 +204,12 @@ export default function UpcomingHabits() {
 			if (!entryToDelete) return;
 
 			try {
-				const res = await fetch(`http://localhost:3000/api/entries/${entryToDelete._id}`, {
-					method: 'DELETE',
-				});
+				const res = await fetch(
+					`https://trainem-deploy-production.up.railway.app/api/entries/${entryToDelete._id}`,
+					{
+						method: 'DELETE',
+					},
+				);
 
 				if (!res.ok) throw new Error('Failed to uncomplete habit');
 

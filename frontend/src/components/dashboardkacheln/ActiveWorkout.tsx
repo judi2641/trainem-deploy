@@ -322,7 +322,7 @@ export default function ActiveWorkout() {
 	async function scheduleWorkout() {
 		if (!auth0Id || !selectedWorkoutId) return;
 
-		const res = await fetch('http://localhost:3000/api/entries', {
+		const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -356,15 +356,18 @@ export default function ActiveWorkout() {
 			setCelebrationExiting(false);
 			await sleep(3000);
 		}
-		const res = await fetch(`http://localhost:3000/api/entries/${entryId}/complete-exercise`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				exerciseName: ex.exercise.name,
-				weight,
-				duration,
-			}),
-		});
+		const res = await fetch(
+			`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/complete-exercise`,
+			{
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					exerciseName: ex.exercise.name,
+					weight,
+					duration,
+				}),
+			},
+		);
 
 		if (!res.ok) {
 			toast.error('Exercise could not be completed');
@@ -393,10 +396,13 @@ export default function ActiveWorkout() {
 	}
 
 	async function abortEntry(entryId: string) {
-		const res = await fetch(`http://localhost:3000/api/entries/${entryId}/abort`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-		});
+		const res = await fetch(
+			`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/abort`,
+			{
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+			},
+		);
 
 		if (!res.ok) {
 			toast.error('Workout could not be aborted');
@@ -457,7 +463,9 @@ export default function ActiveWorkout() {
 						<div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-amber-100 border-2 border-black flex items-center justify-center mx-auto mb-4">
 							<Plus className="h-6 w-6 text-black/60 dark:text-white/60" />
 						</div>
-						<p className="text-sm text-black/60 dark:text-white/60 mb-4">No active workout. Start one now!</p>
+						<p className="text-sm text-black/60 dark:text-white/60 mb-4">
+							No active workout. Start one now!
+						</p>
 					</div>
 
 					<div className="flex gap-2">
@@ -551,12 +559,16 @@ export default function ActiveWorkout() {
 						)}
 					</div>
 					<div className="flex items-center justify-between mt-2">
-						<span className="text-sm font-medium text-black dark:text-white">{workout?.name ?? 'Workout'}</span>
+						<span className="text-sm font-medium text-black dark:text-white">
+							{workout?.name ?? 'Workout'}
+						</span>
 						<div className="flex items-center gap-3">
 							{/* Active workout timer */}
 							<div className="flex items-center gap-1 px-2 py-0.5 bg-black/5 dark:bg-white/10 border border-black/20 dark:border-white/20">
 								<Clock className="h-3 w-3 text-black/60 dark:text-white/60" />
-								<span className="text-xs font-mono font-medium text-black/80 dark:text-white/80">{elapsedTime}</span>
+								<span className="text-xs font-mono font-medium text-black/80 dark:text-white/80">
+									{elapsedTime}
+								</span>
 							</div>
 							<span className="text-xs text-black/60 dark:text-white/60">
 								{completedCount}/{totalCount} exercises
@@ -658,7 +670,9 @@ export default function ActiveWorkout() {
 																</div>
 															) : (
 																<div className="space-y-2">
-																	<Label className="text-xs text-black/70 dark:text-white/70">Weight (kg)</Label>
+																	<Label className="text-xs text-black/70 dark:text-white/70">
+																		Weight (kg)
+																	</Label>
 																	<Input
 																		value={weightInput}
 																		onChange={(e) => setWeightInput(e.target.value)}
@@ -707,37 +721,37 @@ export default function ActiveWorkout() {
 								{showCompleted && (
 									<div className="space-y-2">
 										{completedExercises.map((ex: any) => (
-												<div
-													key={ex.exercise?.name}
-													className="flex items-center gap-3 p-3 border-2 bg-emerald-50 border-emerald-300"
-												>
-													<div className="w-5 h-5 bg-emerald-500 border-2 border-emerald-600 flex items-center justify-center shrink-0">
-														<svg
-															viewBox="0 0 16 16"
-															className="h-3 w-3 text-white"
-															fill="currentColor"
-														>
-															<rect x="3" y="8" width="2" height="2" />
-															<rect x="5" y="10" width="2" height="2" />
-															<rect x="7" y="8" width="2" height="2" />
-															<rect x="9" y="6" width="2" height="2" />
-															<rect x="11" y="4" width="2" height="2" />
-														</svg>
-													</div>
-													<button
-														type="button"
-														onClick={() => openExerciseDetail(ex)}
-														className="flex-1 text-left cursor-pointer"
+											<div
+												key={ex.exercise?.name}
+												className="flex items-center gap-3 p-3 border-2 bg-emerald-50 border-emerald-300"
+											>
+												<div className="w-5 h-5 bg-emerald-500 border-2 border-emerald-600 flex items-center justify-center shrink-0">
+													<svg
+														viewBox="0 0 16 16"
+														className="h-3 w-3 text-white"
+														fill="currentColor"
 													>
-														<div className="text-sm font-medium text-emerald-700 line-through truncate">
-															{ex.exercise?.name}
-														</div>
-														<div className="text-xs text-emerald-600/70">
-															{ex.weight ? `${ex.weight}kg` : ''}
-															{ex.duration ? `${ex.duration}s` : ''}
-														</div>
-													</button>
+														<rect x="3" y="8" width="2" height="2" />
+														<rect x="5" y="10" width="2" height="2" />
+														<rect x="7" y="8" width="2" height="2" />
+														<rect x="9" y="6" width="2" height="2" />
+														<rect x="11" y="4" width="2" height="2" />
+													</svg>
 												</div>
+												<button
+													type="button"
+													onClick={() => openExerciseDetail(ex)}
+													className="flex-1 text-left cursor-pointer"
+												>
+													<div className="text-sm font-medium text-emerald-700 line-through truncate">
+														{ex.exercise?.name}
+													</div>
+													<div className="text-xs text-emerald-600/70">
+														{ex.weight ? `${ex.weight}kg` : ''}
+														{ex.duration ? `${ex.duration}s` : ''}
+													</div>
+												</button>
+											</div>
 										))}
 									</div>
 								)}

@@ -51,7 +51,9 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 	// Fetch updated battle data
 	const fetchBattle = useCallback(async () => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battle._id}`);
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}`,
+			);
 			if (res.ok) {
 				const data = await res.json();
 				setBattle(data);
@@ -64,7 +66,9 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 	// Fetch board data
 	const fetchBoard = useCallback(async () => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battle._id}/board`);
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}/board`,
+			);
 			if (res.ok) {
 				const data = await res.json();
 				setBoard(data);
@@ -77,7 +81,9 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 	// Fetch live score
 	const fetchScore = useCallback(async () => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battle._id}/score`);
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}/score`,
+			);
 			if (res.ok) {
 				const data = await res.json();
 				setLiveScore(data);
@@ -159,16 +165,19 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		if (x < 0 || x >= board.gridWidth || y < 0 || y >= board.gridHeight) return;
 
 		try {
-			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battle._id}/pixels`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					groupId: userGroupId,
-					userId,
-					coordinates: [{ x, y }],
-					color: selectedColor,
-				}),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}/pixels`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						groupId: userGroupId,
+						userId,
+						coordinates: [{ x, y }],
+						color: selectedColor,
+					}),
+				},
+			);
 
 			if (res.ok) {
 				toast.success('Pixel placed!');

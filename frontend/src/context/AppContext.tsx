@@ -15,7 +15,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		async function loadExercises() {
 			try {
-				const res = await fetch('http://localhost:3000/api/exercises');
+				const res = await fetch('https://trainem-deploy-production.up.railway.app/api/exercises');
 				if (res.ok) {
 					const data = await res.json();
 					setExercises(data);
@@ -36,7 +36,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			try {
 				// User laden
 				const userRes = await fetch(
-					`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}`,
 				);
 				if (userRes.ok) {
 					const userData = await userRes.json();
@@ -45,7 +45,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 				// Habits laden
 				const habitsRes = await fetch(
-					`http://localhost:3000/api/habits/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-production.up.railway.app/api/habits/${encodeURIComponent(user.sub)}`,
 				);
 				if (habitsRes.ok) {
 					const habitsData = await habitsRes.json();
@@ -54,7 +54,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 				// Workouts laden
 				const workoutsRes = await fetch(
-					`http://localhost:3000/api/workouts/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-production.up.railway.app/api/workouts/${encodeURIComponent(user.sub)}`,
 				);
 				if (workoutsRes.ok) {
 					const workoutsData = await workoutsRes.json();
@@ -63,7 +63,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 				// Entries laden
 				const entriesRes = await fetch(
-					`http://localhost:3000/api/entries/${encodeURIComponent(user.sub)}`,
+					`https://trainem-deploy-production.up.railway.app/api/entries/${encodeURIComponent(user.sub)}`,
 				);
 				if (entriesRes.ok) {
 					const entriesData = await entriesRes.json();
@@ -87,11 +87,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			try {
 				// Parallel fetchen ist schneller als nacheinander
 				const [workoutsRes, entriesRes, habitsRes, exercisesRes, pixelArtRes] = await Promise.all([
-					fetch(`http://localhost:3000/api/workouts/${user!.sub}`),
-					fetch(`http://localhost:3000/api/entries/${user!.sub}`),
-					fetch(`http://localhost:3000/api/habits/${user!.sub}`),
-					fetch(`http://localhost:3000/api/exercises`),
-					fetch(`http://localhost:3000/api/pixel-art/${user!.sub}`),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/workouts/${user!.sub}`),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/entries/${user!.sub}`),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/habits/${user!.sub}`),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/exercises`),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/pixel-art/${user!.sub}`),
 				]);
 
 				if (workoutsRes.ok) setWorkouts(await workoutsRes.json());

@@ -48,7 +48,9 @@ export default function GroupDetailModal({
 
 	const fetchPixelArt = async () => {
 		try {
-			const res = await fetch(`http://localhost:3000/api/groups/${group._id}/pixel-art`);
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/groups/${group._id}/pixel-art`,
+			);
 			if (res.ok) {
 				const data = await res.json();
 				setPixelArtInfo(data);
@@ -67,16 +69,19 @@ export default function GroupDetailModal({
 
 		setIsPlacing(true);
 		try {
-			const res = await fetch(`http://localhost:3000/api/groups/${group._id}/pixel-art`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					userId: currentUserId,
-					x,
-					y,
-					color: selectedColor,
-				}),
-			});
+			const res = await fetch(
+				`https://trainem-deploy-production.up.railway.app/api/groups/${group._id}/pixel-art`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						userId: currentUserId,
+						x,
+						y,
+						color: selectedColor,
+					}),
+				},
+			);
 
 			if (res.ok) {
 				const data = await res.json();

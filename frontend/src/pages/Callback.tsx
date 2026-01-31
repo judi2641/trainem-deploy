@@ -16,7 +16,7 @@ export default function Callback() {
 		try {
 			// 1. Prüfen: Gibt es den User schon in MEINER Datenbank?
 			const res_user = await fetch(
-				`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}`,
+				`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}`,
 			);
 
 			let contextUser;
@@ -26,13 +26,16 @@ export default function Callback() {
 				console.log('User gefunden, logge ein...');
 			} else {
 				console.log('User neu, erstelle Account...');
-				const res_newuser = await fetch(`http://localhost:3000/api/user`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
+				const res_newuser = await fetch(
+					`https://trainem-deploy-production.up.railway.app/api/user`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
 					},
-					body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
-				});
+				);
 
 				if (!res_newuser.ok) {
 					console.error('Fehler beim Erstellen des Users');
