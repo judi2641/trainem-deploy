@@ -1,7 +1,6 @@
 import EntryModel from './EntryModel';
 import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
-import type { Entry, WorkoutExercise } from '../../../../shared/sharedTypes';
 import WorkoutModel from '../workouts/WorkoutModel';
 import UserModel from '../users/UserModel';
 import { PixelWarService } from '../pixelwar/PixelWarService';
@@ -37,7 +36,7 @@ export async function createEntry(
         completed_exercises: [],
         completed: false,
         score: 0
-      } as Entry);
+      });
     }
 
     const entry = await EntryModel.create({
@@ -48,7 +47,7 @@ export async function createEntry(
       completed_exercises: [],
       completed: true,
       score: 10
-    } as Entry);
+    });
 
     // Update user points
     await UserModel.findOneAndUpdate(

@@ -1,8 +1,7 @@
 import { Schema, model, Types } from 'mongoose';
 import { ExerciseSchema } from '../exercises/ExerciseModel';
 import { workoutExerciseSchema } from '../workouts/WorkoutModel';
-import type { Entry } from '../../../../shared/sharedTypes';
-const entrySchema = new Schema<Entry>(
+const entrySchema = new Schema(
 	{
 		auth0Id: {
 			type: String,
@@ -22,4 +21,4 @@ const entrySchema = new Schema<Entry>(
 	},
 );
 
-export default model<Entry>('Entry', entrySchema);
+export default model('Entry', entrySchema);

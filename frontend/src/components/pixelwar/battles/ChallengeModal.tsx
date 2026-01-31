@@ -8,11 +8,10 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import type { Group } from '../../../../../shared/sharedTypes';
 
 interface ChallengeModalProps {
-	myGroups: Group[];
-	targetGroups: Group[];
+	myGroups: any[];
+	targetGroups: any[];
 	onClose: () => void;
 	onChallenge: (data: {
 		challengerGroupId: string;
@@ -46,7 +45,12 @@ const WIN_CONDITION_OPTIONS = [
 	{ value: 'hybrid' as const, label: 'Hybrid', description: '50% pixels + 50% XP' },
 ];
 
-export default function ChallengeModal({ myGroups, targetGroups, onClose, onChallenge }: ChallengeModalProps) {
+export default function ChallengeModal({
+	myGroups,
+	targetGroups,
+	onClose,
+	onChallenge,
+}: ChallengeModalProps) {
 	const [challengerGroupId, setChallengerGroupId] = useState(myGroups[0]?._id || '');
 	const [opponentGroupId, setOpponentGroupId] = useState('');
 	const [duration, setDuration] = useState(1440);

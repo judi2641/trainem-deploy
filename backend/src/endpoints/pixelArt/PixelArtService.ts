@@ -1,9 +1,8 @@
-import type { IPixelArt } from '../../../../shared/types/database/user/PixelArt';
 import { HttpError } from '../../errors/HttpError';
 import { logger } from '../../utils/logger';
 import { PixelArtModel } from './PixelArtModel';
 
-function isValidPixelArt(payload: IPixelArt) {
+function isValidPixelArt(payload: any) {
 	if (!payload) return false;
 	if (!payload.auth0ID || typeof payload.auth0ID !== 'string') return false;
 	if (!payload.gridSize || typeof payload.gridSize !== 'number') return false;
@@ -20,12 +19,12 @@ function isValidPixelArt(payload: IPixelArt) {
 	return true;
 }
 
-export async function savePixelArt(auth0ID: string, payload: IPixelArt) {
+export async function savePixelArt(auth0ID: string, payload: any) {
 	if (!auth0ID) {
 		throw new HttpError(400, 'auth0ID is missing');
 	}
 
-	const data: IPixelArt = {
+	const data: any = {
 		auth0ID,
 		gridSize: payload.gridSize,
 		pixels: payload.pixels,

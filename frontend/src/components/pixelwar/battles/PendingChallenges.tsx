@@ -1,8 +1,7 @@
 import { Swords, Clock, Grid3X3, Trophy, X, Check } from 'lucide-react';
-import type { Battle } from '../../../../../shared/sharedTypes';
 
 interface PendingChallengesProps {
-	challenges: Battle[];
+	challenges: any[];
 	onAccept: (battleId: string) => void;
 	onDecline: (battleId: string) => void;
 }
@@ -26,7 +25,11 @@ function getWinConditionLabel(condition: string): string {
 	}
 }
 
-export default function PendingChallenges({ challenges, onAccept, onDecline }: PendingChallengesProps) {
+export default function PendingChallenges({
+	challenges,
+	onAccept,
+	onDecline,
+}: PendingChallengesProps) {
 	if (challenges.length === 0) return null;
 
 	return (
@@ -37,11 +40,10 @@ export default function PendingChallenges({ challenges, onAccept, onDecline }: P
 					<Swords className="h-4 w-4 text-white" />
 				</div>
 				<div>
-					<h3 className="font-pixel text-base text-black dark:text-white">
-						Incoming Challenges!
-					</h3>
+					<h3 className="font-pixel text-base text-black dark:text-white">Incoming Challenges!</h3>
 					<p className="text-xs text-black/60 dark:text-white/60">
-						{challenges.length} {challenges.length === 1 ? 'group wants' : 'groups want'} to battle you
+						{challenges.length} {challenges.length === 1 ? 'group wants' : 'groups want'} to battle
+						you
 					</p>
 				</div>
 			</div>

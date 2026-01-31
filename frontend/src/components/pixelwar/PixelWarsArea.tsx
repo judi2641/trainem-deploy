@@ -14,7 +14,6 @@ import {
 	PixelCardHeader,
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
-import type { Battle, Group } from '../../../../shared/sharedTypes';
 
 // Pixel-style icon
 function PixelSwordsIcon({ className }: { className?: string }) {
@@ -37,13 +36,13 @@ function PixelSwordsIcon({ className }: { className?: string }) {
 
 export default function PixelWarsArea() {
 	const { user } = useAuth0();
-	const [battles, setBattles] = useState<Battle[]>([]);
-	const [pendingChallenges, setPendingChallenges] = useState<Battle[]>([]);
-	const [myGroups, setMyGroups] = useState<Group[]>([]);
-	const [publicGroups, setPublicGroups] = useState<Group[]>([]);
+	const [battles, setBattles] = useState<any[]>([]);
+	const [pendingChallenges, setPendingChallenges] = useState<any[]>([]);
+	const [myGroups, setMyGroups] = useState<any[]>([]);
+	const [publicGroups, setPublicGroups] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
-	const [selectedBattle, setSelectedBattle] = useState<Battle | null>(null);
+	const [selectedBattle, setSelectedBattle] = useState<any | null>(null);
 	const [view, setView] = useState<'list' | 'arena'>('list');
 
 	useEffect(() => {
@@ -54,19 +53,25 @@ export default function PixelWarsArea() {
 
 	const fetchData = async () => {
 		try {
-			const battlesRes = await fetch(`http://localhost:3000/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`);
+			const battlesRes = await fetch(
+				`http://localhost:3000/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`,
+			);
 			if (battlesRes.ok) {
 				const data = await battlesRes.json();
 				setBattles(data);
 			}
 
-			const pendingRes = await fetch(`http://localhost:3000/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`);
+			const pendingRes = await fetch(
+				`http://localhost:3000/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`,
+			);
 			if (pendingRes.ok) {
 				const data = await pendingRes.json();
 				setPendingChallenges(data);
 			}
 
-			const groupsRes = await fetch(`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`);
+			const groupsRes = await fetch(
+				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
+			);
 			if (groupsRes.ok) {
 				const data = await groupsRes.json();
 				setMyGroups(data);
@@ -160,7 +165,7 @@ export default function PixelWarsArea() {
 		}
 	};
 
-	const handleSelectBattle = (battle: Battle) => {
+	const handleSelectBattle = (battle: any) => {
 		setSelectedBattle(battle);
 		setView('arena');
 	};
@@ -184,11 +189,7 @@ export default function PixelWarsArea() {
 
 	if (view === 'arena' && selectedBattle) {
 		return (
-			<BattleArena
-				battle={selectedBattle}
-				userId={user?.sub || ''}
-				onBack={handleBackToList}
-			/>
+			<BattleArena battle={selectedBattle} userId={user?.sub || ''} onBack={handleBackToList} />
 		);
 	}
 
@@ -229,7 +230,8 @@ export default function PixelWarsArea() {
 			{myGroups.length === 0 && (
 				<div className="bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-300 dark:border-amber-700 p-4">
 					<p className="text-sm text-amber-800 dark:text-amber-200">
-						<span className="font-medium">No groups yet!</span> Join or create a group on the Groups page to start battling.
+						<span className="font-medium">No groups yet!</span> Join or create a group on the Groups
+						page to start battling.
 					</p>
 				</div>
 			)}
@@ -281,9 +283,7 @@ export default function PixelWarsArea() {
 			{isChallengeModalOpen && (
 				<ChallengeModal
 					myGroups={myGroups}
-					targetGroups={publicGroups.filter(
-						(g) => !myGroups.find((mg) => mg._id === g._id)
-					)}
+					targetGroups={publicGroups.filter((g) => !myGroups.find((mg) => mg._id === g._id))}
 					onClose={() => setIsChallengeModalOpen(false)}
 					onChallenge={handleCreateChallenge}
 				/>

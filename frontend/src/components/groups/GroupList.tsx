@@ -1,11 +1,10 @@
-import type { Group } from '../../../../shared/sharedTypes';
 import GroupCard from './GroupCard';
 
 interface GroupListProps {
-	groups: Group[];
+	groups: any[];
 	onJoin?: (groupId: string) => void;
 	onLeave?: (groupId: string) => void;
-	onClick?: (group: Group) => void;
+	onClick?: (group: any) => void;
 	currentUserId?: string;
 	showJoinButton?: boolean;
 	showLeaveButton?: boolean;

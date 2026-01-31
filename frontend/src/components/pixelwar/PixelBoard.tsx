@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import type { PixelBoard as IPixelBoard, Season } from '../../../../shared/sharedTypes';
 
 interface PixelBoardProps {
 	seasonId?: string;
@@ -11,8 +10,8 @@ interface PixelBoardProps {
 export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBoardProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const { user } = useAuth0();
-	const [board, setBoard] = useState<IPixelBoard | null>(null);
-	const [season, setSeason] = useState<Season | null>(null);
+	const [board, setBoard] = useState<any | null>(null);
+	const [season, setSeason] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [zoom, setZoom] = useState(1);
 	const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -44,7 +43,9 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 			if (activeSeasonId) {
 				// Fetch pixel board
-				const boardRes = await fetch(`http://localhost:3000/api/pixelwar/seasons/${activeSeasonId}/board`);
+				const boardRes = await fetch(
+					`http://localhost:3000/api/pixelwar/seasons/${activeSeasonId}/board`,
+				);
 				if (boardRes.ok) {
 					const boardData = await boardRes.json();
 					setBoard(boardData);
@@ -80,14 +81,9 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 		ctx.translate(pan.x, pan.y);
 
 		// Draw pixels
-		board.pixels.forEach((pixel) => {
+		board.pixels.forEach((pixel: any) => {
 			ctx.fillStyle = pixel.color;
-			ctx.fillRect(
-				pixel.x * pixelSize,
-				pixel.y * pixelSize,
-				pixelSize,
-				pixelSize
-			);
+			ctx.fillRect(pixel.x * pixelSize, pixel.y * pixelSize, pixelSize, pixelSize);
 		});
 
 		// Draw grid lines (only if zoomed in enough)
@@ -129,8 +125,8 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 					body: JSON.stringify({
 						groupId,
 						userId: user?.sub,
-						coordinates: [{ x, y }]
-					})
+						coordinates: [{ x, y }],
+					}),
 				});
 
 				if (res.ok) {
@@ -146,7 +142,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 	const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
 		e.preventDefault();
 		const delta = e.deltaY > 0 ? 0.9 : 1.1;
-		setZoom(prev => Math.max(0.5, Math.min(5, prev * delta)));
+		setZoom((prev) => Math.max(0.5, Math.min(5, prev * delta)));
 	};
 
 	const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -160,7 +156,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 		const dx = e.clientX - lastMousePos.x;
 		const dy = e.clientY - lastMousePos.y;
 
-		setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+		setPan((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
 		setLastMousePos({ x: e.clientX, y: e.clientY });
 	};
 
@@ -211,7 +207,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 			{/* Controls */}
 			<div className="absolute bottom-4 right-4 flex gap-2 z-10">
 				<button
-					onClick={() => setZoom(prev => Math.max(0.5, prev - 0.2))}
+					onClick={() => setZoom((prev) => Math.max(0.5, prev - 0.2))}
 					className="px-3 py-2 bg-white/90 hover:bg-white text-gray-800 rounded-lg shadow-lg transition-colors"
 				>
 					-
@@ -223,7 +219,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 					Reset
 				</button>
 				<button
-					onClick={() => setZoom(prev => Math.min(5, prev + 0.2))}
+					onClick={() => setZoom((prev) => Math.min(5, prev + 0.2))}
 					className="px-3 py-2 bg-white/90 hover:bg-white text-gray-800 rounded-lg shadow-lg transition-colors"
 				>
 					+

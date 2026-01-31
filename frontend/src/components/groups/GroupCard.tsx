@@ -1,19 +1,24 @@
 import { useMemo } from 'react';
 import { Users, Zap, Globe, Lock, Trophy, Grid3X3 } from 'lucide-react';
-import type { Group } from '../../../../shared/sharedTypes';
 
 interface GroupCardProps {
-	group: Group;
+	group: any;
 	onJoin?: (groupId: string) => void;
 	onLeave?: (groupId: string) => void;
-	onClick?: (group: Group) => void;
+	onClick?: (group: any) => void;
 	currentUserId?: string;
 	showJoinButton?: boolean;
 	showLeaveButton?: boolean;
 }
 
 // Mini canvas preview component
-function MiniCanvas({ pixels, gridSize }: { pixels: { x: number; y: number; color: string }[]; gridSize: number }) {
+function MiniCanvas({
+	pixels,
+	gridSize,
+}: {
+	pixels: { x: number; y: number; color: string }[];
+	gridSize: number;
+}) {
 	const previewSize = 48; // 48px total
 
 	return (
@@ -26,14 +31,7 @@ function MiniCanvas({ pixels, gridSize }: { pixels: { x: number; y: number; colo
 				<rect width={gridSize} height={gridSize} fill="#f8fafc" className="dark:fill-gray-600" />
 				{/* Pixels */}
 				{pixels.map((pixel, idx) => (
-					<rect
-						key={idx}
-						x={pixel.x}
-						y={pixel.y}
-						width={1}
-						height={1}
-						fill={pixel.color}
-					/>
+					<rect key={idx} x={pixel.x} y={pixel.y} width={1} height={1} fill={pixel.color} />
 				))}
 			</svg>
 		</div>
@@ -49,7 +47,7 @@ export default function GroupCard({
 	showJoinButton,
 	showLeaveButton,
 }: GroupCardProps) {
-	const isOwner = group.members.find((m) => m.userId === currentUserId)?.role === 'owner';
+	const isOwner = group.members.find((m: any) => m.userId === currentUserId)?.role === 'owner';
 	const memberCount = group.members.length;
 	const isFull = memberCount >= group.maxMembers;
 	const wins = group.wins || 0;
