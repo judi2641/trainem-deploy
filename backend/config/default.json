@@ -1,5 +1,5 @@
 {
-    "db":{
-        "connectionString": "mongodb://127.0.0.1:27017/test"
-    }
+	"db": {
+		"connectionString": "mongodb+srv://trainem-user:trainem-user@cluster0.qrnr6e9.mongodb.net/?appName=Cluster0"
+	}
 }
