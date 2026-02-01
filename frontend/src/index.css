@@ -403,3 +403,41 @@ svg [stroke='currentColor'] {
 .ring-expand {
 	animation: ring-expand 0.6s ease-out forwards;
 }
+
+
+
+
+/* Smooth scroll like Habitica */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Pixel divider strip (big chunky pixels) */
+.pixel-divider {
+  height: 84px;
+  background:
+    linear-gradient(90deg,
+      rgba(0,0,0,0.14) 0 10%,
+      rgba(0,0,0,0.06) 10% 20%,
+      rgba(0,0,0,0.14) 20% 30%,
+      rgba(0,0,0,0.06) 30% 40%,
+      rgba(0,0,0,0.14) 40% 50%,
+      rgba(0,0,0,0.06) 50% 60%,
+      rgba(0,0,0,0.14) 60% 70%,
+      rgba(0,0,0,0.06) 70% 80%,
+      rgba(0,0,0,0.14) 80% 90%,
+      rgba(0,0,0,0.06) 90% 100%
+    );
+  opacity: 0.35;
+  border-top: 4px solid rgba(0,0,0,0.85);
+  border-bottom: 4px solid rgba(0,0,0,0.85);
+}
+
+/* Simple floating arrow */
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); opacity: 0.75; }
+  50% { transform: translateY(10px); opacity: 1; }
+}
+.scroll-hint {
+  animation: bounce-soft 1.4s ease-in-out infinite;
+}
