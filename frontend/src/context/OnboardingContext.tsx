@@ -31,9 +31,11 @@ export interface IPlanInfo {
 interface OnboardingContextType {
 	userData: IUserInfo;
 	planData: IPlanInfo;
+	wantsAiWorkouts: boolean | null;
 
 	updateUserData: (patch: Partial<IUserInfo>) => void;
 	updatePlanData: (patch: Partial<IPlanInfo>) => void;
+	setWantsAiWorkouts: (value: boolean) => void;
 
 	submitUserData: () => Promise<void>;
 	submitPlanData: () => Promise<void>;
@@ -74,6 +76,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		preferredSplit: null,
 		priorities: [],
 	});
+	const [wantsAiWorkouts, setWantsAiWorkouts] = useState<boolean | null>(null);
 
 	const updateUserData = (patch: Partial<IUserInfo>) => {
 		setUserData((prev) => ({ ...prev, ...patch }));
@@ -85,7 +88,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 	const submitUserData = async () => {
 		if (isLoading) {
-			console.warn('Auth0 still loading… delaying user submit');
+			console.warn('Auth0 still loadingâ€¦ delaying user submit');
 			setTimeout(submitUserData, 200);
 			return;
 		}
@@ -115,9 +118,9 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 			if (!res.ok) throw new Error('Error saving user basic info');
 
-			console.log('✔ User basic info saved successfully');
+			console.log('âœ” User basic info saved successfully');
 
-			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workout/onboarding`, {
+			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workouts/onboarding`, {
 				method: 'POST',
 				headers: {
 					'Content-type': 'application/json',
@@ -143,37 +146,43 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			return;
 		}
 
+		if (wantsAiWorkouts === false) {
+			return;
+		}
+
 		try {
-			const res = await fetch(
-				`http://localhost:3000/api/trainingsplan/${encodeURIComponent(user.sub)}`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						onboarding: {
-							goal: planData.goal,
-							experience: planData.experience,
-							trainingDays: planData.trainingDays,
-							weight: planData.weight,
-							height: planData.height,
-							daysPerWeek: planData.daysPerWeek,
-							minutesPerSession: planData.minutesPerSession,
-							equipment: planData.equipment,
-							limitations: planData.limitations,
-							preferredSplit: planData.preferredSplit,
-							priorities: planData.priorities,
-						},
-					}),
+			const res = await fetch(`http://localhost:3000/api/workouts/ai`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			);
+				body: JSON.stringify({
+					auth0Id: user.sub,
+					onboarding: {
+						goal: planData.goal,
+						experience: planData.experience,
+						trainingDays: planData.trainingDays,
+						weight: planData.weight,
+						height: planData.height,
+						daysPerWeek: planData.daysPerWeek,
+						minutesPerSession: planData.minutesPerSession,
+						equipment: planData.equipment,
+						limitations: planData.limitations,
+						preferredSplit: planData.preferredSplit,
+						priorities: planData.priorities,
+					},
+				}),
+			});
 
 			if (!res.ok) {
-				throw new Error('Error creating training plan');
+				throw new Error('Error creating AI workouts');
 			}
 
-			console.log('✔ Training plan created successfully');
+			const aiWorkouts = await res.json();
+			if (Array.isArray(aiWorkouts)) {
+				setWorkouts((prev: any) => [...prev, ...aiWorkouts]);
+			}
+			console.log('âœ” AI workouts created successfully');
 		} catch (err) {
 			console.error('API error:', err);
 		}
@@ -184,8 +193,10 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			value={{
 				userData,
 				planData,
+				wantsAiWorkouts,
 				updateUserData,
 				updatePlanData,
+				setWantsAiWorkouts,
 				submitUserData,
 				submitPlanData,
 			}}
