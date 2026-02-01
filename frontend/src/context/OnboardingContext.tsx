@@ -34,9 +34,11 @@ export interface IPlanInfo {
 interface OnboardingContextType {
 	userData: IUserInfo;
 	planData: IPlanInfo;
+	wantsAiWorkouts: boolean | null;
 
 	updateUserData: (patch: Partial<IUserInfo>) => void;
 	updatePlanData: (patch: Partial<IPlanInfo>) => void;
+	setWantsAiWorkouts: (value: boolean) => void;
 
 	submitUserData: () => Promise<void>;
 	submitPlanData: () => Promise<void>;
@@ -77,6 +79,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		preferredSplit: null,
 		priorities: [],
 	});
+	const [wantsAiWorkouts, setWantsAiWorkouts] = useState<boolean | null>(null);
 
 	const updateUserData = (patch: Partial<IUserInfo>) => {
 		setUserData((prev) => ({ ...prev, ...patch }));
@@ -143,6 +146,10 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			return;
 		}
 
+		if (wantsAiWorkouts === false) {
+			return;
+		}
+
 		try {
 			const res = await fetch(`http://localhost:3000/api/workouts/ai`, {
 				method: 'POST',
@@ -186,8 +193,10 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 			value={{
 				userData,
 				planData,
+				wantsAiWorkouts,
 				updateUserData,
 				updatePlanData,
+				setWantsAiWorkouts,
 				submitUserData,
 				submitPlanData,
 			}}

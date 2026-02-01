@@ -2,15 +2,23 @@ import { PixelCard } from '@/components/ui/pixel-card';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../context/OnboardingContext';
+import { useState } from 'react';
 
 export default function OnboardingSummary() {
 	const navigate = useNavigate();
-	const { submitUserData, submitPlanData } = useOnboarding();
+	const { submitUserData, submitPlanData, wantsAiWorkouts } = useOnboarding();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleFinish = async () => {
-		await submitUserData();
-		await submitPlanData();
-		navigate('/dashboard');
+		if (isSubmitting) return;
+		setIsSubmitting(true);
+		try {
+			await submitUserData();
+			await submitPlanData();
+			navigate('/dashboard');
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -58,8 +66,11 @@ export default function OnboardingSummary() {
 
 			<div className="flex gap-4 mt-6 justify-center">
 				<button
-					onClick={() => navigate('/onboarding/schedule')}
+					onClick={() =>
+						navigate(wantsAiWorkouts === false ? '/onboarding' : '/onboarding/schedule')
+					}
 					className="items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-white border-2 border-black hover:bg-gray-50 transition-colors"
+					disabled={isSubmitting}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
@@ -67,8 +78,16 @@ export default function OnboardingSummary() {
 				<button
 					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-amber-400 hover:bg-amber-500"
 					onClick={handleFinish}
+					disabled={isSubmitting}
 				>
-					Start your journey!
+					{isSubmitting ? (
+						<span className="inline-flex items-center gap-2">
+							<span className="h-4 w-4 animate-spin rounded-full border-2 border-black border-r-transparent" />
+							Preparing your dashboard...
+						</span>
+					) : (
+						'Start your journey!'
+					)}
 				</button>
 			</div>
 		</div>

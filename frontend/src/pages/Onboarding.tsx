@@ -1,20 +1,23 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import ProgressBar from '../components/ProgressBar';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import PixelBackground from '@/components/pixel/PixelBackground';
 import { PixelCard, PixelCardContent, PixelCardHeader } from '@/components/ui/pixel-card';
-
-const steps = [
-	'/onboarding',
-	'/onboarding/basic',
-	'/onboarding/experience',
-	'/onboarding/goals',
-	'/onboarding/schedule',
-	'/onboarding/intro',
-];
+import { useOnboarding } from '../context/OnboardingContext';
 
 export default function Onboarding() {
+	const { wantsAiWorkouts } = useOnboarding();
 	const loc = useLocation();
+	const steps =
+		wantsAiWorkouts === false
+			? ['/onboarding', '/onboarding/intro']
+			: [
+					'/onboarding',
+					'/onboarding/basic',
+					'/onboarding/experience',
+					'/onboarding/goals',
+					'/onboarding/schedule',
+					'/onboarding/intro',
+				];
 	const idx = steps.indexOf(loc.pathname);
 	const current = idx !== -1 ? idx + 1 : 1;
 
@@ -40,7 +43,7 @@ export default function Onboarding() {
 			{/* Card stays on top */}
 			<PixelCard className="min-w-200 max-w-200 ">
 				<PixelCardHeader>
-					<ProgressBar current={current} total={6} />
+					<ProgressBar current={current} total={steps.length} />
 				</PixelCardHeader>
 
 				<PixelCardContent scrollable className="m-6 p-6 ">
