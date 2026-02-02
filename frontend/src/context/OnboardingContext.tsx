@@ -120,21 +120,23 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
 			console.log('âœ” User basic info saved successfully');
 
-			const res_onboarding_workout = await fetch(`http://localhost:3000/api/workouts/onboarding`, {
-				method: 'POST',
-				headers: {
-					'Content-type': 'application/json',
-				},
-				body: JSON.stringify({
-					auth0Id: user.sub,
-					name: 'onboarding workout',
-					description: 'created in onboarding',
-				}),
-			});
-			if (!res_onboarding_workout.ok) throw new Error('Error creating inital workout');
-			const new_workout = await res_onboarding_workout.json();
-			setWorkouts((prev: any) => [...prev, new_workout]);
-			console.log('inital workout created');
+			if (wantsAiWorkouts === false) {
+				const res_onboarding_workout = await fetch(`http://localhost:3000/api/workouts/onboarding`, {
+					method: 'POST',
+					headers: {
+						'Content-type': 'application/json',
+					},
+					body: JSON.stringify({
+						auth0Id: user.sub,
+						name: 'onboarding workout',
+						description: 'created in onboarding',
+					}),
+				});
+				if (!res_onboarding_workout.ok) throw new Error('Error creating inital workout');
+				const new_workout = await res_onboarding_workout.json();
+				setWorkouts((prev: any) => [...prev, new_workout]);
+				console.log('inital workout created');
+			}
 		} catch (err) {
 			console.error('API error:', err);
 		}
