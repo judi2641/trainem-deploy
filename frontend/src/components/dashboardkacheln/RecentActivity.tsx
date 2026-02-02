@@ -74,9 +74,7 @@ export default function RecentActivity() {
 									</div>
 								</div>
 								{entry.completed && entry.completed_exercises && (
-									<div className="text-[10px] text-emerald-600 font-medium shrink-0">
-										{entry.completed_exercises.length} ex
-									</div>
+									<div className="text-[10px] text-emerald-600 font-medium shrink-0"></div>
 								)}
 							</div>
 						))}

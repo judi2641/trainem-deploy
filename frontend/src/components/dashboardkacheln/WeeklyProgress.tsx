@@ -12,7 +12,7 @@ import { startOfWeek, endOfWeek, isWithinInterval, format } from 'date-fns';
 import { Flame } from 'lucide-react';
 
 export default function WeeklyProgress() {
-	const { entries, myUser } = useMyContext();
+	const { entries } = useMyContext();
 
 	const weekData = useMemo(() => {
 		const now = new Date();
@@ -90,22 +90,19 @@ export default function WeeklyProgress() {
 		};
 	}, [entries]);
 
-	const weeklyGoal = myUser?.weeklyGoal ?? 4;
-	const goalProgress = Math.min((weekData.completedWorkouts / weeklyGoal) * 100, 100);
-
 	return (
 		<PixelCard>
 			<PixelCardHeader>
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-2 m">
 					<div className="h-4 w-4 bg-sky-400 border-2 border-black" />
 					<PixelCardTitle>This Week</PixelCardTitle>
 				</div>
-				<p className="text-xs text-black/50 dark:text-white/50 mt-1">
+				<p className="text-xs text-black/50 dark:text-white/50 mt-0">
 					{format(weekData.weekStart, 'MMM d')} - {format(weekData.weekEnd, 'MMM d')}
 				</p>
 			</PixelCardHeader>
 
-			<PixelCardContent className="flex flex-col gap-4">
+			<PixelCardContent className="flex flex-col gap-2 ">
 				{/* Stats row */}
 				<div className="grid grid-cols-2 gap-3">
 					<div className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-black p-3 text-center">
@@ -122,7 +119,7 @@ export default function WeeklyProgress() {
 				</div>
 
 				{/* Weekly goal progress */}
-				<div>
+				{/* <div>
 					<div className="flex items-center justify-between text-sm mb-1">
 						<span className="text-black/60 dark:text-white/60">Weekly Goal</span>
 						<span className="font-medium text-black dark:text-white">
@@ -135,10 +132,10 @@ export default function WeeklyProgress() {
 							style={{ width: `${goalProgress}%` }}
 						/>
 					</div>
-				</div>
+				</div> */}
 
 				{/* Day indicators */}
-				<div className="flex justify-between gap-1 mt-auto">
+				<div className="flex justify-between gap-1 mt-0">
 					{weekData.dayStatus.map((day) => (
 						<div key={day.day} className="flex flex-col items-center gap-1">
 							<span className="text-[10px] text-black/50 dark:text-white/50 font-medium">

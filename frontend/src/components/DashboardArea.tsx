@@ -18,12 +18,12 @@ export default function DashboardArea() {
 			{/* Middle Column - Character, Weekly Progress, Recent Activity */}
 			<div className="hidden md:flex flex-col gap-4 max-h-[99%] w-[280px] lg:w-[300px] shrink-0">
 				{/* Character */}
-				<div className="h-[220px] shrink-0">
+				<div className="h-[200px] shrink-0">
 					<PixelCharacter />
 				</div>
 
 				{/* Weekly Progress */}
-				<div className="flex-1 min-h-0">
+				<div className="flex-1 h-[220px] min-h-0">
 					<WeeklyProgress />
 				</div>
 
