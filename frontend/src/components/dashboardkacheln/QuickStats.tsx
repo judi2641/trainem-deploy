@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/pixel-card';
 import { useMyContext } from '@/context/AppContext';
 import { useMemo } from 'react';
-import { TrendingUp, Weight, Clock, Target } from 'lucide-react';
+import { Weight, Clock, Target } from 'lucide-react';
 import { PixelCheckIcon } from '../Sidebar';
 export default function QuickStats() {
 	const { entries } = useMyContext();
