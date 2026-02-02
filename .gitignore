@@ -2,6 +2,7 @@
 .DS_Store
 node_modules
 dist
+.env
 
 # Frontend
 
@@ -14,5 +15,6 @@ frontend/.DS_Store
 backend/node_modules
 backend/.DS_Store
 backend/dist
+backend/.env
 
 backend/__tests__/postman/test.http
