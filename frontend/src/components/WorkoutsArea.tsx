@@ -39,6 +39,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { PixelDumbbellIcon } from './Sidebar';
+import { toast } from 'sonner';
 
 type Workout = {
 	_id: string;
@@ -132,6 +133,15 @@ export default function WorkoutsArea() {
 
 	async function addExerciseToWorkout(workoutId: string) {
 		if (!selectedExercise) return;
+		const alreadyAdded =
+			activeWorkout?.exercises?.some((e: any) => e.exercise?.name === selectedExercise?.name) ??
+			false;
+
+		if (alreadyAdded) {
+			toast.error('You can not add this exercise a second time');
+			setSelectedExercise(null);
+			return;
+		}
 		try {
 			const body: any = { exerciseName: selectedExercise.name };
 			if (selectedExercise.type === 'strength') {

@@ -8,20 +8,16 @@ import {
 } from '@/components/ui/pixel-card';
 import { useMyContext } from '@/context/AppContext';
 import { useMemo } from 'react';
-import { TrendingUp, Weight, Clock, Target } from 'lucide-react';
-
+import { Weight, Clock, Target } from 'lucide-react';
+import { PixelCheckIcon } from '../Sidebar';
 export default function QuickStats() {
 	const { entries } = useMyContext();
 
 	const stats = useMemo(() => {
 		const completedEntries = entries.filter((e: any) => e.completed);
 
-		const totalWorkouts = completedEntries.length;
-
-		const totalExercises = completedEntries.reduce(
-			(sum: number, e: any) => sum + (e.completed_exercises?.length ?? 0),
-			0,
-		);
+		const totalWorkouts = completedEntries.filter((e: any) => e.workoutId).length;
+		const totalHabits = completedEntries.filter((e: any) => e.habitId).length;
 
 		let totalWeightLifted = 0;
 		completedEntries.forEach((entry: any) => {
@@ -45,7 +41,7 @@ export default function QuickStats() {
 
 		return {
 			totalWorkouts,
-			totalExercises,
+			totalHabits,
 			totalWeightLifted: Math.round(totalWeightLifted),
 			totalCardioMinutes: Math.round(totalCardioMinutes),
 		};
@@ -53,16 +49,16 @@ export default function QuickStats() {
 
 	const statItems = [
 		{
-			label: 'Workouts/Habits',
+			label: 'Workouts',
 			value: stats.totalWorkouts,
 			icon: Target,
 			bgColor: 'bg-emerald-100',
 			iconColor: 'text-emerald-600',
 		},
 		{
-			label: 'Exercises',
-			value: stats.totalExercises,
-			icon: TrendingUp,
+			label: 'Habits',
+			value: stats.totalHabits,
+			icon: PixelCheckIcon,
 			bgColor: 'bg-sky-100',
 			iconColor: 'text-sky-600',
 		},

@@ -1,20 +1,28 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import PixelBackground from '@/components/pixel/PixelBackground';
 import { Button } from '@/components/ui/button';
+import React, { useLayoutEffect, useRef } from 'react';
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
 	return (
-		<a href={href} className="text-sm text-black/70 hover:text-black hover:underline transition">
+		<a
+			href={href}
+			onClick={(e) => {
+				e.preventDefault();
+				document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				// keep URL hash nice (optional)
+				history.replaceState(null, '', href);
+			}}
+			className="text-sm text-black/70 hover:text-black hover:underline transition"
+		>
 			{children}
 		</a>
 	);
 }
 
 function PixelDivider() {
-	// simple “section divider” like Habitica (dark band)
 	return (
-		<div className="relative w-full h-14 bg-black/20 border-y-2 border-black">
-			{/* little pixel blocks */}
+		<div className="relative w-full h-14 bg-black/20 border-y-2 border-black snap-none">
 			<div className="absolute inset-0 opacity-30 pointer-events-none">
 				<div className="absolute left-10 top-3 h-6 w-10 bg-black/25" />
 				<div className="absolute left-24 top-7 h-4 w-6 bg-black/25" />
@@ -33,7 +41,9 @@ function ScrollArrows({ downTo, upTo, dark }: { downTo?: string; upTo?: string; 
 			{upTo && (
 				<button
 					className={`transition ${cls}`}
-					onClick={() => document.querySelector(upTo)?.scrollIntoView({ behavior: 'smooth' })}
+					onClick={() =>
+						document.querySelector(upTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+					}
 					aria-label="Scroll up"
 					type="button"
 				>
@@ -46,7 +56,9 @@ function ScrollArrows({ downTo, upTo, dark }: { downTo?: string; upTo?: string; 
 			{downTo && (
 				<button
 					className={`transition ${cls}`}
-					onClick={() => document.querySelector(downTo)?.scrollIntoView({ behavior: 'smooth' })}
+					onClick={() =>
+						document.querySelector(downTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+					}
 					aria-label="Scroll down"
 					type="button"
 				>
@@ -67,23 +79,22 @@ function Section({
 }: {
 	id: string;
 	dark?: boolean;
-	fit?: boolean; // fit = exactly one screen (minus header)
+	fit?: boolean;
 	children: React.ReactNode;
 }) {
 	return (
 		<section
 			id={id}
 			className={[
-				'relative w-full',
-				// fit sections must never overflow, otherwise you see the next section "bleeding" in
+				'relative w-full snap-start',
 				fit
-					? 'h-[calc(100vh-var(--header-h))] flex items-center overflow-hidden'
+					? 'h-[calc(100vh-var(--header-h))] flex items-center overflow-y-auto md:overflow-hidden'
 					: 'py-20 md:py-28',
+				// for anchor offset if body ever scrolls
 				'scroll-mt-[calc(var(--header-h)+12px)]',
 				dark ? 'bg-black/25' : 'bg-transparent',
 			].join(' ')}
 		>
-			{/* IMPORTANT: use clamp padding (prevents overflow on small screens) */}
 			<div
 				className={
 					fit
@@ -165,6 +176,18 @@ function PixelGridPreview({ w = 16, h = 12 }: { w?: number; h?: number }) {
 export default function LandingPage() {
 	const { loginWithRedirect, logout } = useAuth0();
 
+	const headerRef = useRef<HTMLElement | null>(null);
+
+	useLayoutEffect(() => {
+		const update = () => {
+			const h = headerRef.current?.offsetHeight ?? 56;
+			document.documentElement.style.setProperty('--header-h', `${h}px`);
+		};
+		update();
+		window.addEventListener('resize', update);
+		return () => window.removeEventListener('resize', update);
+	}, []);
+
 	const handleRegister = () => {
 		logout({ logoutParams: { returnTo: window.location.origin } });
 		setTimeout(() => {
@@ -180,10 +203,7 @@ export default function LandingPage() {
 	};
 
 	return (
-		<div
-			className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]"
-			style={{ ['--header-h' as any]: '56px' }} // h-14 = 56px
-		>
+		<div className="relative h-screen overflow-hidden bg-gradient-to-br from-[#CFEFE3] via-[#E2F6EE] to-[#FFE8B0]">
 			{/* subtle grid */}
 			<div
 				className="absolute inset-0 pointer-events-none opacity-20"
@@ -201,10 +221,23 @@ export default function LandingPage() {
 			{/* pixel background */}
 			<PixelBackground count={260} seed={24} />
 
-			{/* header (no login/register here) */}
-			<header className="sticky top-0 z-50 border-b-2 border-black bg-white/70 backdrop-blur">
+			{/* header */}
+			<header
+				ref={headerRef}
+				className="sticky top-0 z-50 border-b-2 border-black bg-white/70 backdrop-blur"
+			>
 				<div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
-					<a href="#top" className="flex items-center gap-3">
+					<a
+						href="#top"
+						onClick={(e) => {
+							e.preventDefault();
+							document
+								.querySelector('#top')
+								?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							history.replaceState(null, '', '#top');
+						}}
+						className="flex items-center gap-3"
+					>
 						<div className="h-5 w-5 bg-emerald-500 border-2 border-black" />
 						<span className="text-black text-lg font-semibold">TrainEm</span>
 					</a>
@@ -217,194 +250,196 @@ export default function LandingPage() {
 				</div>
 			</header>
 
-			{/* HERO (fit) */}
-			<Section id="top" fit>
-				<div className="grid lg:grid-cols-2 gap-10 items-center">
-					<div>
-						<h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-black leading-[1.05]">
-							Train smart
-							<br />
-							Stay consistent
-						</h1>
+			{/* Scroll container */}
+			<main className="h-[calc(100vh-var(--header-h))] overflow-y-auto scroll-smooth snap-y snap-proximity">
+				{/* HERO */}
+				<Section id="top" fit>
+					<div className="grid lg:grid-cols-2 gap-10 items-center">
+						<div>
+							<h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-black leading-[1.05]">
+								Train smart
+								<br />
+								Stay consistent
+							</h1>
 
-						<p className="mt-5 text-black/70 text-lg max-w-xl">
-							TrainEm gamifies your training: track workouts & habits, earn XP, and unlock more
-							pixels for your <strong>Pixel Grid</strong>.
-						</p>
+							<p className="mt-5 text-black/70 text-lg max-w-xl">
+								TrainEm gamifies your training: track workouts & habits, earn XP, and unlock more
+								pixels for your <strong>Pixel Grid</strong>.
+							</p>
 
-						<div className="mt-10 flex flex-wrap items-center gap-5">
-							<StatPill color="bg-emerald-500" label="XP & Levels" />
-							<StatPill color="bg-sky-400" label="Streaks & weekly goal" />
-							<StatPill color="bg-amber-400" label="Unlock pixels" />
+							<div className="mt-10 flex flex-wrap items-center gap-5">
+								<StatPill color="bg-emerald-500" label="XP & Levels" />
+								<StatPill color="bg-sky-400" label="Streaks & weekly goal" />
+								<StatPill color="bg-amber-400" label="Unlock pixels" />
+							</div>
+
+							<ScrollArrows downTo="#how" />
 						</div>
 
-						<ScrollArrows downTo="#how" />
-					</div>
+						<ShadowCard>
+							<h2 className="text-2xl font-semibold text-black text-center">Start in 1 minute</h2>
+							<p className="mt-2 text-black/60 text-center">
+								Sign up → onboarding → your first workout
+							</p>
 
-					<ShadowCard>
-						<h2 className="text-2xl font-semibold text-black text-center">Start in 1 minute</h2>
-						<p className="mt-2 text-black/60 text-center">
-							Sign up → onboarding → your first workout
+							<div className="mt-7 grid gap-3">
+								<Button
+									onClick={handleRegister}
+									className="pixel-btn bg-emerald-500 text-white hover:bg-emerald-600 px-10 py-7 border-2 border-black rounded-none"
+								>
+									Register
+								</Button>
+								<Button
+									onClick={handleLogin}
+									variant="outline"
+									className="pixel-btn bg-white text-black hover:bg-black/5 px-10 py-7 border-2 border-black rounded-none"
+								>
+									Log in
+								</Button>
+							</div>
+						</ShadowCard>
+					</div>
+				</Section>
+
+				<PixelDivider />
+
+				{/* HOW */}
+				<Section id="how" dark fit>
+					<div className="text-center text-white">
+						<h2 className="text-4xl md:text-6xl font-semibold">Make your progress visible.</h2>
+						<p className="mt-6 max-w-3xl mx-auto text-white/80 leading-relaxed text-lg">
+							A simple system: plan → do → earn XP → unlock pixels. No clutter — just motivation
+							that sticks.
 						</p>
 
-						<div className="mt-7 grid gap-3">
-							<Button
-								onClick={handleRegister}
-								className="pixel-btn bg-emerald-500 text-white hover:bg-emerald-600 px-10 py-7 border-2 border-black rounded-none"
-							>
-								Register
-							</Button>
-							<Button
-								onClick={handleLogin}
-								variant="outline"
-								className="pixel-btn bg-white text-black hover:bg-black/5 px-10 py-7 border-2 border-black rounded-none"
-							>
-								Log in
-							</Button>
+						<div className="mt-12 flex flex-col items-center gap-4">
+							<MiniTaskCard label="Start a workout" variant="todo" />
+							<MiniTaskCard label="Check off exercises" variant="done" />
+							<MiniTaskCard label="Earn XP and unlock pixels" variant="reward" />
 						</div>
 
-						<div className="mt-6 text-xs text-black/50 text-center"></div>
-					</ShadowCard>
-				</div>
-			</Section>
-
-			<PixelDivider />
-
-			{/* HOW (fit + dark) */}
-			<Section id="how" dark fit>
-				<div className="text-center text-white">
-					{/* replaced “game loop” with clearer wording */}
-					<h2 className="text-4xl md:text-6xl font-semibold">Make your progress visible.</h2>
-					<p className="mt-6 max-w-3xl mx-auto text-white/80 leading-relaxed text-lg">
-						A simple system: plan → do → earn XP → unlock pixels. No clutter — just motivation that
-						sticks.
-					</p>
-
-					<div className="mt-12 flex flex-col items-center gap-4">
-						<MiniTaskCard label="Start a workout" variant="todo" />
-						<MiniTaskCard label="Check off exercises" variant="done" />
-						<MiniTaskCard label="Earn XP and unlock pixels" variant="reward" />
+						<ScrollArrows upTo="#top" downTo="#pixel" dark />
 					</div>
+				</Section>
 
-					<ScrollArrows upTo="#top" downTo="#pixel" dark />
-				</div>
-			</Section>
+				<PixelDivider />
 
-			<PixelDivider />
+				{/* PIXEL GRID */}
+				<Section id="pixel" fit>
+					<div className="grid lg:grid-cols-2 gap-10 items-center">
+						<div>
+							<h2 className="text-4xl md:text-5xl font-semibold text-black leading-tight mb-8">
+								Your Pixel Grid is your progress.
+							</h2>
 
-			{/* PIXEL GRID (fit) */}
-			<Section id="pixel" fit>
-				<div className="grid lg:grid-cols-2 gap-10 items-center">
-					<div>
-						<h2 className="text-4xl md:text-5xl font-semibold text-black leading-tight mb-8">
-							Your Pixel Grid is your progress.
-						</h2>
+							<p className="text-black/70 text-lg max-w-xl leading-relaxed">
+								Gain XP by completing workouts and habits. More XP means more unlocked pixels you
+								can place in your grid. More consistency = more XP = more pixels = more detail.
+							</p>
 
-						<p className="text-black/70 text-lg max-w-xl leading-relaxed">
-							Gain XP by completing workouts and habits. More XP means more unlocked pixels you can
-							place in your grid. More consistency = more XP = more pixels = more detail.
-						</p>
-
-						<ScrollArrows upTo="#how" downTo="#faq" />
-					</div>
-
-					<ShadowCard>
-						<div className="flex items-center justify-between">
-							<h3 className="text-lg font-semibold text-black">Pixel Grid Preview</h3>
-							<span className="text-xs text-black/50">Example</span>
+							<ScrollArrows upTo="#how" downTo="#faq" />
 						</div>
-						<p className="mt-2 text-black/60 text-sm">
-							Level up → more pixels → more possibilities.
+
+						<ShadowCard>
+							<div className="flex items-center justify-between">
+								<h3 className="text-lg font-semibold text-black">Pixel Grid Preview</h3>
+								<span className="text-xs text-black/50">Example</span>
+							</div>
+							<p className="mt-2 text-black/60 text-sm">
+								Level up → more pixels → more possibilities.
+							</p>
+
+							<div className="mt-6">
+								<PixelGridPreview w={16} h={12} />
+							</div>
+
+							<div className="mt-6 grid grid-cols-3 gap-3">
+								<div className="border-2 border-black p-3 bg-emerald-50">
+									<div className="text-[10px] text-black/60">START</div>
+									<div className="text-xl font-semibold text-black">12</div>
+									<div className="text-[10px] text-black/50">pixels</div>
+								</div>
+								<div className="border-2 border-black p-3 bg-amber-50">
+									<div className="text-[10px] text-black/60">LEVEL UP</div>
+									<div className="text-xl font-semibold text-black">+12</div>
+									<div className="text-[10px] text-black/50">pixels</div>
+								</div>
+								<div className="border-2 border-black p-3 bg-sky-50">
+									<div className="text-[10px] text-black/60">CONSISTENCY</div>
+									<div className="text-xl font-semibold text-black">XP</div>
+									<div className="text-[10px] text-black/50">loop</div>
+								</div>
+							</div>
+						</ShadowCard>
+					</div>
+				</Section>
+
+				<PixelDivider />
+
+				{/* FAQ */}
+				<Section id="faq" dark fit>
+					<div className="text-center text-white">
+						<h2 className="text-4xl md:text-5xl font-semibold">FAQ</h2>
+						<p className="mt-3 max-w-3xl mx-auto text-white/80 leading-relaxed text-base md:text-lg">
+							Quick answers — then just start.
 						</p>
+
+						<div className="mt-6 grid md:grid-cols-2 gap-4 text-left">
+							{[
+								{
+									q: 'Do I have to create workouts?',
+									a: 'No. You can start with habits. Workouts are the clearest progress loop though.',
+								},
+								{
+									q: 'How do I unlock more pixels?',
+									a: 'By earning XP and leveling up. More consistency = more XP = more unlocked pixels.',
+								},
+								{
+									q: 'Is this only for the gym?',
+									a: 'No. Works for home workouts, mobility, steps, stretching — anything you want to track.',
+								},
+								{
+									q: 'What’s the fastest start?',
+									a: 'Register → onboarding → create a workout → check off your first exercise.',
+								},
+							].map((item) => (
+								<div key={item.q} className="border-2 border-white/25 bg-white/10 p-4">
+									<div className="text-base font-semibold">{item.q}</div>
+									<div className="mt-1 text-white/80 text-sm leading-relaxed">{item.a}</div>
+								</div>
+							))}
+						</div>
 
 						<div className="mt-6">
-							<PixelGridPreview w={16} h={12} />
+							<h3 className="text-2xl md:text-3xl font-semibold">
+								Start today — make consistency visible.
+							</h3>
+
+							<div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+								<Button
+									onClick={handleRegister}
+									className="pixel-btn bg-amber-400 text-black hover:bg-amber-500 px-10 py-6 border-2 border-black rounded-none"
+								>
+									Start free
+								</Button>
+								<Button
+									onClick={handleLogin}
+									variant="outline"
+									className="pixel-btn bg-white text-black hover:bg-black/5 px-10 py-6 border-2 border-black rounded-none"
+								>
+									Log in
+								</Button>
+							</div>
+
+							<ScrollArrows upTo="#top" dark />
+
+							<div className="mt-4 text-xs text-white/60">
+								© {new Date().getFullYear()} TrainEm
+							</div>
 						</div>
-
-						<div className="mt-6 grid grid-cols-3 gap-3">
-							<div className="border-2 border-black p-3 bg-emerald-50">
-								<div className="text-[10px] text-black/60">START</div>
-								<div className="text-xl font-semibold text-black">12</div>
-								<div className="text-[10px] text-black/50">pixels</div>
-							</div>
-							<div className="border-2 border-black p-3 bg-amber-50">
-								<div className="text-[10px] text-black/60">LEVEL UP</div>
-								<div className="text-xl font-semibold text-black">+12</div>
-								<div className="text-[10px] text-black/50">pixels</div>
-							</div>
-							<div className="border-2 border-black p-3 bg-sky-50">
-								<div className="text-[10px] text-black/60">CONSISTENCY</div>
-								<div className="text-xl font-semibold text-black">XP</div>
-								<div className="text-[10px] text-black/50">loop</div>
-							</div>
-						</div>
-					</ShadowCard>
-				</div>
-			</Section>
-
-			<PixelDivider />
-
-			{/* FAQ (AUTO HEIGHT, NOT fit) */}
-			<Section id="faq" dark>
-				<div className="text-center text-white">
-					<h2 className="text-4xl md:text-6xl font-semibold">FAQ</h2>
-					<p className="mt-6 max-w-3xl mx-auto text-white/80 leading-relaxed text-lg">
-						Quick answers — then just start.
-					</p>
-
-					<div className="mt-12 grid md:grid-cols-2 gap-6 text-left">
-						{[
-							{
-								q: 'Do I have to create workouts?',
-								a: 'No. You can start with habits. Workouts are the clearest progress loop though.',
-							},
-							{
-								q: 'How do I unlock more pixels?',
-								a: 'By earning XP and leveling up. More consistency = more XP = more unlocked pixels.',
-							},
-							{
-								q: 'Is this only for the gym?',
-								a: 'No. Works for home workouts, mobility, steps, stretching — anything you want to track.',
-							},
-							{
-								q: 'What’s the fastest start?',
-								a: 'Register → onboarding → create a workout → check off your first exercise.',
-							},
-						].map((item) => (
-							<div key={item.q} className="border-2 border-white/25 bg-white/10 p-6">
-								<div className="text-lg font-semibold">{item.q}</div>
-								<div className="mt-2 text-white/80">{item.a}</div>
-							</div>
-						))}
 					</div>
-
-					<div className="mt-16">
-						<h3 className="text-3xl md:text-4xl font-semibold">
-							Start today — make consistency visible.
-						</h3>
-
-						<div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-							<Button
-								onClick={handleRegister}
-								className="pixel-btn bg-amber-400 text-black hover:bg-amber-500 px-12 py-7 border-2 border-black rounded-none"
-							>
-								Start free
-							</Button>
-							<Button
-								onClick={handleLogin}
-								variant="outline"
-								className="pixel-btn bg-white text-black hover:bg-black/5 px-12 py-7 border-2 border-black rounded-none"
-							>
-								Log in
-							</Button>
-						</div>
-
-						<ScrollArrows upTo="#top" dark />
-
-						<div className="mt-12 text-xs text-white/60">© {new Date().getFullYear()} TrainEm</div>
-					</div>
-				</div>
-			</Section>
+				</Section>
+			</main>
 		</div>
 	);
 }
