@@ -52,7 +52,7 @@ const OnboardingContext = createContext<OnboardingContextType | null>(null);
 // ------------------------------------------------------
 
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
-	const { user, isLoading } = useAuth0();
+	const { user, isLoading, getAccessTokenSilently } = useAuth0();
 	const { setWorkouts } = useMyContext();
 
 	const [userData, setUserData] = useState<IUserInfo>({
@@ -99,12 +99,14 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`http://localhost:3000/api/user/${encodeURIComponent(user.sub)}/basic`,
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({
 						firstname: userData.firstname,
@@ -157,10 +159,12 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		}
 
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/workouts/ai`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({
 					auth0Id: user.sub,
