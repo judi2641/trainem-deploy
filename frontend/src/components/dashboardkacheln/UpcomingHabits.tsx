@@ -12,6 +12,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react';
 import { format, isAfter, startOfToday, isSameDay, addDays, endOfWeek } from 'date-fns';
 import { toast } from 'sonner';
 import { CheckCircle2 } from 'lucide-react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Pixel art icons
 function CheckIcon({ className }: { className?: string }) {
@@ -96,6 +97,7 @@ const WEEKDAY_NAMES = [
 
 export default function UpcomingHabits() {
 	const { habits, myUser, entries, setEntries } = useMyContext();
+	const { getAccessTokenSilently } = useAuth0();
 	const user = myUser; // Declare the user variable
 	const [completingHabitId, setCompletingHabitId] = useState<string | null>(null);
 	const [showCelebration, setShowCelebration] = useState(false);
@@ -162,10 +164,11 @@ export default function UpcomingHabits() {
 			setCompletingHabitId(habit._id);
 
 			try {
+				const token = await getAccessTokenSilently();
 				// Create a completed entry for this habit
 				const res = await fetch('http://localhost:3000/api/entries', {
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({
 						auth0Id: user.auth0Id,
 						habitId: habit._id,
@@ -187,7 +190,7 @@ export default function UpcomingHabits() {
 				setCompletingHabitId(null);
 			}
 		},
-		[myUser?._id, completedTodayIds, setEntries],
+		[completedTodayIds, getAccessTokenSilently, myUser?._id, setEntries, user?.auth0Id],
 	);
 
 	// Uncomplete a habit (delete the entry)
@@ -204,8 +207,10 @@ export default function UpcomingHabits() {
 			if (!entryToDelete) return;
 
 			try {
+				const token = await getAccessTokenSilently();
 				const res = await fetch(`http://localhost:3000/api/entries/${entryToDelete._id}`, {
 					method: 'DELETE',
+					headers: { Authorization: `Bearer ${token}` },
 				});
 
 				if (!res.ok) throw new Error('Failed to uncomplete habit');
@@ -217,7 +222,7 @@ export default function UpcomingHabits() {
 				toast.error('Failed to uncomplete habit');
 			}
 		},
-		[myUser?._id, entries, today, setEntries],
+		[entries, getAccessTokenSilently, myUser?._id, setEntries, today],
 	);
 
 	// Handle checkbox change

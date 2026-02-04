@@ -32,7 +32,7 @@ function PixelUsersIcon({ className }: { className?: string }) {
 }
 
 export default function GroupsArea() {
-	const { user } = useAuth0();
+	const { user, getAccessTokenSilently } = useAuth0();
 	const [myGroups, setMyGroups] = useState<any[]>([]);
 	const [publicGroups, setPublicGroups] = useState<any[]>([]);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -47,9 +47,11 @@ export default function GroupsArea() {
 
 	const fetchGroups = async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			// Fetch user's groups
 			const myGroupsRes = await fetch(
 				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
+				{ headers: { Authorization: `Bearer ${token}` } },
 			);
 			let userGroups: any[] = [];
 			if (myGroupsRes.ok) {
@@ -58,7 +60,9 @@ export default function GroupsArea() {
 			}
 
 			// Fetch public groups
-			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=20`);
+			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=20`, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 			if (publicRes.ok) {
 				const data = await publicRes.json();
 				// Filter uses local userGroups, not stale state
@@ -79,9 +83,10 @@ export default function GroupsArea() {
 		isPublic: boolean;
 	}) => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch('http://localhost:3000/api/groups', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({
 					...groupData,
 					ownerId: user?.sub,
@@ -104,9 +109,10 @@ export default function GroupsArea() {
 
 	const handleJoinGroup = async (groupId: string) => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/groups/${groupId}/join`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ userId: user?.sub }),
 			});
 
@@ -125,9 +131,10 @@ export default function GroupsArea() {
 
 	const handleLeaveGroup = async (groupId: string) => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/groups/${groupId}/leave`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ userId: user?.sub }),
 			});
 

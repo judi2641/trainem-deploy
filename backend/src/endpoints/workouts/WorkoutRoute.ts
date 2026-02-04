@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { logger } from '../../utils/logger';
 import {
   createEmptyWorkout,
   addExerciseToWorkout,
@@ -7,11 +8,13 @@ import {
   deleteWorkout,
   removeExerciseFromWorkout
 } from './WorkoutService';
+import { generateWorkoutsFromOnboarding } from './AiWorkoutService';
 
 const router = express.Router();
 
 function sendError(res: any, err: any) {
   const status = err?.statusCode ?? err?.status ?? 500;
+  logger.error(`workout route error: ${err?.message ?? err}`);
   res.status(status).json({ message: err?.message ?? 'Internal Server Error' });
 }
 
@@ -82,9 +85,25 @@ router.delete('/:workoutId', async (req: Request, res: Response): Promise<void> 
   } catch (err) {
     sendError(res, err);
   }
+})
+
+// POST /workouts/ai { auth0Id, onboarding }
+router.post('/ai', async (req: Request, res: Response) => {
+	try {
+		const { auth0Id, onboarding } = req.body;
+		if (!auth0Id || !onboarding) {
+			res.status(400).json({ message: 'auth0Id and onboarding are required' });
+			return;
+		}
+
+		const workouts = await generateWorkoutsFromOnboarding(auth0Id, onboarding);
+		res.status(201).json(workouts);
+	} catch (err) {
+		sendError(res, err);
+	}
 });
 
-// POST /workouts/:workoutId/exercises - Übung zu Workout hinzufügen
+// POST /workouts/:workoutId/exercises  { exerciseName, sets?, reps?, duration? }
 router.post('/:workoutId/exercises', async (req: Request, res: Response) => {
   try {
     const { exerciseName, sets, reps, duration } = req.body;

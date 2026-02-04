@@ -35,7 +35,7 @@ function PixelSwordsIcon({ className }: { className?: string }) {
 }
 
 export default function PixelWarsArea() {
-	const { user } = useAuth0();
+	const { user, getAccessTokenSilently } = useAuth0();
 	const [battles, setBattles] = useState<any[]>([]);
 	const [pendingChallenges, setPendingChallenges] = useState<any[]>([]);
 	const [myGroups, setMyGroups] = useState<any[]>([]);
@@ -53,8 +53,10 @@ export default function PixelWarsArea() {
 
 	const fetchData = async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			const battlesRes = await fetch(
 				`http://localhost:3000/api/pixelwar/battles?userId=${encodeURIComponent(user?.sub || '')}`,
+				{ headers: { Authorization: `Bearer ${token}` } },
 			);
 			if (battlesRes.ok) {
 				const data = await battlesRes.json();
@@ -63,6 +65,7 @@ export default function PixelWarsArea() {
 
 			const pendingRes = await fetch(
 				`http://localhost:3000/api/pixelwar/battles/pending?userId=${encodeURIComponent(user?.sub || '')}`,
+				{ headers: { Authorization: `Bearer ${token}` } },
 			);
 			if (pendingRes.ok) {
 				const data = await pendingRes.json();
@@ -71,13 +74,16 @@ export default function PixelWarsArea() {
 
 			const groupsRes = await fetch(
 				`http://localhost:3000/api/groups/user/${encodeURIComponent(user?.sub || '')}`,
+				{ headers: { Authorization: `Bearer ${token}` } },
 			);
 			if (groupsRes.ok) {
 				const data = await groupsRes.json();
 				setMyGroups(data);
 			}
 
-			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=50`);
+			const publicRes = await fetch(`http://localhost:3000/api/groups/public?limit=50`, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 			if (publicRes.ok) {
 				const data = await publicRes.json();
 				setPublicGroups(data);
@@ -100,9 +106,10 @@ export default function PixelWarsArea() {
 		};
 	}) => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch('http://localhost:3000/api/pixelwar/battles', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({
 					...data,
 					challengerUserId: user?.sub,
@@ -125,9 +132,10 @@ export default function PixelWarsArea() {
 
 	const handleAcceptChallenge = async (battleId: string) => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battleId}/accept`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ userId: user?.sub }),
 			});
 
@@ -146,9 +154,10 @@ export default function PixelWarsArea() {
 
 	const handleDeclineChallenge = async (battleId: string) => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(`http://localhost:3000/api/pixelwar/battles/${battleId}/decline`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ userId: user?.sub }),
 			});
 
