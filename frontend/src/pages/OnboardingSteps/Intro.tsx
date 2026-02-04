@@ -62,6 +62,15 @@ export default function OnboardingSummary() {
 						specifically for you.
 					</p>
 				</PixelCard>
+
+				{/* PixelWars */}
+				<PixelCard>
+					<h2 className="text-xl font-semibold">PixelWars</h2>
+					<p className="text-gray-600">
+						Join a group and challenge others to workout battles. The group with more XP wins
+						and earns pixels for the shared group canvas.
+					</p>
+				</PixelCard>
 			</div>
 
 			<div className="flex gap-4 mt-6 justify-center">
