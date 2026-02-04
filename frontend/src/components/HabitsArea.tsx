@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useMyContext } from '@/context/AppContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const WEEKDAYS = [
 	{ value: 0, label: 'Sunday' },
@@ -106,6 +107,7 @@ function TrashIcon({ className }: { className?: string }) {
 
 export default function HabitsArea() {
 	const { myUser, habits, setHabits, entries } = useMyContext();
+	const { getAccessTokenSilently } = useAuth0();
 	const auth0Id = myUser?.auth0Id;
 
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -134,9 +136,10 @@ export default function HabitsArea() {
 
 		setIsSubmitting(true);
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/habits', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({
 					auth0Id,
 					name: newHabitName.trim(),
@@ -169,11 +172,12 @@ export default function HabitsArea() {
 		if (!confirm('Are you sure you want to delete this habit?')) return;
 
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/habits/${habitId}`,
 				{
 					method: 'DELETE',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({ auth0Id }),
 				},
 			);

@@ -9,7 +9,7 @@ interface PixelBoardProps {
 
 export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBoardProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { user } = useAuth0();
+	const { user, getAccessTokenSilently } = useAuth0();
 	const [board, setBoard] = useState<any | null>(null);
 	const [season, setSeason] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -30,11 +30,15 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 	const fetchBoardData = async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			// Fetch active season if no seasonId provided
 			let activeSeasonId = seasonId;
 			if (!activeSeasonId) {
 				const seasonRes = await fetch(
 					'https://trainem-deploy-production.up.railway.app/api/pixelwar/seasons/active',
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					},
 				);
 				if (seasonRes.ok) {
 					const seasonData = await seasonRes.json();
@@ -47,6 +51,7 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 				// Fetch pixel board
 				const boardRes = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/pixelwar/seasons/${activeSeasonId}/board`,
+					{ headers: { Authorization: `Bearer ${token}` } },
 				);
 				if (boardRes.ok) {
 					const boardData = await boardRes.json();
@@ -121,11 +126,12 @@ export default function PixelBoard({ seasonId, groupId, onPixelPlaced }: PixelBo
 
 		if (x >= 0 && x < board.gridWidth && y >= 0 && y < board.gridHeight) {
 			try {
+				const token = await getAccessTokenSilently();
 				const res = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/pixelwar/seasons/${season._id}/pixels`,
 					{
 						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
+						headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 						body: JSON.stringify({
 							groupId,
 							userId: user?.sub,

@@ -32,6 +32,7 @@ import {
 	Clock,
 } from 'lucide-react';
 import { useMyContext } from '@/context/AppContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Workout duration timer hook
 function useWorkoutTimer(startDate: Date | null) {
@@ -261,6 +262,7 @@ function isCardio(ex: any) {
 
 export default function ActiveWorkout() {
 	const { myUser, workouts, entries, setEntries, setMyUser } = useMyContext();
+	const { getAccessTokenSilently } = useAuth0();
 	const auth0Id = myUser?.auth0Id;
 
 	const latestUncompletedEntry = useMemo(() => {
@@ -322,9 +324,10 @@ export default function ActiveWorkout() {
 	async function scheduleWorkout() {
 		if (!auth0Id || !selectedWorkoutId) return;
 
+		const token = await getAccessTokenSilently();
 		const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			body: JSON.stringify({
 				auth0Id,
 				workoutId: selectedWorkoutId,
@@ -356,11 +359,12 @@ export default function ActiveWorkout() {
 			setCelebrationExiting(false);
 			await sleep(3000);
 		}
+		const token = await getAccessTokenSilently();
 		const res = await fetch(
 			`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/complete-exercise`,
 			{
 				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({
 					exerciseName: ex.exercise.name,
 					weight,
@@ -396,11 +400,12 @@ export default function ActiveWorkout() {
 	}
 
 	async function abortEntry(entryId: string) {
+		const token = await getAccessTokenSilently();
 		const res = await fetch(
 			`https://trainem-deploy-production.up.railway.app/api/entries/${entryId}/abort`,
 			{
 				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			},
 		);
 

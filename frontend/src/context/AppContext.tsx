@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const AppContext = createContext<any>(null);
 export function ContextProvider({ children }: { children: React.ReactNode }) {
-	const { user, isLoading } = useAuth0();
+	const { user, isLoading, getAccessTokenSilently } = useAuth0();
 	const [myUser, setMyUser] = useState<any | null>(null);
 	const [workouts, setWorkouts] = useState<any[]>([]);
 	const [entries, setEntries] = useState<any[]>([]);
@@ -15,7 +15,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		async function loadExercises() {
 			try {
-				const res = await fetch('https://trainem-deploy-production.up.railway.app/api/exercises');
+				if (isLoading || !user?.sub) return;
+				const token = await getAccessTokenSilently();
+				const res = await fetch('https://trainem-deploy-production.up.railway.app/api/exercises', {
+					headers: { Authorization: `Bearer ${token}` },
+				});
 				if (res.ok) {
 					const data = await res.json();
 					setExercises(data);
@@ -25,7 +29,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			}
 		}
 		loadExercises();
-	}, []);
+	}, [getAccessTokenSilently, isLoading, user?.sub]);
 
 	// Lade User-Daten wenn eingeloggt
 	useEffect(() => {
@@ -34,9 +38,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		async function loadUserData() {
 			if (isLoading || !user?.sub) return;
 			try {
+				const token = await getAccessTokenSilently();
 				// User laden
 				const userRes = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}`,
+					{ headers: { Authorization: `Bearer ${token}` } },
 				);
 				if (userRes.ok) {
 					const userData = await userRes.json();
@@ -46,6 +52,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				// Habits laden
 				const habitsRes = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/habits/${encodeURIComponent(user.sub)}`,
+					{ headers: { Authorization: `Bearer ${token}` } },
 				);
 				if (habitsRes.ok) {
 					const habitsData = await habitsRes.json();
@@ -55,6 +62,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				// Workouts laden
 				const workoutsRes = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/workouts/${encodeURIComponent(user.sub)}`,
+					{ headers: { Authorization: `Bearer ${token}` } },
 				);
 				if (workoutsRes.ok) {
 					const workoutsData = await workoutsRes.json();
@@ -64,6 +72,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				// Entries laden
 				const entriesRes = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/entries/${encodeURIComponent(user.sub)}`,
+					{ headers: { Authorization: `Bearer ${token}` } },
 				);
 				if (entriesRes.ok) {
 					const entriesData = await entriesRes.json();
@@ -79,19 +88,31 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		return () => {
 			isMounted = false;
 		};
-	}, [isLoading, user?.sub]);
+	}, [getAccessTokenSilently, isLoading, user?.sub]);
 	useEffect(() => {
 		if (isLoading || !user?.sub) return;
 
 		async function loadAppData() {
 			try {
+				const token = await getAccessTokenSilently();
+				const authHeaders = { Authorization: `Bearer ${token}` };
 				// Parallel fetchen ist schneller als nacheinander
 				const [workoutsRes, entriesRes, habitsRes, exercisesRes, pixelArtRes] = await Promise.all([
-					fetch(`https://trainem-deploy-production.up.railway.app/api/workouts/${user!.sub}`),
-					fetch(`https://trainem-deploy-production.up.railway.app/api/entries/${user!.sub}`),
-					fetch(`https://trainem-deploy-production.up.railway.app/api/habits/${user!.sub}`),
-					fetch(`https://trainem-deploy-production.up.railway.app/api/exercises`),
-					fetch(`https://trainem-deploy-production.up.railway.app/api/pixel-art/${user!.sub}`),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/workouts/${user!.sub}`, {
+						headers: authHeaders,
+					}),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/entries/${user!.sub}`, {
+						headers: authHeaders,
+					}),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/habits/${user!.sub}`, {
+						headers: authHeaders,
+					}),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/exercises`, {
+						headers: authHeaders,
+					}),
+					fetch(`https://trainem-deploy-production.up.railway.app/api/pixel-art/${user!.sub}`, {
+						headers: authHeaders,
+					}),
 				]);
 
 				if (workoutsRes.ok) setWorkouts(await workoutsRes.json());

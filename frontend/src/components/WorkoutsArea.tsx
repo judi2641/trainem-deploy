@@ -40,6 +40,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { PixelDumbbellIcon } from './Sidebar';
 import { toast } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
 
 type Workout = {
 	_id: string;
@@ -54,6 +55,7 @@ function isoDateOnly(d: Date) {
 
 export default function WorkoutsArea() {
 	const { myUser, workouts, setWorkouts, entries, setEntries, exercises } = useMyContext();
+	const { getAccessTokenSilently } = useAuth0();
 	const auth0Id = myUser?.auth0Id as string | undefined;
 
 	const [error, setError] = useState<string | null>(null);
@@ -111,9 +113,10 @@ export default function WorkoutsArea() {
 	async function scheduleWorkout() {
 		if (!auth0Id || !schedulingWorkout) return;
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/entries', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({
 					auth0Id,
 					workoutId: schedulingWorkout._id,
@@ -143,6 +146,7 @@ export default function WorkoutsArea() {
 			return;
 		}
 		try {
+			const token = await getAccessTokenSilently();
 			const body: any = { exerciseName: selectedExercise.name };
 			if (selectedExercise.type === 'strength') {
 				if (sets) body.sets = Number(sets);
@@ -155,7 +159,7 @@ export default function WorkoutsArea() {
 				`https://trainem-deploy-production.up.railway.app/api/workouts/${workoutId}/exercises`,
 				{
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify(body),
 				},
 			);
@@ -174,11 +178,12 @@ export default function WorkoutsArea() {
 	async function removeExerciseFromWorkout(workoutId: string, exerciseIndex: number) {
 		if (!auth0Id) return;
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/workouts/${workoutId}/exercises/${exerciseIndex}`,
 				{
 					method: 'DELETE',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({ auth0Id }),
 				},
 			);
@@ -195,9 +200,10 @@ export default function WorkoutsArea() {
 	async function createWorkout() {
 		if (!auth0Id) return;
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch('https://trainem-deploy-production.up.railway.app/api/workouts', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ auth0Id, name, description }),
 			});
 			if (!res.ok) throw new Error('Workout could not be created');
@@ -214,11 +220,12 @@ export default function WorkoutsArea() {
 	async function saveWorkoutEdits() {
 		if (!activeWorkout || !auth0Id) return;
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/workouts/${activeWorkout._id}`,
 				{
 					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({ auth0Id, name, description }),
 				},
 			);
@@ -242,11 +249,12 @@ export default function WorkoutsArea() {
 		if (!auth0Id) return;
 		if (!confirm('Are you sure you want to delete this workout?')) return;
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/workouts/${workoutId}`,
 				{
 					method: 'DELETE',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({ auth0Id }),
 				},
 			);
@@ -261,10 +269,11 @@ export default function WorkoutsArea() {
 		async function loadWorkouts() {
 			if (!auth0Id) return;
 			try {
+				const token = await getAccessTokenSilently();
 				const response = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/workouts/${auth0Id}`,
 					{
-						headers: { 'Content-Type': 'application/json' },
+						headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					},
 				);
 				const workoutsData = await response.json();
@@ -274,7 +283,7 @@ export default function WorkoutsArea() {
 			}
 		}
 		loadWorkouts();
-	}, [auth0Id, setWorkouts]);
+	}, [auth0Id, getAccessTokenSilently, setWorkouts]);
 
 	return (
 		<div className="h-full w-full flex flex-col gap-4">

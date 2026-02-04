@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { ArrowLeft, Clock, Trophy, Crosshair, Palette } from 'lucide-react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Farben für den Canvas (gleich wie GroupDetailModal)
 const CANVAS_COLORS = [
@@ -22,6 +23,7 @@ interface BattleArenaProps {
 }
 
 export default function BattleArena({ battle: initialBattle, userId, onBack }: BattleArenaProps) {
+	const { getAccessTokenSilently } = useAuth0();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [battle, setBattle] = useState(initialBattle);
 	const [board, setBoard] = useState<any | null>(null);
@@ -51,8 +53,12 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 	// Fetch updated battle data
 	const fetchBattle = useCallback(async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				},
 			);
 			if (res.ok) {
 				const data = await res.json();
@@ -61,13 +67,17 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		} catch (error) {
 			console.error('Failed to fetch battle:', error);
 		}
-	}, [battle._id]);
+	}, [battle._id, getAccessTokenSilently]);
 
 	// Fetch board data
 	const fetchBoard = useCallback(async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}/board`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				},
 			);
 			if (res.ok) {
 				const data = await res.json();
@@ -76,13 +86,17 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		} catch (error) {
 			console.error('Failed to fetch board:', error);
 		}
-	}, [battle._id]);
+	}, [battle._id, getAccessTokenSilently]);
 
 	// Fetch live score
 	const fetchScore = useCallback(async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}/score`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				},
 			);
 			if (res.ok) {
 				const data = await res.json();
@@ -91,7 +105,7 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		} catch (error) {
 			console.error('Failed to fetch score:', error);
 		}
-	}, [battle._id]);
+	}, [battle._id, getAccessTokenSilently]);
 
 	// Initial fetch and polling
 	useEffect(() => {
@@ -165,11 +179,12 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 		if (x < 0 || x >= board.gridWidth || y < 0 || y >= board.gridHeight) return;
 
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/pixelwar/battles/${battle._id}/pixels`,
 				{
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({
 						groupId: userGroupId,
 						userId,

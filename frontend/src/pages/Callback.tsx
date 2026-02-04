@@ -5,7 +5,7 @@ import { useMyContext } from '../context/AppContext';
 
 export default function Callback() {
 	const navigate = useNavigate();
-	const { user, isLoading } = useAuth0();
+	const { user, isLoading, getAccessTokenSilently } = useAuth0();
 	// Wir brauchen nur noch setMyUser, der Rest passiert automatisch im Context
 	const { setMyUser } = useMyContext();
 
@@ -14,9 +14,11 @@ export default function Callback() {
 		if (isLoading || !user || !user.sub) return;
 
 		try {
+			const token = await getAccessTokenSilently();
 			// 1. Prüfen: Gibt es den User schon in MEINER Datenbank?
 			const res_user = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/user/${encodeURIComponent(user.sub)}`,
+				{ headers: { Authorization: `Bearer ${token}` } },
 			);
 
 			let contextUser;
@@ -32,6 +34,7 @@ export default function Callback() {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
+							Authorization: `Bearer ${token}`,
 						},
 						body: JSON.stringify({ auth0Id: user.sub, email: user.email }),
 					},

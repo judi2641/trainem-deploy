@@ -18,6 +18,7 @@ import PixelArtRoute from './endpoints/pixelArt/PixelArtRoute';
 import GroupRoute from './endpoints/groups/GroupRoute';
 import PixelWarRoute from './endpoints/pixelwar/PixelWarRoute';
 import BattleRoute from './endpoints/pixelwar/BattleRoute';
+import { checkAuth0Token } from './utils/checkAuth0Token';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
 	res.status(200).json('Hi');
 });
+app.use('/api', checkAuth0Token);
 app.use('/api/user', UserRoute);
 app.use('/api/workouts', WorkoutRoute);
 app.use('/api/habits', HabitRoute);

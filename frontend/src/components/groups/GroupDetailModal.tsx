@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Users, Zap, Grid3X3 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface GroupDetailModalProps {
 	group: any;
@@ -29,6 +30,7 @@ export default function GroupDetailModal({
 	onClose,
 	onGroupUpdate,
 }: GroupDetailModalProps) {
+	const { getAccessTokenSilently } = useAuth0();
 	const [pixelArtInfo, setPixelArtInfo] = useState<{
 		gridSize: number;
 		pixels: any['pixels'];
@@ -48,8 +50,12 @@ export default function GroupDetailModal({
 
 	const fetchPixelArt = async () => {
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/groups/${group._id}/pixel-art`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				},
 			);
 			if (res.ok) {
 				const data = await res.json();
@@ -69,11 +75,12 @@ export default function GroupDetailModal({
 
 		setIsPlacing(true);
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/groups/${group._id}/pixel-art`,
 				{
 					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
+					headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 					body: JSON.stringify({
 						userId: currentUserId,
 						x,

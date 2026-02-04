@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/pixel-card';
 import { useMyContext } from '@/context/AppContext';
 import { toast } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Pixel icons
 function SaveIcon({ className }: { className?: string }) {
@@ -27,6 +28,7 @@ function SaveIcon({ className }: { className?: string }) {
 
 export default function PixelArt() {
 	const { myUser, setPixelArt, entries } = useMyContext();
+	const { getAccessTokenSilently } = useAuth0();
 	const [pixels, setPixels] = useState<PixelData[]>([]);
 	const [gridSize, setGridSize] = useState(64);
 	const [isSaving, setIsSaving] = useState(false);
@@ -47,8 +49,12 @@ export default function PixelArt() {
 			}
 
 			try {
+				const token = await getAccessTokenSilently();
 				const res = await fetch(
 					`https://trainem-deploy-production.up.railway.app/api/pixel-art/${myUser.auth0Id}`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					},
 				);
 				if (res.status === 404) {
 					if (isMounted) setIsLoading(false);
@@ -78,7 +84,7 @@ export default function PixelArt() {
 		return () => {
 			isMounted = false;
 		};
-	}, [myUser?.auth0Id, setPixelArt]);
+	}, [getAccessTokenSilently, myUser?.auth0Id, setPixelArt]);
 
 	const handleSave = async () => {
 		if (!myUser?.auth0Id) {
@@ -89,12 +95,14 @@ export default function PixelArt() {
 		setIsSaving(true);
 
 		try {
+			const token = await getAccessTokenSilently();
 			const res = await fetch(
 				`https://trainem-deploy-production.up.railway.app/api/pixel-art/${myUser.auth0Id}`,
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({
 						gridSize,
