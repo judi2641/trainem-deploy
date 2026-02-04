@@ -112,6 +112,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 						birthDate: userData.birthDate,
 						gender: userData.gender,
 						img: userData.img,
+						onboardingCompleted: true,
 					}),
 				},
 			);
