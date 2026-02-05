@@ -17,6 +17,7 @@
 - [Group Endpoints](#group-endpoints)
 - [PixelWar Endpoints](#pixelwar-endpoints)
 - [Battle Endpoints (Pixel Wars 1v1)](#-battle-endpoints-pixel-wars-1v1)
+- [AI Endpoints (OpenAI)](#-ai-endpoints-openai)
 - [Error Handling](#error-handling)
 
 ---
@@ -864,7 +865,60 @@ POST /api/groups/:groupId/join
 
 ---
 
-### 6. Gruppe verlassen
+### 6. Gruppe via Invite-Code beitreten
+
+Ermöglicht den Beitritt zu privaten Gruppen über einen Einladungscode.
+
+```http
+POST /api/groups/join-by-code
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|456",
+  "inviteCode": "A1B2C3D4"
+}
+```
+
+**Response** (200 OK): Gruppen-Objekt
+
+**Errors**:
+- `400 Bad Request`: Fehlender oder ungültiger inviteCode
+- `404 Not Found`: Kein Gruppe mit diesem Code gefunden
+- `400 Bad Request`: User ist bereits Mitglied oder Gruppe ist voll
+
+---
+
+### 7. Invite-Code regenerieren
+
+Generiert einen neuen Invite-Code für eine private Gruppe. Nur Owner/Admin.
+
+```http
+POST /api/groups/:groupId/regenerate-code
+```
+
+**Request Body**:
+```json
+{
+  "userId": "auth0|123"
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "inviteCode": "E5F6G7H8"
+}
+```
+
+**Errors**:
+- `403 Forbidden`: Nur Owner/Admin kann Code regenerieren
+- `404 Not Found`: Gruppe existiert nicht
+
+---
+
+### 8. Gruppe verlassen
 
 ```http
 POST /api/groups/:groupId/leave
@@ -882,7 +936,7 @@ POST /api/groups/:groupId/leave
 
 ---
 
-### 7. Gruppe löschen
+### 9. Gruppe löschen
 
 ```http
 DELETE /api/groups/:groupId
@@ -900,7 +954,7 @@ DELETE /api/groups/:groupId
 
 ---
 
-### 8. Member-Rolle ändern
+### 10. Member-Rolle ändern
 
 ```http
 PATCH /api/groups/:groupId/members/:targetUserId/role
@@ -918,7 +972,7 @@ PATCH /api/groups/:groupId/members/:targetUserId/role
 
 ---
 
-### 9. Gruppen-Canvas Info abrufen
+### 11. Gruppen-Canvas Info abrufen
 
 ```http
 GET /api/groups/:groupId/pixel-art
@@ -951,7 +1005,7 @@ GET /api/groups/:groupId/pixel-art
 
 ---
 
-### 10. Pixel auf Gruppen-Canvas platzieren
+### 12. Pixel auf Gruppen-Canvas platzieren
 
 ```http
 POST /api/groups/:groupId/pixel-art
@@ -1017,7 +1071,6 @@ POST /api/pixelwar/seasons
 **Modes**:
 - `territory_control`: Pixel-Besitz zählt
 - `xp_battle`: Nur XP zählt
-- `hybrid`: Beides kombiniert
 
 **Response** (201 Created):
 ```json
@@ -1182,9 +1235,9 @@ POST /api/pixelwar/battles
 ```
 
 **Settings**:
-- `duration`: Dauer in Minuten (60-10080)
-- `gridSize`: Canvas-Größe (20-200)
-- `winCondition`: `pixels` | `xp` | `hybrid`
+- `duration`: Dauer in Minuten (`60` = 1h, `1440` = 24h, `10080` = 7d, `40320` = 4w)
+- `gridSize`: Canvas-Größe (`15`, `30` oder `50`)
+- `winCondition`: `pixels` (nur Workouts zählen) | `xp` (Workouts + Habits zählen)
 
 **Response** (201 Created):
 ```json
@@ -1396,6 +1449,81 @@ POST /api/pixelwar/battles/:battleId/end
 
 ---
 
+## 🤖 AI Endpoints (OpenAI)
+
+### 1. KI-generierte Workouts erstellen
+
+Generiert personalisierte Workout-Pläne basierend auf Onboarding-Daten des Users. Nutzt die OpenAI Responses API mit Function Calling, um strukturierte Workout-Pläne zu erzeugen. Die generierten Übungen werden aus dem vorhandenen Übungskatalog ausgewählt.
+
+```http
+POST /api/workouts/ai
+```
+
+**Request Body**:
+```json
+{
+  "auth0Id": "auth0|123",
+  "onboarding": {
+    "goal": "muscle_gain",
+    "experience": "intermediate",
+    "daysPerWeek": 4,
+    "minutesPerSession": 45,
+    "equipment": "full_gym",
+    "limitations": "none",
+    "preferredSplit": "push_pull_legs",
+    "priorities": ["chest", "back"]
+  }
+}
+```
+
+**Onboarding-Felder** (alle optional):
+- `goal`: Trainingsziel (z.B. `muscle_gain`, `weight_loss`, `endurance`)
+- `experience`: Erfahrungslevel (z.B. `beginner`, `intermediate`, `advanced`)
+- `daysPerWeek`: Trainingstage pro Woche (1-6, default: 3)
+- `minutesPerSession`: Minuten pro Training
+- `equipment`: Verfügbares Equipment (z.B. `full_gym`, `home`, `bodyweight`)
+- `limitations`: Körperliche Einschränkungen
+- `preferredSplit`: Bevorzugter Split (z.B. `push_pull_legs`, `upper_lower`, `full_body`)
+- `priorities`: Array mit Muskelgruppen-Prioritäten
+
+**Response** (201 Created):
+```json
+[
+  {
+    "_id": "workout789",
+    "auth0Id": "auth0|123",
+    "name": "Push Day",
+    "description": "Brust, Schultern, Trizeps",
+    "exercises": [
+      {
+        "exercise": { "name": "Push-Ups", ... },
+        "sets": 4,
+        "reps": 12
+      },
+      {
+        "exercise": { "name": "Dips", ... },
+        "sets": 3,
+        "reps": 10
+      }
+    ]
+  }
+]
+```
+
+**Technische Details**:
+- Nutzt OpenAI Responses API (`/v1/responses`)
+- Model: konfigurierbar via `OPENAI_MODEL` env variable (default: `gpt-5-nano`)
+- Function Calling: `create_workouts` Tool für strukturierte Ausgabe
+- Übungen werden gegen den bestehenden Übungskatalog validiert
+- Unbekannte Übungsnamen werden automatisch gefiltert
+
+**Errors**:
+- `400 Bad Request`: `auth0Id` oder `onboarding` fehlt
+- `400 Bad Request`: Keine Übungen im Katalog verfügbar
+- `500 Internal Server Error`: OpenAI API Fehler
+
+---
+
 ## ⚠️ Error Handling
 
 ### Standard Error Response
@@ -1483,6 +1611,8 @@ curl -X GET http://localhost:3000/api/exercises
 
 | Version | Datum | Änderungen |
 |---------|-------|-----------|
+| **1.5** | 2026-02-05 | Invite-Code System für private Gruppen, Pixel/XP Mechanik überarbeitet (Pixel nur durch Workouts, XP durch Workouts + Habits), Hybrid-Modus entfernt |
+| **1.4** | 2026-02-04 | KI-Workout-Generierung via OpenAI Responses API (`POST /api/workouts/ai`) |
 | **1.3** | 2026-01-30 | Gruppen-Canvas Feature (Pixel Art pro Battle-Sieg) |
 | **1.2** | 2026-01-29 | CRUD-Operationen für Habits/Workouts/Entries, Gruppen-XP |
 | **1.1** | 2026-01-25 | Pixel Wars Battle Endpoints hinzugefügt (1v1 Duelle) |
@@ -1490,6 +1620,6 @@ curl -X GET http://localhost:3000/api/exercises
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-30
+**Letzte Aktualisierung**: 2026-02-05
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Architektur & Design →](04-Architektur-Design.md)
