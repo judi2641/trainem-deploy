@@ -34,9 +34,9 @@ const DURATION_OPTIONS = [
 ];
 
 const GRID_OPTIONS = [
+	{ value: 15, label: '15x15' },
 	{ value: 30, label: '30x30' },
 	{ value: 50, label: '50x50' },
-	{ value: 100, label: '100x100' },
 ];
 
 const WIN_CONDITION_OPTIONS = [
@@ -54,7 +54,7 @@ export default function ChallengeModal({
 	const [challengerGroupId, setChallengerGroupId] = useState(myGroups[0]?._id || '');
 	const [opponentGroupId, setOpponentGroupId] = useState('');
 	const [duration, setDuration] = useState(1440);
-	const [gridSize, setGridSize] = useState(50);
+	const [gridSize, setGridSize] = useState(30);
 	const [winCondition, setWinCondition] = useState<'pixels' | 'xp' | 'hybrid'>('pixels');
 
 	const handleSubmit = (e: React.FormEvent) => {
