@@ -1,0 +1,1623 @@
+openapi: 3.0.3
+info:
+  title: TrainEm API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /users:
+    post:
+      summary: Initialen User erstellen
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+                - email
+              properties:
+                auth0Id:
+                  type: string
+                  example: auth0|123
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '201':
+          description: User erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Email oder auth0Id fehlt
+        '409':
+          description: User existiert bereits
+        '500':
+          description: Interner Serverfehler
+
+  /users/{auth0Id}:
+    get:
+      summary: User anhand der Auth0 ID abrufen
+      tags:
+        - User
+      parameters:
+        - name: auth0Id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: auth0|123
+      responses:
+        '200':
+          description: User gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User nicht gefunden
+        '500':
+          description: Interner Serverfehler
+
+  /users/{auth0Id}/basic:
+    post:
+      summary: Basic User Informationen speichern (Onboarding)
+      tags:
+        - User
+      parameters:
+        - name: auth0Id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                birthDate:
+                  type: string
+                  format: date
+                gender:
+                  type: string
+                img:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: User erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Ungültige Eingaben
+        '404':
+          description: User nicht gefunden
+        '500':
+          description: Interner Serverfehler
+  /pixel-art/{auth0ID}:
+    get:
+      summary: PixelArt eines Users laden
+      tags:
+        - PixelArt
+      parameters:
+        - name: auth0ID
+          in: path
+          required: true
+          schema:
+            type: string
+          example: auth0|abc123
+      responses:
+        '200':
+          description: PixelArt erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixelArt'
+        '404':
+          description: PixelArt nicht gefunden
+        '500':
+          description: Interner Serverfehler
+
+    post:
+      summary: PixelArt speichern oder aktualisieren
+      tags:
+        - PixelArt
+      parameters:
+        - name: auth0ID
+          in: path
+          required: true
+          schema:
+            type: string
+          example: auth0|abc123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PixelArtInput'
+      responses:
+        '200':
+          description: PixelArt erfolgreich gespeichert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixelArt'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+  /exersices:
+    get:
+      summary: 'Alle verfügbaren Übungen abrufen'
+      tags:
+        - Exercise
+      responses:
+        '200':
+          description: 'Liste aller Übungen'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Exercise'
+        '500':
+          description: 'Interner Serverfehler'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal Server Error'
+  /workouts/{auth0Id}:
+    get:
+      tags:
+        - Workout
+      summary: 'Alle Workouts eines Nutzers abrufen'
+      parameters:
+        - in: path
+          name: auth0Id
+          required: true
+          schema:
+            type: string
+          description: Auth0 ID des Nutzers
+      responses:
+        '200':
+          description: 'Liste der Workouts'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workout'
+        '500':
+          description: 'Interner Serverfehler'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /workouts:
+    post:
+      tags:
+        - Workout
+      summary: 'Neues Workout erstellen'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+                - name
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                name:
+                  type: string
+                  example: 'Mein Workout Plan'
+                description:
+                  type: string
+                  example: 'Beschreibung'
+      responses:
+        '201':
+          description: 'Workout erstellt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workout'
+        '400':
+          description: 'Fehlende Parameter'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'auth0Id is required'
+        '500':
+          description: 'Interner Serverfehler'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /workouts/onboarding:
+    post:
+      tags:
+        - Workout
+      summary: 'Workout während Onboarding erstellen'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+                - name
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                name:
+                  type: string
+                  example: 'Onboarding Workout'
+                description:
+                  type: string
+      responses:
+        '201':
+          description: 'Workout erstellt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workout'
+        '400':
+          description: 'Fehlende Parameter'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /workouts/{workoutId}:
+    put:
+      tags:
+        - Workout
+      summary: 'Workout aktualisieren'
+      parameters:
+        - in: path
+          name: workoutId
+          required: true
+          schema:
+            type: string
+          description: ID des Workouts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                name:
+                  type: string
+                  example: 'Neuer Name'
+                description:
+                  type: string
+      responses:
+        '200':
+          description: 'Workout aktualisiert'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workout'
+        '400':
+          description: 'Fehlende auth0Id'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'auth0Id is required'
+        '500':
+          description: 'Interner Serverfehler'
+
+    delete:
+      tags:
+        - Workout
+      summary: 'Workout löschen'
+      parameters:
+        - in: path
+          name: workoutId
+          required: true
+          schema:
+            type: string
+          description: ID des Workouts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '204':
+          description: 'Workout gelöscht'
+        '400':
+          description: 'Fehlende auth0Id'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'auth0Id is required'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /workouts/ai:
+    post:
+      tags:
+        - Workout
+      summary: 'Workouts via KI generieren'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+                - onboarding
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                onboarding:
+                  type: object
+                  description: 'Onboarding-Daten für KI'
+      responses:
+        '201':
+          description: 'Erstellte Workouts'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workout'
+        '400':
+          description: 'Fehlende Parameter'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /workouts/{workoutId}/exercises:
+    post:
+      tags:
+        - Workout
+      summary: 'Übung zu Workout hinzufügen'
+      parameters:
+        - in: path
+          name: workoutId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - exerciseName
+              properties:
+                exerciseName:
+                  type: string
+                  example: 'Squats'
+                sets:
+                  type: integer
+                  example: 3
+                reps:
+                  type: integer
+                  example: 12
+                duration:
+                  type: integer
+                  example: 60
+      responses:
+        '200':
+          description: 'Aktualisiertes Workout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workout'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /workouts/{workoutId}/exercises/{exerciseIndex}:
+    delete:
+      tags:
+        - Workout
+      summary: 'Übung aus Workout entfernen'
+      parameters:
+        - in: path
+          name: workoutId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: exerciseIndex
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '200':
+          description: 'Aktualisiertes Workout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workout'
+        '400':
+          description: 'Fehlende auth0Id'
+        '500':
+          description: 'Interner Serverfehler'
+  /habits/{auth0Id}:
+    get:
+      tags:
+        - Habits
+      summary: 'Alle Habits eines Nutzers abrufen'
+      parameters:
+        - in: path
+          name: auth0Id
+          required: true
+          schema:
+            type: string
+          description: Auth0 ID des Nutzers
+      responses:
+        '200':
+          description: 'Liste der Habits'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Habit'
+        '500':
+          description: 'Interner Serverfehler'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /habits:
+    post:
+      tags:
+        - Habits
+      summary: 'Neues Habit erstellen'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+                - name
+                - type
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                name:
+                  type: string
+                  example: 'Morgens meditieren'
+                type:
+                  type: string
+                  enum:
+                    - daily
+                    - weekly
+                  example: 'daily'
+                weekday:
+                  type: integer
+                  example: 1
+                description:
+                  type: string
+                  example: '10 Minuten Atemübung'
+      responses:
+        '201':
+          description: 'Habit erstellt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /habits/{habitId}:
+    put:
+      tags:
+        - Habits
+      summary: 'Habit aktualisieren'
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: string
+          description: ID des Habits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                name:
+                  type: string
+                  example: 'Morgens meditieren'
+                type:
+                  type: string
+                  enum:
+                    - daily
+                    - weekly
+                weekday:
+                  type: integer
+                  example: 1
+                description:
+                  type: string
+                  example: '10 Minuten Atemübung'
+      responses:
+        '200':
+          description: 'Aktualisiertes Habit'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+        '400':
+          description: 'Fehlende auth0Id'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'auth0Id is required'
+        '500':
+          description: 'Interner Serverfehler'
+
+    delete:
+      tags:
+        - Habits
+      summary: 'Habit löschen'
+      parameters:
+        - in: path
+          name: habitId
+          required: true
+          schema:
+            type: string
+          description: ID des Habits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '204':
+          description: 'Habit gelöscht'
+        '400':
+          description: 'Fehlende auth0Id'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'auth0Id is required'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /entries/{auth0Id}:
+    get:
+      tags:
+        - Entries
+      summary: 'Alle Entries eines Nutzers abrufen'
+      parameters:
+        - in: path
+          name: auth0Id
+          required: true
+          schema:
+            type: string
+          description: Auth0 ID des Nutzers
+      responses:
+        '200':
+          description: 'Liste der Entries'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entry'
+        '500':
+          description: 'Interner Serverfehler'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /entries:
+    post:
+      tags:
+        - Entries
+      summary: 'Neuen Entry erstellen'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+                - date
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                workoutId:
+                  type: string
+                  example: '65d1234abcde123456789013'
+                habitId:
+                  type: string
+                  example: '65d1234abcde123456789014'
+                date:
+                  type: string
+                  format: date-time
+                  example: '2026-02-05T10:00:00Z'
+      responses:
+        '201':
+          description: 'Entry erstellt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /entries/{entryId}/complete-exercise:
+    patch:
+      tags:
+        - Entries
+      summary: 'Übung innerhalb eines Entries als abgeschlossen markieren'
+      parameters:
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: ID des Eintrags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - exerciseName
+              properties:
+                exerciseName:
+                  type: string
+                  example: 'Bankdrücken'
+                weight:
+                  type: number
+                  example: 50
+      responses:
+        '200':
+          description: 'Aktualisierter Entry'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /entries/{entryId}/abort:
+    patch:
+      tags:
+        - Entries
+      summary: 'Entry abbrechen'
+      parameters:
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: ID des Eintrags
+      responses:
+        '200':
+          description: 'Abgebrochener Entry'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /entries/{entryId}:
+    delete:
+      tags:
+        - Entries
+      summary: 'Entry löschen'
+      parameters:
+        - in: path
+          name: entryId
+          required: true
+          schema:
+            type: string
+          description: ID des Eintrags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auth0Id
+              properties:
+                auth0Id:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '204':
+          description: 'Entry gelöscht'
+        '400':
+          description: 'Fehlende auth0Id'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'auth0Id is required'
+        '500':
+          description: 'Interner Serverfehler'
+  /groups:
+    post:
+      tags:
+        - Groups
+      summary: 'Neue Gruppe erstellen'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+                - ownerId
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+                  example: 'Pixel Warriors'
+                description:
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                color:
+                  type: string
+                  pattern: '^#[0-9A-Fa-f]{6}$'
+                  example: '#FF5733'
+                ownerId:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                isPublic:
+                  type: boolean
+                  default: true
+                maxMembers:
+                  type: integer
+                  minimum: 1
+                  maximum: 1000
+      responses:
+        '201':
+          description: 'Gruppe erfolgreich erstellt'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: 'Fehlende oder ungültige Eingabewerte'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /groups/public:
+    get:
+      tags:
+        - Groups
+      summary: 'Öffentliche Gruppen abrufen'
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 100
+          description: 'Maximale Anzahl an Gruppen'
+        - in: query
+          name: skip
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          description: 'Anzahl der zu überspringenden Gruppen'
+      responses:
+        '200':
+          description: 'Liste öffentlicher Gruppen'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /groups/user/{userId}:
+    get:
+      tags:
+        - Groups
+      summary: 'Alle Gruppen eines Nutzers abrufen'
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: 'Auth0 User ID'
+      responses:
+        '200':
+          description: 'Liste der Gruppen'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /groups/{groupId}:
+    get:
+      tags:
+        - Groups
+      summary: 'Gruppe nach ID abrufen'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+          description: 'MongoDB ObjectId der Gruppe'
+      responses:
+        '200':
+          description: 'Gruppendetails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: 'Ungültige Gruppen-ID'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: 'Interner Serverfehler'
+    delete:
+      tags:
+        - Groups
+      summary: 'Gruppe löschen (nur Owner)'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+          description: 'MongoDB ObjectId der Gruppe'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '204':
+          description: 'Gruppe erfolgreich gelöscht'
+        '400':
+          description: 'Ungültige Gruppen-ID oder fehlender userId'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /groups/{groupId}/join:
+    post:
+      tags:
+        - Groups
+      summary: 'User tritt einer Gruppe bei'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+          description: 'MongoDB ObjectId der Gruppe'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '200':
+          description: 'Aktualisierte Gruppe'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: 'Ungültige Gruppen-ID oder fehlender userId'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /groups/{groupId}/leave:
+    post:
+      tags:
+        - Groups
+      summary: 'User verlässt eine Gruppe'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+          description: 'MongoDB ObjectId der Gruppe'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+      responses:
+        '200':
+          description: 'Aktualisierte Gruppe'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: 'Ungültige Gruppen-ID oder fehlender userId'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /groups/{groupId}/members/{targetUserId}/role:
+    patch:
+      tags:
+        - Groups
+      summary: 'Rolle eines Gruppenmitglieds ändern'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: targetUserId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - requesterId
+                - newRole
+              properties:
+                requesterId:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                newRole:
+                  type: string
+                  enum: [admin, member]
+                  example: admin
+      responses:
+        '200':
+          description: 'Aktualisierte Gruppe'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: 'Ungültige Eingaben'
+        '500':
+          description: 'Interner Serverfehler'
+
+  /groups/{groupId}/pixel-art:
+    get:
+      tags:
+        - Groups
+      summary: 'Gruppen-Pixel-Art abrufen'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+          description: 'MongoDB ObjectId der Gruppe'
+      responses:
+        '200':
+          description: 'Gruppen-Pixel-Art Daten'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupPixelArt'
+        '400':
+          description: 'Ungültige Gruppen-ID'
+        '500':
+          description: 'Interner Serverfehler'
+
+    post:
+      tags:
+        - Groups
+      summary: 'Pixel auf dem Gruppen-Canvas platzieren'
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - x
+                - y
+                - color
+              properties:
+                userId:
+                  type: string
+                  example: 'auth0|1234567890abcdef'
+                x:
+                  type: integer
+                  example: 5
+                y:
+                  type: integer
+                  example: 7
+                color:
+                  type: string
+                  pattern: '^#[0-9A-Fa-f]{6}$'
+                  example: '#FF5733'
+      responses:
+        '200':
+          description: 'Aktualisierte Gruppen-Pixel-Art'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupPixelArt'
+        '400':
+          description: 'Ungültige Eingaben'
+        '500':
+          description: 'Interner Serverfehler'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6789abcdef123456
+        email:
+          type: string
+          example: user@example.com
+        auth0Id:
+          type: string
+          example: auth0|123
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          type: string
+          format: date-time
+        points:
+          type: number
+          example: 0
+        streak:
+          type: number
+          example: 0
+        onboardingCompleted:
+          type: boolean
+
+    Pixel:
+      type: object
+      required:
+        - x
+        - y
+        - color
+      properties:
+        x:
+          type: number
+          example: 10
+        y:
+          type: number
+          example: 5
+        color:
+          type: string
+          example: '#00FFAA'
+
+    PixelArt:
+      type: object
+      required:
+        - auth0ID
+        - gridSize
+        - pixels
+      properties:
+        _id:
+          type: string
+          example: 65b1234abcde123456789012
+        auth0ID:
+          type: string
+          example: auth0|abc123
+        gridSize:
+          type: number
+          example: 32
+        pixels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pixel'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-01T12:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-02T15:30:00.000Z'
+
+    Exercise:
+      type: object
+      required:
+        - name
+      properties:
+        _id:
+          type: string
+          example: 65b1234abcde123456789012
+        name:
+          type: string
+          example: 'Squats'
+        type:
+          type: string
+          enum:
+            - strength
+            - cardio
+          example: 'strength'
+        primaryMuscleGroups:
+          type: array
+          items:
+            type: string
+          example: ['legs', 'glutes']
+        executionInstructions:
+          type: string
+          example: 'Füße schulterbreit auseinander, Knie nicht über die Zehenspitzen...'
+        videoUrl:
+          type: string
+          format: uri
+          example: 'https://youtube.com/watch?v=example'
+        imageUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/image.jpg'
+
+    WorkoutExercise:
+      type: object
+      properties:
+        exercise:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: '65b1234abcde123456789012'
+            name:
+              type: string
+              example: 'Squats'
+            type:
+              type: string
+              enum:
+                - strength
+                - cardio
+              example: 'strength'
+            primaryMuscleGroups:
+              type: array
+              items:
+                type: string
+              example: ['legs', 'glutes']
+            executionInstructions:
+              type: string
+              example: 'Füße schulterbreit auseinander, Knie nicht über die Zehenspitzen...'
+            videoUrl:
+              type: string
+              format: uri
+              example: 'https://youtube.com/watch?v=example'
+            imageUrl:
+              type: string
+              format: uri
+              example: 'https://example.com/image.jpg'
+        sets:
+          type: integer
+          example: 3
+        reps:
+          type: integer
+          example: 12
+        duration:
+          type: integer
+          description: Dauer in Sekunden
+          example: 60
+        weight:
+          type: number
+          example: 50.5
+
+    Workout:
+      type: object
+      required:
+        - auth0Id
+        - name
+      properties:
+        _id:
+          type: string
+          example: '65c1234abcde123456789012'
+        auth0Id:
+          type: string
+          example: 'auth0|1234567890abcdef'
+        name:
+          type: string
+          example: 'Mein Workout Plan'
+        description:
+          type: string
+          example: 'Workout für Bein- und Core-Training'
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutExercise'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-02-05T10:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-02-05T12:00:00Z'
+
+    Habit:
+      type: object
+      required:
+        - auth0Id
+        - name
+        - type
+      properties:
+        _id:
+          type: string
+          example: '65d1234abcde123456789012'
+        auth0Id:
+          type: string
+          example: 'auth0|1234567890abcdef'
+        name:
+          type: string
+          example: 'Morgens meditieren'
+        type:
+          type: string
+          enum:
+            - daily
+            - weekly
+          example: 'daily'
+        weekday:
+          type: integer
+          description: 'Wochentag als Zahl (0=Sonntag, 6=Samstag), nur bei weekly relevant'
+          example: 1
+        description:
+          type: string
+          example: '10 Minuten Atemübung'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-02-05T10:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-02-05T12:00:00Z'
+
+    Entry:
+      type: object
+      required:
+        - auth0Id
+        - date
+      properties:
+        _id:
+          type: string
+          example: '65d1234abcde123456789012'
+        auth0Id:
+          type: string
+          example: 'auth0|1234567890abcdef'
+        date:
+          type: string
+          format: date-time
+          example: '2026-02-05T10:00:00Z'
+        workoutId:
+          type: string
+          description: 'Referenz auf ein Workout'
+          example: '65d1234abcde123456789013'
+        plannedExercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutExercise'
+        completed_exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutExercise'
+        habitId:
+          type: string
+          description: 'Referenz auf ein Habit'
+          example: '65d1234abcde123456789014'
+        completed:
+          type: boolean
+          default: false
+        score:
+          type: number
+          default: 0
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    GroupMember:
+      type: object
+      required:
+        - userId
+        - role
+        - joinedAt
+        - contributedXP
+      properties:
+        userId:
+          type: string
+          example: 'auth0|1234567890abcdef'
+        role:
+          type: string
+          enum: [owner, admin, member]
+          example: member
+        joinedAt:
+          type: string
+          format: date-time
+          example: '2026-02-05T10:00:00Z'
+        contributedXP:
+          type: integer
+          example: 150
+
+    GroupPixel:
+      type: object
+      required:
+        - x
+        - y
+        - color
+      properties:
+        x:
+          type: integer
+          example: 5
+        y:
+          type: integer
+          example: 7
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          example: '#FF5733'
+        placedBy:
+          type: string
+          nullable: true
+          example: 'auth0|abcdef1234567890'
+        placedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-02-05T10:05:00Z'
+
+    GroupPixelArt:
+      type: object
+      required:
+        - gridSize
+        - pixels
+      properties:
+        gridSize:
+          type: integer
+          minimum: 8
+          maximum: 32
+          example: 16
+        pixels:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupPixel'
+
+    Group:
+      type: object
+      required:
+        - name
+        - color
+        - members
+        - maxMembers
+        - isPublic
+      properties:
+        _id:
+          type: string
+          example: '65d1234abcde123456789012'
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+          example: 'Pixel Warriors'
+        description:
+          type: string
+          maxLength: 500
+          nullable: true
+          example: 'Eine coole Gruppe für Pixel-Krieger'
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          example: '#FF5733'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMember'
+        maxMembers:
+          type: integer
+          minimum: 2
+          maximum: 100
+          example: 20
+        isPublic:
+          type: boolean
+          example: true
+        totalXP:
+          type: integer
+          minimum: 0
+          example: 2500
+        currentSeasonXP:
+          type: integer
+          minimum: 0
+          example: 400
+        wins:
+          type: integer
+          minimum: 0
+          example: 5
+        losses:
+          type: integer
+          minimum: 0
+          example: 3
+        unlockedPixels:
+          type: integer
+          minimum: 0
+          example: 15
+        pixelArt:
+          $ref: '#/components/schemas/GroupPixelArt'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-02-01T12:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-02-05T09:30:00Z'

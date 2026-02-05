@@ -3,6 +3,9 @@ import express from 'express';
 import path from 'path';
 import type { Request, Response } from 'express';
 import { logger } from './utils/logger';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import YAML from 'yaml';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 import cors from 'cors';
@@ -20,6 +23,11 @@ import PixelWarRoute from './endpoints/pixelwar/PixelWarRoute';
 import BattleRoute from './endpoints/pixelwar/BattleRoute';
 import { checkAuth0Token } from './utils/checkAuth0Token';
 
+const openapi_path = path.resolve(__dirname, '../openAPI/openapi.yaml');
+console.log(openapi_path);
+const file = fs.readFileSync(openapi_path, 'utf8');
+const swaggerDocument = YAML.parse(file);
+
 const app = express();
 
 app.use(cors());
@@ -28,6 +36,7 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
 	res.status(200).json('Hi');
 });
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', checkAuth0Token);
 app.use('/api/user', UserRoute);
 app.use('/api/workouts', WorkoutRoute);
@@ -41,7 +50,7 @@ app.use('/api/pixelwar/battles', BattleRoute);
 
 async function startServer() {
 	try {
-		await initDB();
+		//await initDB();
 		app.listen(3000, () => {
 			logger.info('server is running on port 3000');
 		});
