@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Trophy, Users, Zap, Grid3X3 } from 'lucide-react';
+import { Trophy, Users, Zap, Grid3X3, Crown, Shield, User } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -9,6 +9,7 @@ interface GroupDetailModalProps {
 	currentUserId?: string;
 	onClose: () => void;
 	onGroupUpdate?: (group: any) => void;
+	onDelete?: (groupId: string) => void;
 }
 
 // Farben für den Gruppen-Canvas
@@ -29,6 +30,7 @@ export default function GroupDetailModal({
 	currentUserId,
 	onClose,
 	onGroupUpdate,
+	onDelete,
 }: GroupDetailModalProps) {
 	const { getAccessTokenSilently } = useAuth0();
 	const [pixelArtInfo, setPixelArtInfo] = useState<{
@@ -43,6 +45,7 @@ export default function GroupDetailModal({
 	const [isPlacing, setIsPlacing] = useState(false);
 
 	const isMember = group.members.some((m: any) => m.userId === currentUserId);
+	const isOwner = group.members.find((m: any) => m.userId === currentUserId)?.role === 'owner';
 
 	useEffect(() => {
 		fetchPixelArt();
@@ -137,20 +140,80 @@ export default function GroupDetailModal({
 
 	const cellSize = 12;
 
+	// Get role icon and color
+	const getRoleIcon = (role: string) => {
+		switch (role) {
+			case 'owner':
+				return <Crown className="h-3 w-3 text-yellow-500" />;
+			case 'admin':
+				return <Shield className="h-3 w-3 text-blue-500" />;
+			default:
+				return <User className="h-3 w-3 text-gray-500" />;
+		}
+	};
+
+	const getRoleBg = (role: string) => {
+		switch (role) {
+			case 'owner':
+				return 'bg-yellow-100 dark:bg-yellow-900/40 border-yellow-500';
+			case 'admin':
+				return 'bg-blue-100 dark:bg-blue-900/40 border-blue-500';
+			default:
+				return 'bg-gray-100 dark:bg-gray-700 border-gray-400';
+		}
+	};
+
 	return (
 		<Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-			<DialogContent className="sm:max-w-2xl border-4 border-black bg-white dark:bg-gray-900 text-black dark:text-white">
-				<DialogHeader>
-					<DialogTitle className="font-pixel text-lg flex items-center gap-3">
-						<div
-							className="w-6 h-6 border-2 border-black"
-							style={{ backgroundColor: group.color }}
-						/>
-						{group.name}
-					</DialogTitle>
-				</DialogHeader>
+			<DialogContent className="sm:max-w-4xl border-4 border-black bg-white dark:bg-gray-900 text-black dark:text-white p-0 gap-0">
+				<div className="flex">
+					{/* Members Panel - Left Side */}
+					<div className="w-48 border-r-4 border-black bg-gray-50 dark:bg-gray-800 p-4 flex flex-col">
+						<div className="flex items-center gap-2 mb-3">
+							<div className="h-4 w-4 bg-violet-500 border-2 border-black" />
+							<h3 className="font-pixel text-sm">Members</h3>
+							<span className="ml-auto text-xs text-black/50 dark:text-white/50">
+								{group.members.length}
+							</span>
+						</div>
+						<div className="flex-1 overflow-y-auto space-y-2 max-h-[400px]">
+							{group.members
+								.sort((a: any, b: any) => {
+									const order = { owner: 0, admin: 1, member: 2 };
+									return (order[a.role as keyof typeof order] || 2) - (order[b.role as keyof typeof order] || 2);
+								})
+								.map((member: any) => (
+									<div
+										key={member.userId}
+										className={`p-2 border-2 border-black text-xs ${getRoleBg(member.role)}`}
+									>
+										<div className="flex items-center gap-2">
+											{getRoleIcon(member.role)}
+											<span className="truncate font-medium">
+												{member.displayName || member.userId.slice(0, 8)}
+											</span>
+										</div>
+										<div className="text-[10px] text-black/50 dark:text-white/50 mt-1 capitalize">
+											{member.role}
+										</div>
+									</div>
+								))}
+						</div>
+					</div>
 
-				<div className="space-y-4 mt-2">
+					{/* Main Content - Right Side */}
+					<div className="flex-1 p-6">
+						<DialogHeader>
+							<DialogTitle className="font-pixel text-lg flex items-center gap-3">
+								<div
+									className="w-6 h-6 border-2 border-black"
+									style={{ backgroundColor: group.color }}
+								/>
+								{group.name}
+							</DialogTitle>
+						</DialogHeader>
+
+						<div className="space-y-4 mt-4">
 					{/* Stats */}
 					<div className="flex items-center gap-3 flex-wrap">
 						<div className="flex items-center gap-1 px-2 py-1 bg-violet-100 dark:bg-violet-900/40 border border-black dark:border-white/20 text-xs">
@@ -308,13 +371,29 @@ export default function GroupDetailModal({
 						)}
 					</div>
 
-					{/* Close Button */}
-					<button
-						onClick={onClose}
-						className="w-full p-3 border-2 border-black bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
-					>
-						Close
-					</button>
+					{/* Action Buttons */}
+					<div className="flex gap-3">
+						{isOwner && onDelete && (
+							<button
+								onClick={() => {
+									if (window.confirm('Are you sure you want to delete this group? This action cannot be undone.')) {
+										onDelete(group._id);
+									}
+								}}
+								className="flex-1 p-3 border-2 border-black bg-red-500 text-white hover:bg-red-600 transition-colors font-medium"
+							>
+								Delete Group
+							</button>
+						)}
+						<button
+							onClick={onClose}
+							className="flex-1 p-3 border-2 border-black bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+						>
+							Close
+						</button>
+					</div>
+					</div>
+				</div>
 				</div>
 			</DialogContent>
 		</Dialog>
