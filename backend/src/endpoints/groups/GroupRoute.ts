@@ -144,6 +144,55 @@ router.post('/:groupId/join', async (req: Request, res: Response) => {
 });
 
 /**
+ * POST /api/groups/join-by-code
+ * User tritt Gruppe via Invite-Code bei
+ */
+router.post('/join-by-code', async (req: Request, res: Response) => {
+	try {
+		const { userId, inviteCode } = req.body;
+
+		if (!userId) {
+			throw new HttpError(400, 'Missing userId');
+		}
+
+		if (!inviteCode || typeof inviteCode !== 'string') {
+			throw new HttpError(400, 'Missing or invalid inviteCode');
+		}
+
+		const group = await GroupService.joinGroupByInviteCode(inviteCode, userId);
+		res.json(group);
+	} catch (error: any) {
+		const statusCode = error.status || 500;
+		res.status(statusCode).json({ error: error.message });
+	}
+});
+
+/**
+ * POST /api/groups/:groupId/regenerate-code
+ * Generiert neuen Invite-Code (nur Owner/Admin)
+ */
+router.post('/:groupId/regenerate-code', async (req: Request, res: Response) => {
+	try {
+		const { groupId } = req.params;
+		const { userId } = req.body;
+
+		if (!isValidObjectId(groupId)) {
+			throw new HttpError(400, 'Invalid group ID format');
+		}
+
+		if (!userId) {
+			throw new HttpError(400, 'Missing userId');
+		}
+
+		const newCode = await GroupService.regenerateInviteCode(groupId, userId);
+		res.json({ inviteCode: newCode });
+	} catch (error: any) {
+		const statusCode = error.status || 500;
+		res.status(statusCode).json({ error: error.message });
+	}
+});
+
+/**
  * POST /api/groups/:groupId/leave
  * User verlässt Gruppe
  */

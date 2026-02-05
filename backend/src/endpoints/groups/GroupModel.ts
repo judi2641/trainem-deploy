@@ -27,6 +27,7 @@ export interface IGroup extends Document {
 	members: IGroupMember[];
 	maxMembers: number;
 	isPublic: boolean;
+	inviteCode?: string; // Code zum Beitreten privater Gruppen
 	createdAt: Date;
 	updatedAt: Date;
 	totalXP: number; // Gesamt-XP aller Mitglieder (all-time)
@@ -104,6 +105,11 @@ const GroupSchema = new Schema<IGroup>(
 			type: Boolean,
 			required: true,
 			default: true,
+		},
+		inviteCode: {
+			type: String,
+			unique: true,
+			sparse: true, // Nur indiziert wenn vorhanden
 		},
 		totalXP: {
 			type: Number,

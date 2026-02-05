@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Trophy, Users, Zap, Grid3X3, Crown, Shield, User } from 'lucide-react';
+import { Trophy, Users, Zap, Grid3X3, Crown, Shield, User, Copy } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -241,6 +241,33 @@ export default function GroupDetailModal({
 					{/* Description */}
 					{group.description && (
 						<p className="text-sm text-black/70 dark:text-white/70">{group.description}</p>
+					)}
+
+					{/* Invite Code Section - nur für Owner/Admin */}
+					{(isOwner || group.members.find((m: any) => m.userId === currentUserId)?.role === 'admin') && group.inviteCode && (
+						<div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-500 space-y-2">
+							<div className="flex items-center justify-between">
+								<span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">Invite Code</span>
+								<div className="flex gap-2">
+									<button
+										onClick={() => {
+											navigator.clipboard.writeText(group.inviteCode);
+											toast.success('Code copied!');
+										}}
+										className="p-1 hover:bg-emerald-100 dark:hover:bg-emerald-800 rounded"
+										title="Copy code"
+									>
+										<Copy className="h-3 w-3 text-emerald-600" />
+									</button>
+								</div>
+							</div>
+							<div className="font-mono text-lg font-bold text-emerald-800 dark:text-emerald-200 tracking-wider">
+								{group.inviteCode}
+							</div>
+							<p className="text-[10px] text-emerald-600 dark:text-emerald-400">
+								Share this code to invite members to your group
+							</p>
+						</div>
 					)}
 
 					{/* Canvas Section */}

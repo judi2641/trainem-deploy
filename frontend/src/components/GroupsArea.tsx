@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'sonner';
-import { Users } from 'lucide-react';
+import { Users, KeyRound } from 'lucide-react';
 import GroupList from './groups/GroupList';
 import CreateGroupModal from './groups/CreateGroupModal';
 import GroupDetailModal from './groups/GroupDetailModal';
@@ -13,6 +13,12 @@ import {
 	PixelCardHeader,
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 
 // Pixel-style icon
 function PixelUsersIcon({ className }: { className?: string }) {
@@ -36,6 +42,8 @@ export default function GroupsArea() {
 	const [myGroups, setMyGroups] = useState<any[]>([]);
 	const [publicGroups, setPublicGroups] = useState<any[]>([]);
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [isJoinCodeModalOpen, setIsJoinCodeModalOpen] = useState(false);
+	const [joinCode, setJoinCode] = useState('');
 	const [selectedGroup, setSelectedGroup] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
 
@@ -161,6 +169,57 @@ export default function GroupsArea() {
 		setSelectedGroup(updatedGroup);
 	};
 
+	const handleDeleteGroup = async (groupId: string) => {
+		try {
+			const token = await getAccessTokenSilently();
+			const res = await fetch(`http://localhost:3000/api/groups/${groupId}`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				body: JSON.stringify({ userId: user?.sub }),
+			});
+
+			if (res.ok) {
+				toast.success('Group deleted');
+				setSelectedGroup(null);
+				fetchGroups();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to delete group');
+			}
+		} catch (error) {
+			console.error('Failed to delete group:', error);
+			toast.error('Network error - please try again');
+		}
+	};
+
+	const handleJoinByCode = async () => {
+		if (!joinCode.trim()) {
+			toast.error('Please enter an invite code');
+			return;
+		}
+		try {
+			const token = await getAccessTokenSilently();
+			const res = await fetch('http://localhost:3000/api/groups/join-by-code', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				body: JSON.stringify({ userId: user?.sub, inviteCode: joinCode.trim() }),
+			});
+
+			if (res.ok) {
+				toast.success('Joined group!');
+				setIsJoinCodeModalOpen(false);
+				setJoinCode('');
+				fetchGroups();
+			} else {
+				const errorData = await res.json();
+				toast.error(errorData.error || 'Failed to join group');
+			}
+		} catch (error) {
+			console.error('Failed to join by code:', error);
+			toast.error('Network error - please try again');
+		}
+	};
+
 	if (loading) {
 		return (
 			<div className="h-full flex items-center justify-center">
@@ -182,13 +241,22 @@ export default function GroupsArea() {
 					</div>
 					<h1 className="font-pixel text-2xl text-black dark:text-white">Groups</h1>
 				</div>
-				<button
-					onClick={() => setIsCreateModalOpen(true)}
-					className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium mr-2"
-				>
-					<Users className="h-4 w-4" />
-					Create Group
-				</button>
+				<div className="flex gap-2">
+					<button
+						onClick={() => setIsJoinCodeModalOpen(true)}
+						className="pixel-btn-secondary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium"
+					>
+						<KeyRound className="h-4 w-4" />
+						Join by Code
+					</button>
+					<button
+						onClick={() => setIsCreateModalOpen(true)}
+						className="pixel-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-medium mr-2"
+					>
+						<Users className="h-4 w-4" />
+						Create Group
+					</button>
+				</div>
 			</div>
 
 			{/* Content */}
@@ -254,7 +322,56 @@ export default function GroupsArea() {
 					currentUserId={user?.sub}
 					onClose={() => setSelectedGroup(null)}
 					onGroupUpdate={handleGroupUpdate}
+					onDelete={handleDeleteGroup}
 				/>
+			)}
+
+			{/* Join by Code Modal */}
+			{isJoinCodeModalOpen && (
+				<Dialog open={true} onOpenChange={(open) => !open && setIsJoinCodeModalOpen(false)}>
+					<DialogContent className="sm:max-w-md border-4 border-black bg-white dark:bg-gray-900 text-black dark:text-white">
+						<DialogHeader>
+							<DialogTitle className="font-pixel text-lg flex items-center gap-2">
+								<KeyRound className="h-5 w-5 text-emerald-500" />
+								Join by Invite Code
+							</DialogTitle>
+						</DialogHeader>
+						<div className="space-y-4 mt-4">
+							<div>
+								<label className="text-sm font-medium mb-2 block">Enter Invite Code</label>
+								<input
+									type="text"
+									value={joinCode}
+									onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+									placeholder="e.g. A1B2C3D4"
+									className="w-full p-3 border-2 border-black bg-white dark:bg-gray-800 text-black dark:text-white font-mono text-lg tracking-wider uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"
+									maxLength={8}
+								/>
+								<p className="text-xs text-black/50 dark:text-white/50 mt-2">
+									Get the code from a group owner or admin
+								</p>
+							</div>
+							<div className="flex gap-3">
+								<button
+									onClick={() => {
+										setIsJoinCodeModalOpen(false);
+										setJoinCode('');
+									}}
+									className="flex-1 p-3 border-2 border-black bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+								>
+									Cancel
+								</button>
+								<button
+									onClick={handleJoinByCode}
+									disabled={!joinCode.trim()}
+									className="flex-1 p-3 bg-emerald-500 text-white border-2 border-black hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-[2px_2px_0px_rgba(0,0,0,0.2)]"
+								>
+									Join Group
+								</button>
+							</div>
+						</div>
+					</DialogContent>
+				</Dialog>
 			)}
 		</div>
 	);
