@@ -39,8 +39,8 @@ const GRID_OPTIONS = [
 ];
 
 const WIN_CONDITION_OPTIONS = [
-	{ value: 'pixels' as const, label: 'Most Pixels', description: 'Team with most pixels wins' },
-	{ value: 'xp' as const, label: 'Most XP', description: 'Team with most XP wins' },
+	{ value: 'pixels' as const, label: 'Workouts', description: 'Only completed exercises earn pixels for your team' },
+	{ value: 'xp' as const, label: 'Workouts + Habits', description: 'Exercises and daily habits both count towards victory' },
 ];
 
 export default function ChallengeModal({

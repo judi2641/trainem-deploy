@@ -90,6 +90,16 @@
   - Verbesserungsvorschläge
   - Playtest-Feedback
 
+### 🆕 Ergänzungen (Februar 2026)
+- **[12 - Ergänzungen Februar 2026](docs/12-Ergaenzungen-Februar-2026.md)**
+  - OpenAI-Integration (KI-Workout-Generierung)
+  - Invite-Code System für private Gruppen
+  - Überarbeitete Pixel/XP-Mechanik in Battles
+  - Aktualisierte Battle-Einstellungen
+  - Neue Environment Variables (OPENAI_API_KEY)
+  - Neue Backend-Services (AiWorkoutService, openai.ts)
+  - Aktualisierte Workflows & Edge Cases
+
 ---
 
 ## 🏃 Quick Start
@@ -140,6 +150,7 @@ Siehe [02 - Developer Setup](docs/02-Developer-Setup.md) für Details.
 | 09 - Testing | ✅ Vollständig | 2026-01-24 | - |
 | 10 - Prozess & Meilensteine | 🟡 Zu vervollständigen | 2026-01-24 | Team |
 | 11 - Lessons Learned | 🟡 Zu vervollständigen | 2026-01-24 | Team |
+| 12 - Ergänzungen Feb. 2026 | ✅ Vollständig | 2026-02-05 | - |
 
 ---
 
