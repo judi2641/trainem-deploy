@@ -20,7 +20,7 @@ interface ChallengeModalProps {
 		settings?: {
 			duration: number;
 			gridSize: number;
-			winCondition: 'pixels' | 'xp' | 'hybrid';
+			winCondition: 'pixels' | 'xp';
 		};
 	}) => void;
 }
@@ -41,7 +41,6 @@ const GRID_OPTIONS = [
 const WIN_CONDITION_OPTIONS = [
 	{ value: 'pixels' as const, label: 'Most Pixels', description: 'Team with most pixels wins' },
 	{ value: 'xp' as const, label: 'Most XP', description: 'Team with most XP wins' },
-	{ value: 'hybrid' as const, label: 'Hybrid', description: '50% pixels + 50% XP' },
 ];
 
 export default function ChallengeModal({
@@ -54,7 +53,7 @@ export default function ChallengeModal({
 	const [opponentGroupId, setOpponentGroupId] = useState('');
 	const [duration, setDuration] = useState(1440);
 	const [gridSize, setGridSize] = useState(30);
-	const [winCondition, setWinCondition] = useState<'pixels' | 'xp' | 'hybrid'>('pixels');
+	const [winCondition, setWinCondition] = useState<'pixels' | 'xp'>('pixels');
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
