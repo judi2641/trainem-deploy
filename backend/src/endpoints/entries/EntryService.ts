@@ -66,7 +66,7 @@ export async function createEntry(
         // Add XP to active battles
         const activeBattles = await BattleService.getActiveBattlesForGroup(groupIdStr);
         for (const battle of activeBattles) {
-          await BattleService.addBattleXP(String(battle._id), groupIdStr, auth0Id, 10);
+          await BattleService.addBattleXP(String(battle._id), groupIdStr, auth0Id, 10, false); // Habit - no pixels
         }
       }
     } catch (error) {
@@ -153,7 +153,7 @@ try {
       // Add XP to active battles
       const activeBattles = await BattleService.getActiveBattlesForGroup(groupIdStr);
       for (const battle of activeBattles) {
-        await BattleService.addBattleXP(String(battle._id), groupIdStr, entry.auth0Id, 67);
+        await BattleService.addBattleXP(String(battle._id), groupIdStr, entry.auth0Id, 67, true); // Exercise - earns pixels
       }
     }
   }
