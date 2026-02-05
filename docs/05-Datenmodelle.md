@@ -308,6 +308,41 @@ Trainem nutzt **MongoDB** mit **Mongoose ODM** für die Datenpersistenz. Alle Mo
 }
 ```
 
+**Battle-Lifecycle**:
+1. **Pending**: Gruppe A erstellt Challenge an Gruppe B
+2. **Active**: Gruppe B akzeptiert, PixelBoard wird erstellt, Timer startet
+3. **Completed**: Zeit abgelaufen oder manuell beendet, Gewinner ermittelt
+
+---
+
+## 🖼️ PixelBoard Model
+
+**Datei**: `backend/src/endpoints/pixelwar/PixelBoardModel.ts`
+
+```typescript
+{
+  seasonId: String (required, indexed)  // oder battleId
+  gridWidth: Number (default: 200, min: 50, max: 500)
+  gridHeight: Number (default: 200, min: 50, max: 500)
+
+  pixels: [{
+    x: Number (required)
+    y: Number (required)
+    color: String (required, hex)
+    groupId: String (required)  // Besitzende Gruppe
+    lastUpdatedBy: String       // auth0Id
+    lastUpdatedAt: Date
+    conquestCount: Number       // Wie oft erobert
+  }]
+
+  createdAt: Date (auto)
+  updatedAt: Date (auto)
+}
+```
+
+**Indizes**:
+- `{ seasonId: 1, 'pixels.x': 1, 'pixels.y': 1 }` - Schneller Pixel-Lookup
+
 ---
 
 ## 🔗 Beziehungen (ER-Diagramm)
@@ -335,6 +370,9 @@ Battle
 ├── N:1 → Challenger Group
 ├── N:1 → Opponent Group
 └── 1:1 → PixelBoard
+
+PixelBoard
+└── 1:1 → Battle (via seasonId = battleId)
 ```
 
 **Embedded vs. Referenced**:
@@ -374,6 +412,6 @@ Battle
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-30
+**Letzte Aktualisierung**: 2026-02-05
 
 [← Zurück zum Wiki](../WIKI.md) | [Weiter zu Frontend-Struktur →](06-Frontend-Struktur.md)

@@ -27,10 +27,9 @@ interface ChallengeModalProps {
 
 const DURATION_OPTIONS = [
 	{ value: 60, label: '1h' },
-	{ value: 360, label: '6h' },
 	{ value: 1440, label: '24h' },
-	{ value: 4320, label: '3d' },
-	{ value: 10080, label: '1w' },
+	{ value: 10080, label: '7d' },
+	{ value: 40320, label: '4w' },
 ];
 
 const GRID_OPTIONS = [
@@ -145,7 +144,7 @@ export default function ChallengeModal({
 							<Clock className="h-4 w-4 text-sky-600" />
 							Duration
 						</Label>
-						<div className="grid grid-cols-5 gap-2">
+						<div className="grid grid-cols-4 gap-2">
 							{DURATION_OPTIONS.map((opt) => (
 								<button
 									key={opt.value}
