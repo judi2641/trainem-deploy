@@ -1216,6 +1216,450 @@ paths:
         '500':
           description: 'Interner Serverfehler'
 
+  /pixelwar/battles:
+    post:
+      tags:
+        - PixelWar
+      summary: Neue Battle-Challenge erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - challengerGroupId
+                - opponentGroupId
+                - challengerUserId
+              properties:
+                challengerGroupId:
+                  type: string
+                opponentGroupId:
+                  type: string
+                challengerUserId:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Battle erstellt
+          content:
+            application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Battle'
+
+    get:
+      summary: Alle Battles eines Users abrufen
+      description: Liefert alle Battles, an denen der angegebene User als Mitglied einer beteiligten Gruppe beteiligt ist.
+      tags:
+        - PixelWar
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: auth0|user123
+      responses:
+        '200':
+          description: Battles erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Battle'
+        '400':
+          description: Fehlender oder ungültiger userId-Parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing userId query parameter
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/active:
+    get:
+      summary: Aktive Battles eines Users abrufen
+      description: Liefert alle aktuell aktiven Battles, an denen der angegebene User beteiligt ist.
+      tags:
+        - PixelWar
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: auth0|user123
+      responses:
+        '200':
+          description: Aktive Battles erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Battle'
+        '400':
+          description: Fehlender oder ungültiger userId-Parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing userId query parameter
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/pending:
+    get:
+      summary: Ausstehende Battle-Challenges eines Users abrufen
+      description: Liefert alle Battles mit Status `pending`, bei denen der angegebene User beteiligt ist.
+      tags:
+        - PixelWar
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: auth0|user123
+      responses:
+        '200':
+          description: Ausstehende Challenges erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Battle'
+        '400':
+          description: Fehlender oder ungültiger userId-Parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing userId query parameter
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}:
+    get:
+      summary: Battle-Details abrufen
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Battle erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        '400':
+          description: Ungültige Battle-ID
+        '500':
+          description: Interner Serverfehler
+  /pixelwar/battles/{battleId}/accept:
+    post:
+      summary: Battle-Challenge annehmen
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId]
+              properties:
+                userId:
+                  type: string
+                  example: auth0|user123
+      responses:
+        '200':
+          description: Challenge angenommen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/decline:
+    post:
+      summary: Battle-Challenge ablehnen
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId]
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: Challenge abgelehnt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/cancel:
+    post:
+      summary: Battle-Challenge abbrechen (nur Challenger)
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId]
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: Challenge abgebrochen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/surrender:
+    post:
+      summary: Battle aufgeben
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [groupId, userId]
+              properties:
+                groupId:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: Battle aufgegeben
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/board:
+    get:
+      summary: PixelBoard eines Battles abrufen
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: PixelBoard geladen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixelBoard'
+        '400':
+          description: Ungültige Battle-ID
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/pixels:
+    post:
+      summary: Pixel im Battle setzen
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [groupId, userId, coordinates]
+              properties:
+                groupId:
+                  type: string
+                userId:
+                  type: string
+                color:
+                  type: string
+                  pattern: '^#[0-9A-Fa-f]{6}$'
+                coordinates:
+                  type: array
+                  maxItems: 50
+                  items:
+                    type: object
+                    required: [x, y]
+                    properties:
+                      x:
+                        type: integer
+                      y:
+                        type: integer
+      responses:
+        '200':
+          description: Pixel erfolgreich gesetzt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixelBoard'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/score:
+    get:
+      summary: Live-Score eines Battles abrufen
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Aktueller Score
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  challenger:
+                    type: object
+                    properties:
+                      groupId:
+                        type: string
+                      pixels:
+                        type: integer
+                      xp:
+                        type: integer
+                  opponent:
+                    type: object
+                    properties:
+                      groupId:
+                        type: string
+                      pixels:
+                        type: integer
+                      xp:
+                        type: integer
+        '400':
+          description: Ungültige Battle-ID
+        '500':
+          description: Interner Serverfehler
+
+  /pixelwar/battles/{battleId}/end:
+    post:
+      summary: Battle manuell beenden
+      tags:
+        - PixelWar
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId]
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: Battle beendet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battle'
+        '400':
+          description: Ungültige Anfrage
+        '500':
+          description: Interner Serverfehler
+
 components:
   schemas:
     User:
@@ -1621,3 +2065,108 @@ components:
           type: string
           format: date-time
           example: '2026-02-05T09:30:00Z'
+
+    Battle:
+      type: object
+      required:
+        - _id
+        - name
+        - challenger
+        - opponent
+        - status
+        - challengedAt
+        - settings
+        - createdAt
+        - updatedAt
+      properties:
+        _id:
+          type: string
+          example: '65dabcd1234abcde12345678'
+        name:
+          type: string
+          example: 'Clan War Alpha'
+        description:
+          type: string
+          nullable: true
+          example: 'Erstes großes Duell'
+        challenger:
+          $ref: '#/components/schemas/BattleParticipant'
+        opponent:
+          $ref: '#/components/schemas/BattleParticipant'
+        status:
+          type: string
+          enum: [pending, accepted, active, completed, declined, cancelled]
+          example: active
+        challengedAt:
+          type: string
+          format: date-time
+        acceptedAt:
+          type: string
+          format: date-time
+          nullable: true
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        actualEndDate:
+          type: string
+          format: date-time
+          nullable: true
+        settings:
+          $ref: '#/components/schemas/BattleSettings'
+        winnerId:
+          type: string
+          nullable: true
+          example: '65d1234abcde123456789012'
+        pixelBoardId:
+          type: string
+          nullable: true
+          example: '65eabc1234de123456789000'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PixelBoard:
+  type: object
+  required:
+    - _id
+    - battleId
+    - gridWidth
+    - gridHeight
+    - pixels
+    - createdAt
+    - updatedAt
+  properties:
+    _id:
+      type: string
+      example: '65eabc1234de123456789000'
+    battleId:
+      type: string
+      example: '65dabcd1234abcde12345678'
+    gridWidth:
+      type: integer
+      minimum: 50
+      maximum: 500
+      example: 200
+    gridHeight:
+      type: integer
+      minimum: 50
+      maximum: 500
+      example: 200
+    pixels:
+      type: array
+      items:
+        $ref: '#/components/schemas/Pixel'
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
