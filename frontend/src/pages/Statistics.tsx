@@ -9,7 +9,8 @@ import {
 	PixelCardTitle,
 } from '@/components/ui/pixel-card';
 import { useMyContext } from '@/context/AppContext';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
 	format,
 	subDays,
@@ -88,8 +89,52 @@ function ChartIcon({ className }: { className?: string }) {
 	);
 }
 
+function SwordsIcon({ className }: { className?: string }) {
+	return (
+		<svg viewBox="0 0 16 16" className={className} fill="currentColor">
+			<rect x="1" y="1" width="2" height="2" />
+			<rect x="3" y="3" width="2" height="2" />
+			<rect x="5" y="5" width="2" height="2" />
+			<rect x="7" y="7" width="2" height="2" />
+			<rect x="9" y="9" width="2" height="2" />
+			<rect x="11" y="11" width="2" height="2" />
+			<rect x="13" y="13" width="2" height="2" />
+			<rect x="13" y="1" width="2" height="2" />
+			<rect x="11" y="3" width="2" height="2" />
+			<rect x="9" y="5" width="2" height="2" />
+			<rect x="5" y="9" width="2" height="2" />
+			<rect x="3" y="11" width="2" height="2" />
+			<rect x="1" y="13" width="2" height="2" />
+		</svg>
+	);
+}
+
 export default function Statistics() {
 	const { entries, workouts, habits, exercises } = useMyContext();
+	const { user, getAccessTokenSilently } = useAuth0();
+	const [warStats, setWarStats] = useState<{ wins: number; losses: number } | null>(null);
+
+	useEffect(() => {
+		async function loadWarStats() {
+			if (!user?.sub) return;
+			try {
+				const token = await getAccessTokenSilently();
+				const res = await fetch(
+					`http://localhost:3000/api/groups/user/${encodeURIComponent(user.sub)}`,
+					{ headers: { Authorization: `Bearer ${token}` } },
+				);
+				if (res.ok) {
+					const groups = await res.json();
+					const totalWins = groups.reduce((sum: number, g: any) => sum + (g.wins || 0), 0);
+					const totalLosses = groups.reduce((sum: number, g: any) => sum + (g.losses || 0), 0);
+					setWarStats({ wins: totalWins, losses: totalLosses });
+				}
+			} catch (error) {
+				console.error('Failed to load war stats:', error);
+			}
+		}
+		loadWarStats();
+	}, [user?.sub]);
 
 	const stats = useMemo(() => {
 		const completedEntries = entries?.filter((e: any) => e.completed) ?? [];
@@ -401,6 +446,29 @@ export default function Statistics() {
 									)}
 								</PixelCardContent>
 							</PixelCard>
+
+							{/* Pixel Wars */}
+							<PixelCard>
+									<PixelCardHeader>
+										<div className="flex items-center gap-2">
+											<div className="h-4 w-4 bg-red-500 border-2 border-black" />
+											<PixelCardTitle>Pixel Wars</PixelCardTitle>
+										</div>
+									</PixelCardHeader>
+									<PixelCardContent>
+										<div className="flex items-center justify-between">
+											<div>
+												<span className="font-pixel text-3xl text-emerald-600">{warStats?.wins ?? 0}</span>
+												<span className="font-pixel text-lg text-black/40 dark:text-white/40 mx-1">/</span>
+												<span className="font-pixel text-3xl text-red-500">{warStats?.losses ?? 0}</span>
+											</div>
+											<SwordsIcon className="h-10 w-10 text-red-300" />
+										</div>
+										<p className="text-xs text-black/50 dark:text-white/50 mt-2">
+											Wins / Losses across all groups
+										</p>
+									</PixelCardContent>
+								</PixelCard>
 						</div>
 					</main>
 				</div>

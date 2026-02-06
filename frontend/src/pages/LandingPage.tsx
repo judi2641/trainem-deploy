@@ -245,6 +245,7 @@ export default function LandingPage() {
 					<nav className="hidden md:flex items-center gap-6">
 						<NavLink href="#how">How it works</NavLink>
 						<NavLink href="#pixel">Pixel Grid</NavLink>
+						<NavLink href="#pixelwars">PixelWars</NavLink>
 						<NavLink href="#faq">FAQ</NavLink>
 					</nav>
 				</div>
@@ -337,7 +338,7 @@ export default function LandingPage() {
 								can place in your grid. More consistency = more XP = more pixels = more detail.
 							</p>
 
-							<ScrollArrows upTo="#how" downTo="#faq" />
+							<ScrollArrows upTo="#how" downTo="#pixelwars" />
 						</div>
 
 						<ShadowCard>
@@ -371,6 +372,46 @@ export default function LandingPage() {
 								</div>
 							</div>
 						</ShadowCard>
+					</div>
+				</Section>
+
+				<PixelDivider />
+
+				{/* PIXELWARS */}
+				<Section id="pixelwars" dark fit>
+					<div className="text-center text-white">
+						<h2 className="text-4xl md:text-5xl font-semibold">PixelWars</h2>
+						<p className="mt-4 max-w-3xl mx-auto text-white/80 leading-relaxed text-lg">
+							Compete with friends. Challenge other groups and battle for pixel glory.
+						</p>
+
+						<div className="mt-10 grid md:grid-cols-3 gap-6 text-left">
+							<div className="border-2 border-white/25 bg-white/10 p-6">
+								<div className="text-3xl mb-3">⚔️</div>
+								<h3 className="text-lg font-semibold">Challenge Groups</h3>
+								<p className="mt-2 text-white/70 text-sm">
+									Create or join a group and challenge others to workout battles.
+								</p>
+							</div>
+
+							<div className="border-2 border-white/25 bg-white/10 p-6">
+								<div className="text-3xl mb-3">🏆</div>
+								<h3 className="text-lg font-semibold">Win Together</h3>
+								<p className="mt-2 text-white/70 text-sm">
+									Complete workouts as a team. The group with more XP wins the battle.
+								</p>
+							</div>
+
+							<div className="border-2 border-white/25 bg-white/10 p-6">
+								<div className="text-3xl mb-3">🎨</div>
+								<h3 className="text-lg font-semibold">Earn Group Pixels</h3>
+								<p className="mt-2 text-white/70 text-sm">
+									Winning groups unlock pixels for their shared group canvas.
+								</p>
+							</div>
+						</div>
+
+						<ScrollArrows upTo="#pixel" downTo="#faq" dark />
 					</div>
 				</Section>
 
@@ -431,7 +472,7 @@ export default function LandingPage() {
 								</Button>
 							</div>
 
-							<ScrollArrows upTo="#top" dark />
+							<ScrollArrows upTo="#pixelwars" dark />
 
 							<div className="mt-4 text-xs text-white/60">
 								© {new Date().getFullYear()} TrainEm

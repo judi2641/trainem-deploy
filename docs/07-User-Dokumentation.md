@@ -161,12 +161,62 @@ Nach dem Onboarding siehst du:
 **Streak sehen**:
 - Dashboard → Quick Stats → "🔥 Streak: X Tage"
 
+### Gruppen
+
+Gruppen ermöglichen es, gemeinsam mit anderen zu trainieren und XP zu sammeln.
+
+**Gruppe erstellen**:
+- Groups → "Create Group" → Name, Beschreibung, Farbe wählen → Create
+- Du wirst automatisch Owner der Gruppe
+
+**Gruppe beitreten**:
+- Groups → "Public Groups" → Gruppe auswählen → "Join"
+- Öffentliche Gruppen können von jedem beigetreten werden
+
+**Gruppen-Canvas**:
+- Jede Gruppe hat einen eigenen 16x16 Pixel-Canvas
+- Pro Battle-Sieg erhält die Gruppe +1 Pixel zum Platzieren
+- Groups → Gruppe auswählen → "Group Canvas" → Pixel malen
+
+**Rollen**:
+- **Owner**: Kann Gruppe löschen, Admins ernennen, alles verwalten
+- **Admin**: Kann Members entfernen, Challenges annehmen
+- **Member**: Kann trainieren, XP beitragen, Pixel setzen
+
+### Pixel Wars (Battles)
+
+Pixel Wars ist ein 1v1 Wettbewerb zwischen zwei Gruppen auf einem geteilten Canvas.
+
+**Challenge erstellen**:
+- Pixel Wars → "New Challenge" → Gegner-Gruppe wählen → Einstellungen → "Challenge"
+- Nur Owner/Admin kann Challenges erstellen
+
+**Challenge annehmen/ablehnen**:
+- Pixel Wars → "Pending Challenges" → Accept oder Decline
+- Nach Annahme startet das Battle sofort
+
+**Battle-Ablauf**:
+1. Battle startet mit leerem Canvas
+2. Trainiere Workouts → +67 XP für dich UND für das Battle
+3. Verdiene Pixel-Rechte durch XP
+4. Setze Pixel auf dem Battle-Canvas in deiner Gruppen-Farbe
+5. Nach Ablauf der Zeit gewinnt die Gruppe mit mehr Pixeln
+
+**Gewinner-Belohnung**:
+- Gewinner-Gruppe: +1 Win, +1 Pixel für Gruppen-Canvas
+- Verlierer-Gruppe: +1 Loss
+
+**Battle-Einstellungen**:
+- **Dauer**: 1 Stunde bis 7 Tage
+- **Canvas-Größe**: 15x15 bis 50x50 Pixel
+- **Win Condition**: Mehr Pixel, mehr XP, oder Hybrid
+
 ---
 
 ## ❓ FAQ
 
-**Q: Kann ich Workouts mit Freunden teilen?**
-A: Aktuell nicht, geplant für zukünftige Versionen.
+**Q: Kann ich mit Freunden trainieren?**
+A: Ja! Erstelle oder trete einer Gruppe bei. Deine XP fließen in die Gruppen-XP ein und ihr könnt gemeinsam in Pixel Wars gegen andere Gruppen antreten.
 
 **Q: Werden meine Daten in der Cloud gespeichert?**
 A: Ja, in MongoDB (verschlüsselt).
@@ -216,6 +266,6 @@ Lösung: Du musst mindestens 1 Workout abgeschlossen haben
 
 ---
 
-**Letzte Aktualisierung**: 2026-01-24
+**Letzte Aktualisierung**: 2026-02-05
 
 [← Zurück zum Wiki](../WIKI.md)

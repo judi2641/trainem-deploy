@@ -135,7 +135,7 @@ export class BattleService {
 
 		// Erstelle PixelBoard für dieses Battle
 		const pixelBoard = new PixelBoardModel({
-			seasonId: String(battle._id), // Wir nutzen seasonId-Feld für battleId
+			battleId: String(battle._id),
 			gridWidth: battle.settings.gridSize,
 			gridHeight: battle.settings.gridSize,
 			pixels: [],
@@ -507,9 +507,14 @@ export class BattleService {
 
 	/**
 	 * XP zum Battle hinzufügen (aufgerufen von EntryService)
-	 * Pro abgeschlossene Übung (67 XP) = 1 Pixel verdient
+	 *
+	 * Pixel-Modus vs XP-Modus:
+	 * - Pixels werden NUR durch Übungen verdient (67 XP = 1 Pixel)
+	 * - XP zählt ALLES (Übungen + Habits)
+	 *
+	 * So sind beide Modi unterschiedlich!
 	 */
-	static async addBattleXP(battleId: string, groupId: string, userId: string, xp: number): Promise<void> {
+	static async addBattleXP(battleId: string, groupId: string, userId: string, xp: number, isExercise: boolean = true): Promise<void> {
 		const battle = await BattleModel.findById(battleId);
 		if (!battle) return;
 
@@ -523,13 +528,12 @@ export class BattleService {
 
 		const participant = isChallenger ? battle.challenger : battle.opponent;
 
-		// Update Team XP
+		// Update Team XP (zählt immer - Übungen UND Habits)
 		participant.totalXP += xp;
 
-		// Pixel-Berechnung:
-		// - Übungen: 67 XP pro Übung = 1 Pixel pro Übung
-		// - Habits: 10 XP = 1 Pixel (jede Aktivität gibt mindestens 1 Pixel)
-		const pixelsEarned = xp >= 67 ? Math.floor(xp / 67) : xp > 0 ? 1 : 0;
+		// Pixel-Berechnung: NUR für Übungen (nicht für Habits)
+		// 67 XP pro Übung = 1 Pixel pro Übung
+		const pixelsEarned = isExercise ? Math.floor(xp / 67) : 0;
 
 		// Update oder erstelle Member-Eintrag
 		const memberIndex = participant.members.findIndex((m) => m.userId === userId);
@@ -547,7 +551,10 @@ export class BattleService {
 
 		await battle.save();
 		if (pixelsEarned > 0) {
-			logger.info(`${pixelsEarned} pixel(s) earned for user ${userId} in battle ${battleId}`);
+			logger.info(`${pixelsEarned} pixel(s) earned for user ${userId} in battle ${battleId} (exercise)`);
+		}
+		if (!isExercise && xp > 0) {
+			logger.info(`${xp} XP added for user ${userId} in battle ${battleId} (habit - no pixels)`);
 		}
 	}
 
@@ -693,25 +700,4 @@ export class BattleService {
 		await battle.save();
 	}
 
-	/**
-	 * Prüft und beendet abgelaufene Battles (für Cron-Job)
-	 */
-	static async checkAndCompleteExpiredBattles(): Promise<number> {
-		const expiredBattles = await BattleModel.find({
-			status: 'active',
-			endDate: { $lte: new Date() },
-		});
-
-		let completed = 0;
-		for (const battle of expiredBattles) {
-			try {
-				await this.completeBattle(battle);
-				completed++;
-			} catch (error) {
-				logger.error(`Failed to complete battle ${battle._id}`, error);
-			}
-		}
-
-		return completed;
-	}
 }

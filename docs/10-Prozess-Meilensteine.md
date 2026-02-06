@@ -119,18 +119,33 @@
 
 ---
 
-### Milestone 7: Deployment 📅
+### Milestone 7: Deployment ✅
 
-**Datum**: Februar 2026 (geplant)
+**Datum**: Januar-Februar 2026
 **Ziel**: Production-Ready Deployment
 
 **Deliverables**:
-- [ ] Frontend auf Vercel
-- [ ] Backend auf Railway
-- [ ] MongoDB Atlas
-- [ ] Auth0 Production konfiguriert
-- [ ] Monitoring (Sentry/LogRocket)
-- [ ] Domain & SSL
+- [x] Frontend auf Vercel
+- [x] Backend deployt
+- [x] MongoDB Atlas
+- [x] Auth0 Production konfiguriert
+
+---
+
+### Milestone 8: Groups & Pixel Wars ✅
+
+**Datum**: Januar-Februar 2026
+**Ziel**: Multiplayer-Features implementieren
+
+**Deliverables**:
+- [x] Groups-System (erstellen, beitreten, verwalten)
+- [x] Member-Rollen (Owner, Admin, Member)
+- [x] Gruppen-Canvas (16x16 Pixel-Art pro Gruppe)
+- [x] Pixel Wars Battle-System
+- [x] Challenge-System (erstellen, annehmen, ablehnen)
+- [x] Battle-Canvas mit Live-Updates
+- [x] XP-Integration (Workouts → Battle-XP)
+- [x] Win/Loss Tracking & Belohnungen
 
 ---
 

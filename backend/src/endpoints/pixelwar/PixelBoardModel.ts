@@ -11,7 +11,7 @@ export interface IPixel {
 }
 
 export interface IPixelBoard extends Document {
-	seasonId: string; // Referenz zu Season
+	battleId: string;
 	gridWidth: number;
 	gridHeight: number;
 	pixels: IPixel[];
@@ -52,7 +52,7 @@ const PixelSchema = new Schema<IPixel>(
 
 const PixelBoardSchema = new Schema<IPixelBoard>(
 	{
-		seasonId: {
+		battleId: {
 			type: String,
 			required: true,
 			index: true,
@@ -82,6 +82,6 @@ const PixelBoardSchema = new Schema<IPixelBoard>(
 );
 
 // Compound Index für schnellen Pixel-Zugriff
-PixelBoardSchema.index({ seasonId: 1, 'pixels.x': 1, 'pixels.y': 1 });
+PixelBoardSchema.index({ battleId: 1, 'pixels.x': 1, 'pixels.y': 1 });
 
 export const PixelBoardModel = mongoose.model<IPixelBoard>('PixelBoard', PixelBoardSchema);

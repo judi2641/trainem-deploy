@@ -1,6 +1,12 @@
 import { GroupModel, IGroup, IGroupMember, IGroupPixel } from './GroupModel';
 import { HttpError } from '../../errors/HttpError';
 import { logger } from '../../utils/logger';
+import crypto from 'crypto';
+
+// Generiert einen 8-Zeichen Invite-Code
+function generateInviteCode(): string {
+	return crypto.randomBytes(4).toString('hex').toUpperCase();
+}
 
 export class GroupService {
 	static async createGroup(data: {
@@ -22,6 +28,10 @@ export class GroupService {
 			joinedAt: new Date(),
 			contributedXP: 0,
 		};
+
+		// Generiere Invite-Code für alle Gruppen (auch öffentliche können so eingeladen werden)
+		const inviteCode = generateInviteCode();
+
 		const group = new GroupModel({
 			name,
 			description,
@@ -29,8 +39,9 @@ export class GroupService {
 			members: [owner],
 			isPublic,
 			maxMembers,
+			inviteCode,
 			totalXP: 0,
-			currentSeasonXP: 0,
+			xp: 0,
 			unlockedPixels: 10, // Start with 10 pixels for canvas
 		});
 		await group.save();
@@ -79,6 +90,45 @@ export class GroupService {
 		return group;
 	}
 
+	static async joinGroupByInviteCode(inviteCode: string, userId: string): Promise<IGroup> {
+		const group = await GroupModel.findOne({ inviteCode: inviteCode.toUpperCase() });
+		if (!group) {
+			throw new HttpError(404, 'Invalid invite code');
+		}
+		const isMember = group.members.some((m) => m.userId === userId);
+		if (isMember) {
+			throw new HttpError(400, 'User is already a member');
+		}
+		if (group.members.length >= group.maxMembers) {
+			throw new HttpError(400, 'Group is full');
+		}
+		const newMember: IGroupMember = {
+			userId,
+			role: 'member',
+			joinedAt: new Date(),
+			contributedXP: 0,
+		};
+		group.members.push(newMember);
+		await group.save();
+		logger.info(`User ${userId} joined group ${group.name} via invite code`);
+		return group;
+	}
+
+	static async regenerateInviteCode(groupId: string, userId: string): Promise<string> {
+		const group = await GroupModel.findById(groupId);
+		if (!group) {
+			throw new HttpError(404, 'Group not found');
+		}
+		const member = group.members.find((m) => m.userId === userId);
+		if (!member || (member.role !== 'owner' && member.role !== 'admin')) {
+			throw new HttpError(403, 'Only owner or admin can regenerate invite code');
+		}
+		const newCode = generateInviteCode();
+		group.inviteCode = newCode;
+		await group.save();
+		return newCode;
+	}
+
 	static async leaveGroup(groupId: string, userId: string): Promise<IGroup> {
 		const group = await GroupModel.findById(groupId);
 		if (!group) {
@@ -107,12 +157,8 @@ export class GroupService {
 		}
 		member.contributedXP += xp;
 		group.totalXP += xp;
-		group.currentSeasonXP += xp;
+		group.xp += xp;
 		await group.save();
-	}
-
-	static async resetSeasonXP(): Promise<void> {
-		await GroupModel.updateMany({}, { currentSeasonXP: 0, 'members.$[].contributedXP': 0 });
 	}
 
 	static async deleteGroup(groupId: string, userId: string): Promise<void> {
@@ -188,7 +234,7 @@ export class GroupService {
 		}
 
 		// Prüfe Grid-Bounds
-		const gridSize = group.pixelArt?.gridSize || 16;
+		const gridSize = group.pixelArt?.gridSize || 32;
 		if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) {
 			throw new HttpError(400, `Invalid coordinates. Grid is ${gridSize}x${gridSize}`);
 		}
@@ -200,7 +246,7 @@ export class GroupService {
 
 		// Initialisiere pixelArt falls nicht vorhanden
 		if (!group.pixelArt) {
-			group.pixelArt = { gridSize: 16, pixels: [] };
+			group.pixelArt = { gridSize: 32, pixels: [] };
 		}
 
 		// Prüfe ob Pixel bereits existiert (überschreiben)
@@ -243,7 +289,7 @@ export class GroupService {
 			throw new HttpError(404, 'Group not found');
 		}
 
-		const gridSize = group.pixelArt?.gridSize || 16;
+		const gridSize = group.pixelArt?.gridSize || 32;
 		const pixels = group.pixelArt?.pixels || [];
 		const usedPixels = pixels.length;
 		const unlockedPixels = group.unlockedPixels || 0;

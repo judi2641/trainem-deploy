@@ -20,29 +20,27 @@ interface ChallengeModalProps {
 		settings?: {
 			duration: number;
 			gridSize: number;
-			winCondition: 'pixels' | 'xp' | 'hybrid';
+			winCondition: 'pixels' | 'xp';
 		};
 	}) => void;
 }
 
 const DURATION_OPTIONS = [
 	{ value: 60, label: '1h' },
-	{ value: 360, label: '6h' },
 	{ value: 1440, label: '24h' },
-	{ value: 4320, label: '3d' },
-	{ value: 10080, label: '1w' },
+	{ value: 10080, label: '7d' },
+	{ value: 40320, label: '4w' },
 ];
 
 const GRID_OPTIONS = [
+	{ value: 15, label: '15x15' },
 	{ value: 30, label: '30x30' },
 	{ value: 50, label: '50x50' },
-	{ value: 100, label: '100x100' },
 ];
 
 const WIN_CONDITION_OPTIONS = [
-	{ value: 'pixels' as const, label: 'Most Pixels', description: 'Team with most pixels wins' },
-	{ value: 'xp' as const, label: 'Most XP', description: 'Team with most XP wins' },
-	{ value: 'hybrid' as const, label: 'Hybrid', description: '50% pixels + 50% XP' },
+	{ value: 'pixels' as const, label: 'Workouts', description: 'Only completed exercises earn pixels for your team' },
+	{ value: 'xp' as const, label: 'Workouts + Habits', description: 'Exercises and daily habits both count towards victory' },
 ];
 
 export default function ChallengeModal({
@@ -54,8 +52,8 @@ export default function ChallengeModal({
 	const [challengerGroupId, setChallengerGroupId] = useState(myGroups[0]?._id || '');
 	const [opponentGroupId, setOpponentGroupId] = useState('');
 	const [duration, setDuration] = useState(1440);
-	const [gridSize, setGridSize] = useState(50);
-	const [winCondition, setWinCondition] = useState<'pixels' | 'xp' | 'hybrid'>('pixels');
+	const [gridSize, setGridSize] = useState(30);
+	const [winCondition, setWinCondition] = useState<'pixels' | 'xp'>('pixels');
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -145,7 +143,7 @@ export default function ChallengeModal({
 							<Clock className="h-4 w-4 text-sky-600" />
 							Duration
 						</Label>
-						<div className="grid grid-cols-5 gap-2">
+						<div className="grid grid-cols-4 gap-2">
 							{DURATION_OPTIONS.map((opt) => (
 								<button
 									key={opt.value}
