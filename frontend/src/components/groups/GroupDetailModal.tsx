@@ -222,11 +222,11 @@ export default function GroupDetailModal({
 						</div>
 						<div className="flex items-center gap-1 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/40 border border-black dark:border-white/20 text-xs">
 							<Trophy className="h-3 w-3 text-yellow-600" />
-							<span className="font-medium">{group.wins || 0} Wins</span>
+							<span className="font-medium">{group.wins || 0}W / {group.losses || 0}L</span>
 						</div>
 						<div className="flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 border border-black dark:border-white/20 text-xs">
 							<Zap className="h-3 w-3 text-amber-600" />
-							<span className="font-medium">{group.currentSeasonXP.toLocaleString()} XP</span>
+							<span className="font-medium">{group.xp.toLocaleString()} XP</span>
 						</div>
 						{pixelArtInfo && (
 							<div className="flex items-center gap-1 px-2 py-1 bg-pink-100 dark:bg-pink-900/40 border border-black dark:border-white/20 text-xs">

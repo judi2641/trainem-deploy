@@ -135,7 +135,7 @@ export class BattleService {
 
 		// Erstelle PixelBoard für dieses Battle
 		const pixelBoard = new PixelBoardModel({
-			seasonId: String(battle._id), // Wir nutzen seasonId-Feld für battleId
+			battleId: String(battle._id),
 			gridWidth: battle.settings.gridSize,
 			gridHeight: battle.settings.gridSize,
 			pixels: [],
@@ -700,25 +700,4 @@ export class BattleService {
 		await battle.save();
 	}
 
-	/**
-	 * Prüft und beendet abgelaufene Battles (für Cron-Job)
-	 */
-	static async checkAndCompleteExpiredBattles(): Promise<number> {
-		const expiredBattles = await BattleModel.find({
-			status: 'active',
-			endDate: { $lte: new Date() },
-		});
-
-		let completed = 0;
-		for (const battle of expiredBattles) {
-			try {
-				await this.completeBattle(battle);
-				completed++;
-			} catch (error) {
-				logger.error(`Failed to complete battle ${battle._id}`, error);
-			}
-		}
-
-		return completed;
-	}
 }

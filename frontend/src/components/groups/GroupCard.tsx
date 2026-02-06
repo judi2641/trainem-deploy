@@ -51,6 +51,7 @@ export default function GroupCard({
 	const memberCount = group.members.length;
 	const isFull = memberCount >= group.maxMembers;
 	const wins = group.wins || 0;
+	const losses = group.losses || 0;
 	const unlockedPixels = group.unlockedPixels || 10; // Default to 10 start pixels
 	const usedPixels = group.pixelArt?.pixels?.length || 0;
 	const gridSize = group.pixelArt?.gridSize || 16;
@@ -118,11 +119,11 @@ export default function GroupCard({
 								{memberCount}/{group.maxMembers}
 							</span>
 						</div>
-						{wins > 0 && (
+						{(wins > 0 || losses > 0) && (
 							<div className="flex items-center gap-1 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/40 border border-black dark:border-white/20 text-xs">
 								<Trophy className="h-3 w-3 text-yellow-600" />
 								<span className="text-black dark:text-white font-medium">
-									{wins} {wins === 1 ? 'Win' : 'Wins'}
+									{wins}W / {losses}L
 								</span>
 							</div>
 						)}
@@ -135,7 +136,7 @@ export default function GroupCard({
 						<div className="flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 border border-black dark:border-white/20 text-xs">
 							<Zap className="h-3 w-3 text-amber-600" />
 							<span className="text-black dark:text-white font-medium">
-								{group.currentSeasonXP.toLocaleString()} XP
+								{group.xp.toLocaleString()} XP
 							</span>
 						</div>
 						{group.isPublic ? (

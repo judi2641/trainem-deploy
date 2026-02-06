@@ -16,6 +16,8 @@ interface PixelCanvasProps {
 	maxPixels: number;
 	initialPixels?: PixelData[];
 	onChange?: (dataUrl: string, usedPixels: number, pixels: PixelData[], gridSize: number) => void;
+	controlled?: boolean;
+	onPixelPlace?: (x: number, y: number, color: string) => void;
 }
 
 // Bright, playful colors that match the app's aesthetic
@@ -82,6 +84,8 @@ export default function PixelCanvas({
 	maxPixels,
 	initialPixels,
 	onChange,
+	controlled,
+	onPixelPlace,
 }: PixelCanvasProps) {
 	const [grid, setGrid] = useState<Pixel[][]>(() => createGrid(gridSize));
 	const [selectedColor, setSelectedColor] = useState(DEFAULT_COLORS[0]);
@@ -106,6 +110,18 @@ export default function PixelCanvas({
 	}, [gridSize]);
 
 	useEffect(() => {
+		if (controlled) {
+			const next = createGrid(gridSize);
+			if (initialPixels) {
+				initialPixels.forEach((pixel) => {
+					if (pixel.x >= 0 && pixel.y >= 0 && pixel.y < next.length && pixel.x < next.length) {
+						next[pixel.y][pixel.x] = pixel.color;
+					}
+				});
+			}
+			setGrid(next);
+			return;
+		}
 		if (!initialPixels || initialPixels.length === 0) return;
 		if (hasInitializedRef.current) return;
 		setGrid(() => {
@@ -118,7 +134,7 @@ export default function PixelCanvas({
 			return next;
 		});
 		hasInitializedRef.current = true;
-	}, [gridSize, initialPixels]);
+	}, [gridSize, initialPixels, controlled]);
 
 	useEffect(() => {
 		if (!onChangeRef.current) return;
@@ -128,6 +144,12 @@ export default function PixelCanvas({
 	}, [grid, gridSize, usedPixels]);
 
 	const handlePixelClick = (rowIndex: number, colIndex: number) => {
+		if (controlled) {
+			if (onPixelPlace) {
+				onPixelPlace(colIndex, rowIndex, selectedColor);
+			}
+			return;
+		}
 		setGrid((prev) => {
 			const currentColor = prev[rowIndex][colIndex];
 			const currentUsed = countColored(prev);
@@ -283,13 +305,15 @@ export default function PixelCanvas({
 			</div>
 
 			{/* Clear Button */}
-			<Button
-				variant="outline"
-				onClick={handleClear}
-				className="w-full h-7 border-2 border-black bg-white hover:bg-red-50 hover:text-red-600 hover:border-red-400 text-[10px] font-bold uppercase"
-			>
-				Clear Canvas
-			</Button>
+			{!controlled && (
+				<Button
+					variant="outline"
+					onClick={handleClear}
+					className="w-full h-7 border-2 border-black bg-white hover:bg-red-50 hover:text-red-600 hover:border-red-400 text-[10px] font-bold uppercase"
+				>
+					Clear Canvas
+				</Button>
+			)}
 		</div>
 	);
 }

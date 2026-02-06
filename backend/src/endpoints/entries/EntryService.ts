@@ -3,7 +3,6 @@ import { logger } from '../../utils/logger';
 import { HttpError } from '../../errors/HttpError';
 import WorkoutModel from '../workouts/WorkoutModel';
 import UserModel from '../users/UserModel';
-import { PixelWarService } from '../pixelwar/PixelWarService';
 import { GroupService } from '../groups/GroupService';
 import { BattleService } from '../pixelwar/BattleService';
 /**
@@ -60,7 +59,6 @@ export async function createEntry(
       const groups = await GroupService.getUserGroups(auth0Id);
       for (const group of groups) {
         const groupIdStr = String(group._id);
-        await PixelWarService.grantPixelRights(groupIdStr, auth0Id, 10);
         await GroupService.addGroupXP(groupIdStr, auth0Id, 10);
 
         // Add XP to active battles
@@ -147,7 +145,6 @@ try {
     const groups = await GroupService.getUserGroups(entry.auth0Id);
     for (const group of groups) {
       const groupIdStr = String(group._id);
-      await PixelWarService.grantPixelRights(groupIdStr, entry.auth0Id, 67);
       await GroupService.addGroupXP(groupIdStr, entry.auth0Id, 67);
 
       // Add XP to active battles

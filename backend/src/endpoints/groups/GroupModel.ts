@@ -4,7 +4,7 @@ export interface IGroupMember {
 	userId: string; // auth0Id
 	role: 'owner' | 'admin' | 'member';
 	joinedAt: Date;
-	contributedXP: number; // XP beigetragen in aktueller Season
+	contributedXP: number;
 }
 
 export interface IGroupPixel {
@@ -16,7 +16,7 @@ export interface IGroupPixel {
 }
 
 export interface IGroupPixelArt {
-	gridSize: number; // z.B. 16x16
+	gridSize: number; // z.B. 32x32
 	pixels: IGroupPixel[];
 }
 
@@ -31,7 +31,7 @@ export interface IGroup extends Document {
 	createdAt: Date;
 	updatedAt: Date;
 	totalXP: number; // Gesamt-XP aller Mitglieder (all-time)
-	currentSeasonXP: number; // XP in aktueller Season
+	xp: number;
 	// Neues Feature: Gruppen-Canvas
 	wins: number; // Anzahl gewonnener Battles
 	losses: number; // Anzahl verlorener Battles
@@ -60,7 +60,7 @@ const GroupPixelSchema = new Schema<IGroupPixel>({
 });
 
 const GroupPixelArtSchema = new Schema<IGroupPixelArt>({
-	gridSize: { type: Number, required: true, default: 16, min: 8, max: 32 },
+	gridSize: { type: Number, required: true, default: 32, min: 8, max: 64 },
 	pixels: { type: [GroupPixelSchema], default: [] },
 });
 
@@ -116,7 +116,7 @@ const GroupSchema = new Schema<IGroup>(
 			default: 0,
 			min: 0,
 		},
-		currentSeasonXP: {
+		xp: {
 			type: Number,
 			default: 0,
 			min: 0,
@@ -139,7 +139,7 @@ const GroupSchema = new Schema<IGroup>(
 		},
 		pixelArt: {
 			type: GroupPixelArtSchema,
-			default: () => ({ gridSize: 16, pixels: [] }),
+			default: () => ({ gridSize: 32, pixels: [] }),
 		},
 	},
 	{

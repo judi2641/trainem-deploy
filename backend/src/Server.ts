@@ -16,7 +16,6 @@ import EntryRoute from './endpoints/entries/EntryRoute';
 import ExerciseRoute from './endpoints/exercises/ExerciseRoute';
 import PixelArtRoute from './endpoints/pixelArt/PixelArtRoute';
 import GroupRoute from './endpoints/groups/GroupRoute';
-import PixelWarRoute from './endpoints/pixelwar/PixelWarRoute';
 import BattleRoute from './endpoints/pixelwar/BattleRoute';
 import { checkAuth0Token } from './utils/checkAuth0Token';
 
@@ -36,7 +35,6 @@ app.use('/api/entries', EntryRoute);
 app.use('/api/exercises', ExerciseRoute);
 app.use('/api/pixel-art', PixelArtRoute);
 app.use('/api/groups', GroupRoute);
-app.use('/api/pixelwar', PixelWarRoute);
 app.use('/api/pixelwar/battles', BattleRoute);
 
 async function startServer() {

@@ -317,9 +317,58 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 				</div>
 			)}
 
+			{/* User Info Panel with Color Palette */}
+			{userGroupId && (
+				<div className="flex items-center gap-4 p-3 bg-white dark:bg-gray-800 border-2 border-black shadow-[3px_3px_0px_rgba(0,0,0,0.15)]">
+					<Crosshair className="h-4 w-4 text-black/60 dark:text-white/60" />
+					<span className="text-sm text-black dark:text-white font-medium">Your Team</span>
+					<div
+						className="w-6 h-6 border-2 border-black"
+						style={{ backgroundColor: selectedColor }}
+					/>
+					<div className="flex items-center gap-2">
+						<span className="text-2xl font-bold text-black dark:text-white">
+							{userMember?.pixelsAvailable ?? 0}
+						</span>
+						<span className="text-xs text-black/50 dark:text-white/50">pixels available</span>
+					</div>
+
+					{/* Color Palette */}
+					{battle.status === 'active' && userMember && userMember.pixelsAvailable > 0 && (
+						<>
+							<div className="h-6 w-px bg-black/10 dark:bg-white/10" />
+							<div className="flex items-center gap-2">
+								<Palette className="h-3 w-3 text-black/50 dark:text-white/50" />
+								<div className="flex flex-wrap items-center gap-1.5">
+									{CANVAS_COLORS.map((color) => (
+										<button
+											key={color}
+											type="button"
+											onClick={() => setSelectedColor(color)}
+											className={`h-6 w-6 border-2 transition-all ${
+												selectedColor === color
+													? 'border-black dark:border-white scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]'
+													: 'border-black/30 dark:border-white/30 hover:border-black hover:scale-105'
+											}`}
+											style={{ backgroundColor: color }}
+										/>
+									))}
+								</div>
+							</div>
+						</>
+					)}
+
+					{(!userMember || userMember.pixelsAvailable === 0) && (
+						<span className="text-xs text-orange-600 dark:text-orange-400 ml-auto">
+							Complete exercises to earn pixels!
+						</span>
+					)}
+				</div>
+			)}
+
 			{/* Canvas Area */}
 			<div className="flex-1 relative bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-800 dark:to-gray-900 border-2 border-black overflow-hidden shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
-				{/* Zoom Controls - matching PixelCanvas style */}
+				{/* Zoom Controls */}
 				<div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-white dark:bg-gray-800 p-2 border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,0.15)]">
 					<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
 						Zoom
@@ -346,61 +395,6 @@ export default function BattleArena({ battle: initialBattle, userId, onBack }: B
 						{zoom}x
 					</span>
 				</div>
-
-				{/* User Info Panel with Color Palette */}
-				{userGroupId && (
-					<div className="absolute top-4 left-4 z-10 bg-white dark:bg-gray-800 p-3 border-3 border-black shadow-[3px_3px_0px_rgba(0,0,0,0.15)]">
-						<div className="flex items-center gap-2 mb-2">
-							<Crosshair className="h-4 w-4 text-black/60 dark:text-white/60" />
-							<span className="text-sm text-black dark:text-white font-medium">Your Team</span>
-						</div>
-						<div className="flex items-center gap-3 mb-3">
-							<div
-								className="w-8 h-8 border-2 border-black"
-								style={{ backgroundColor: selectedColor }}
-							/>
-							<div>
-								<div className="text-2xl font-bold text-black dark:text-white">
-									{userMember?.pixelsAvailable ?? 0}
-								</div>
-								<div className="text-xs text-black/50 dark:text-white/50">pixels available</div>
-							</div>
-						</div>
-
-						{/* Color Palette */}
-						{battle.status === 'active' && userMember && userMember.pixelsAvailable > 0 && (
-							<div className="border-t border-black/10 dark:border-white/10 pt-3">
-								<div className="flex items-center gap-2 mb-2">
-									<Palette className="h-3 w-3 text-black/50 dark:text-white/50" />
-									<span className="text-[10px] font-bold text-black/50 dark:text-white/50 uppercase">
-										Colors
-									</span>
-								</div>
-								<div className="grid grid-cols-5 gap-1.5">
-									{CANVAS_COLORS.map((color) => (
-										<button
-											key={color}
-											type="button"
-											onClick={() => setSelectedColor(color)}
-											className={`h-6 w-6 border-2 transition-all ${
-												selectedColor === color
-													? 'border-black dark:border-white scale-110 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]'
-													: 'border-black/30 dark:border-white/30 hover:border-black hover:scale-105'
-											}`}
-											style={{ backgroundColor: color }}
-										/>
-									))}
-								</div>
-							</div>
-						)}
-
-						{(!userMember || userMember.pixelsAvailable === 0) && (
-							<div className="text-xs text-orange-600 dark:text-orange-400 border-t border-black/10 dark:border-white/10 pt-2">
-								Complete exercises to earn pixels!
-							</div>
-						)}
-					</div>
-				)}
 
 				{/* Canvas Container */}
 				<div

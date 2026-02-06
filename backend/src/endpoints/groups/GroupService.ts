@@ -41,7 +41,7 @@ export class GroupService {
 			maxMembers,
 			inviteCode,
 			totalXP: 0,
-			currentSeasonXP: 0,
+			xp: 0,
 			unlockedPixels: 10, // Start with 10 pixels for canvas
 		});
 		await group.save();
@@ -157,12 +157,8 @@ export class GroupService {
 		}
 		member.contributedXP += xp;
 		group.totalXP += xp;
-		group.currentSeasonXP += xp;
+		group.xp += xp;
 		await group.save();
-	}
-
-	static async resetSeasonXP(): Promise<void> {
-		await GroupModel.updateMany({}, { currentSeasonXP: 0, 'members.$[].contributedXP': 0 });
 	}
 
 	static async deleteGroup(groupId: string, userId: string): Promise<void> {
@@ -238,7 +234,7 @@ export class GroupService {
 		}
 
 		// Prüfe Grid-Bounds
-		const gridSize = group.pixelArt?.gridSize || 16;
+		const gridSize = group.pixelArt?.gridSize || 32;
 		if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) {
 			throw new HttpError(400, `Invalid coordinates. Grid is ${gridSize}x${gridSize}`);
 		}
@@ -250,7 +246,7 @@ export class GroupService {
 
 		// Initialisiere pixelArt falls nicht vorhanden
 		if (!group.pixelArt) {
-			group.pixelArt = { gridSize: 16, pixels: [] };
+			group.pixelArt = { gridSize: 32, pixels: [] };
 		}
 
 		// Prüfe ob Pixel bereits existiert (überschreiben)
@@ -293,7 +289,7 @@ export class GroupService {
 			throw new HttpError(404, 'Group not found');
 		}
 
-		const gridSize = group.pixelArt?.gridSize || 16;
+		const gridSize = group.pixelArt?.gridSize || 32;
 		const pixels = group.pixelArt?.pixels || [];
 		const usedPixels = pixels.length;
 		const unlockedPixels = group.unlockedPixels || 0;
