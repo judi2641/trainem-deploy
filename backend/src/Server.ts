@@ -48,7 +48,7 @@ app.use('/api/pixelwar/battles', BattleRoute);
 
 async function startServer() {
 	try {
-		//await initDB();
+		await initDB();
 		app.listen(3000, () => {
 			logger.info('server is running on port 3000');
 		});
