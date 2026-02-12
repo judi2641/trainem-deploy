@@ -11,8 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 import cors from 'cors';
 import { initDB } from './database/db';
 import UserRoute from './endpoints/users/UserRoute';
-// import TrainingsplanRoute from './endpoints/routes/TrainingsPlanRoute';
-// import CompletedTaskRoute from './endpoints/routes/CompletedTaskRoute';
+
 import WorkoutRoute from './endpoints/workouts/WorkoutRoute';
 import HabitRoute from './endpoints/habits/HabitRoute';
 import EntryRoute from './endpoints/entries/EntryRoute';

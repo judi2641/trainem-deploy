@@ -96,7 +96,7 @@ const WEEKDAY_NAMES = [
 ];
 
 export default function UpcomingHabits() {
-	const { habits, myUser, entries, setEntries } = useMyContext();
+	const { habits, myUser, entries, setEntries, setMyUser } = useMyContext();
 	const { getAccessTokenSilently } = useAuth0();
 	const user = myUser; // Declare the user variable
 	const [completingHabitId, setCompletingHabitId] = useState<string | null>(null);
@@ -180,6 +180,11 @@ export default function UpcomingHabits() {
 
 				const newEntry = await res.json();
 				setEntries((prev: any) => [...prev, newEntry]);
+				setMyUser((prev: any) => {
+					if (!prev) return prev;
+					const nextScore = (prev.points ?? prev.score ?? 0) + 10;
+					return { ...prev, points: nextScore, score: nextScore };
+				});
 
 				// Show celebration
 				setShowCelebration(true);

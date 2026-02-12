@@ -91,7 +91,7 @@ export default function PixelCharacter() {
 								className="object-contain pixelated"
 							/>
 						) : null}
-						<AvatarFallback className="bg-amber-400 text-black font-pixel text-xs">
+						<AvatarFallback className="bg-white text-black font-pixel text-xs">
 							{myUser?.firstName?.[0] ?? '?'}
 						</AvatarFallback>
 					</Avatar>

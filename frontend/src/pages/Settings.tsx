@@ -144,7 +144,7 @@ export default function Settings() {
 							<h1 className="font-pixel text-2xl text-black dark:text-white">Settings</h1>
 						</div>
 
-						<div className="max-w-3xl space-y-6">
+						<div className="w-full space-y-6">
 							{/* Main Settings Card */}
 							<div className="relative">
 								<div className="absolute left-2 top-2 h-full w-full border-4 border-black dark:border-white/20 bg-black/10 dark:bg-white/5" />
@@ -209,51 +209,6 @@ export default function Settings() {
 													</button>
 												);
 											})}
-										</div>
-									</div>
-								</div>
-							</div>
-
-							{/* Additional Settings Card */}
-							<div className="relative">
-								<div className="absolute left-2 top-2 h-full w-full border-4 border-black dark:border-white/20 bg-black/10 dark:bg-white/5" />
-								<div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur border-4 border-black dark:border-white/20 p-6">
-									<div className="flex items-center gap-3 mb-4">
-										<div className="h-4 w-4 bg-sky-400 border-2 border-black dark:border-white/30" />
-										<h2 className="font-pixel text-sm text-black dark:text-white">
-											About Theme Modes
-										</h2>
-									</div>
-
-									<div className="space-y-4 text-sm text-black/70 dark:text-white/70">
-										<div className="p-3 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-700/50">
-											<p className="font-medium text-amber-800 dark:text-amber-300 mb-1">
-												Light Mode
-											</p>
-											<p className="text-amber-700/80 dark:text-amber-400/80">
-												The default bright theme with full color palette. Best for well-lit
-												environments.
-											</p>
-										</div>
-
-										<div className="p-3 bg-violet-50 dark:bg-violet-900/20 border-2 border-violet-200 dark:border-violet-700/50">
-											<p className="font-medium text-violet-800 dark:text-violet-300 mb-1">
-												True Dark Mode
-											</p>
-											<p className="text-violet-700/80 dark:text-violet-400/80">
-												A comprehensive dark theme with optimized contrast and colors specifically
-												designed for dark backgrounds. Reduces eye strain in low-light conditions.
-											</p>
-										</div>
-
-										<div className="p-3 bg-gray-100 dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600">
-											<p className="font-medium text-gray-800 dark:text-gray-200 mb-1">
-												Invert Colors
-											</p>
-											<p className="text-gray-600 dark:text-gray-400">
-												A quick color inversion filter. Useful for high contrast viewing but may
-												affect image colors.
-											</p>
 										</div>
 									</div>
 								</div>

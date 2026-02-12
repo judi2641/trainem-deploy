@@ -278,7 +278,7 @@ function SidebarContent({
 		const gridSize = typeof pixelArt.gridSize === 'number' ? pixelArt.gridSize : 16;
 		const pixels = Array.isArray(pixelArt.pixels) ? pixelArt.pixels : [];
 		setPixelAvatarUrl(pixelArtToDataUrl(pixels, gridSize));
-	}, [pixelArt]);
+	}, [pixelArt, myUser]);
 
 	const handleLogout = () => {
 		if (window.confirm('Willst du dich ausloggen?')) {
@@ -347,7 +347,7 @@ function SidebarContent({
 									className="object-contain pixelated"
 								/>
 							) : null}
-							<AvatarFallback className="bg-amber-400 text-black font-pixel text-xs">
+							<AvatarFallback className="bg-white text-black font-pixel text-xs">
 								{myUser?.firstName?.[0] ?? '?'}
 							</AvatarFallback>
 						</Avatar>
@@ -379,7 +379,7 @@ function SidebarContent({
 											className="object-contain pixelated"
 										/>
 									) : null}
-									<AvatarFallback className="bg-amber-400 text-black font-pixel text-xs">
+									<AvatarFallback className="bg-white text-black font-pixel text-xs">
 										{myUser?.firstName?.[0] ?? '?'}
 									</AvatarFallback>
 								</Avatar>
