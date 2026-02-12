@@ -13,6 +13,7 @@ import {
 import { useMyContext } from '@/context/AppContext';
 import { toast } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
+import { getLevelFromScore } from '@/util/level';
 
 // Pixel icons
 function SaveIcon({ className }: { className?: string }) {
@@ -35,9 +36,10 @@ export default function PixelArt() {
 	const [isLoading, setIsLoading] = useState(true);
 
 	// Calculate level based on completed entries
-	const completedEntries = entries?.filter((e: any) => e.completed)?.length ?? 0;
-	const level = Math.floor(completedEntries / 5);
-	const unlockedPixels = 12 + level * 4;
+	const totalScore = myUser?.points ?? myUser?.score ?? 0;
+	const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
+
+	const unlockedPixels = 12 + (level == 1 ? 0 : level) * 4;
 
 	useEffect(() => {
 		let isMounted = true;
