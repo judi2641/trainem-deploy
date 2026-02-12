@@ -28,7 +28,7 @@ function SaveIcon({ className }: { className?: string }) {
 }
 
 export default function PixelArt() {
-	const { myUser, setPixelArt, entries } = useMyContext();
+	const { myUser, setPixelArt } = useMyContext();
 	const { getAccessTokenSilently } = useAuth0();
 	const [pixels, setPixels] = useState<PixelData[]>([]);
 	const [gridSize, setGridSize] = useState(64);
@@ -37,7 +37,7 @@ export default function PixelArt() {
 
 	// Calculate level based on completed entries
 	const totalScore = myUser?.points ?? myUser?.score ?? 0;
-	const { level, currentXp, nextLevelXp } = getLevelFromScore(totalScore);
+	const { level } = getLevelFromScore(totalScore);
 
 	const unlockedPixels = 12 + (level == 1 ? 0 : level) * 4;
 
