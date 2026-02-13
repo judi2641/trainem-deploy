@@ -146,7 +146,7 @@ export default function Statistics() {
 		// This week's workouts
 		const weekStart = startOfWeek(today, { weekStartsOn: 1 });
 		const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-		const thisWeekWorkouts = totalWorkouts.filter((e: any) =>
+		const thisWeekWorkouts = completedEntries.filter((e: any) =>
 			isWithinInterval(new Date(e.date), { start: weekStart, end: weekEnd }),
 		).length;
 
@@ -316,7 +316,7 @@ export default function Statistics() {
 										<CalendarIcon className="h-10 w-10 text-sky-300" />
 									</div>
 									<p className="text-xs text-black/50 dark:text-white/50 mt-2">
-										Workouts this week
+										Workouts and Habits this week
 									</p>
 								</PixelCardContent>
 							</PixelCard>
