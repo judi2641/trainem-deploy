@@ -146,7 +146,7 @@ export default function Statistics() {
 		// This week's workouts
 		const weekStart = startOfWeek(today, { weekStartsOn: 1 });
 		const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-		const thisWeekWorkouts = completedEntries.filter((e: any) =>
+		const thisWeekWorkouts = totalWorkouts.filter((e: any) =>
 			isWithinInterval(new Date(e.date), { start: weekStart, end: weekEnd }),
 		).length;
 
@@ -449,26 +449,32 @@ export default function Statistics() {
 
 							{/* Pixel Wars */}
 							<PixelCard>
-									<PixelCardHeader>
-										<div className="flex items-center gap-2">
-											<div className="h-4 w-4 bg-red-500 border-2 border-black" />
-											<PixelCardTitle>Pixel Wars</PixelCardTitle>
+								<PixelCardHeader>
+									<div className="flex items-center gap-2">
+										<div className="h-4 w-4 bg-red-500 border-2 border-black" />
+										<PixelCardTitle>Pixel Wars</PixelCardTitle>
+									</div>
+								</PixelCardHeader>
+								<PixelCardContent>
+									<div className="flex items-center justify-between">
+										<div>
+											<span className="font-pixel text-3xl text-emerald-600">
+												{warStats?.wins ?? 0}
+											</span>
+											<span className="font-pixel text-lg text-black/40 dark:text-white/40 mx-1">
+												/
+											</span>
+											<span className="font-pixel text-3xl text-red-500">
+												{warStats?.losses ?? 0}
+											</span>
 										</div>
-									</PixelCardHeader>
-									<PixelCardContent>
-										<div className="flex items-center justify-between">
-											<div>
-												<span className="font-pixel text-3xl text-emerald-600">{warStats?.wins ?? 0}</span>
-												<span className="font-pixel text-lg text-black/40 dark:text-white/40 mx-1">/</span>
-												<span className="font-pixel text-3xl text-red-500">{warStats?.losses ?? 0}</span>
-											</div>
-											<SwordsIcon className="h-10 w-10 text-red-300" />
-										</div>
-										<p className="text-xs text-black/50 dark:text-white/50 mt-2">
-											Wins / Losses across all groups
-										</p>
-									</PixelCardContent>
-								</PixelCard>
+										<SwordsIcon className="h-10 w-10 text-red-300" />
+									</div>
+									<p className="text-xs text-black/50 dark:text-white/50 mt-2">
+										Wins / Losses across all groups
+									</p>
+								</PixelCardContent>
+							</PixelCard>
 						</div>
 					</main>
 				</div>
